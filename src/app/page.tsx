@@ -79,7 +79,7 @@ function Marquee() {
   );
 }
 
-/* ─────────────────────────────────────────
+/* ────────────────────────────────────────
    PROBLEM CARD
 ───────────────────────────────────────── */
 function ProblemCard({
@@ -98,11 +98,11 @@ function ProblemCard({
   delay: number;
 }) {
   return (
-    <FadeIn delay={delay}>
+    <FadeIn delay={delay} className="h-full">
       <motion.div
         whileHover={{ scale: 1.025, y: -4 }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        className="group relative rounded-2xl border border-neutral-800 bg-neutral-900/60 backdrop-blur-sm p-8 overflow-hidden cursor-default"
+        className="group relative h-full flex flex-col rounded-2xl border border-neutral-800 bg-neutral-900/60 backdrop-blur-sm p-8 overflow-hidden cursor-default"
       >
         {/* Hover glow */}
         <div
@@ -114,14 +114,22 @@ function ProblemCard({
         <h3 className="text-2xl font-bold text-white mb-4 leading-snug">
           {title}
         </h3>
-        <p className="text-neutral-400 text-base leading-relaxed mb-6">{body}</p>
-        <div className="inline-block rounded-full bg-neutral-800 border border-neutral-700 px-4 py-1.5 text-xs font-bold tracking-wider text-blue-400 uppercase">
+        
+        {/* flex-1 makes the text take up the remaining space */}
+        <p className="text-neutral-400 text-base leading-relaxed mb-6 flex-1">
+          {body}
+        </p>
+        
+        {/* mt-auto pushes the caption to the bottom, self-start keeps it from stretching horizontally */}
+        <div className="mt-auto self-start rounded-full bg-neutral-800 border border-neutral-700 px-4 py-1.5 text-xs font-bold tracking-wider text-blue-400 uppercase">
           {caption}
         </div>
       </motion.div>
     </FadeIn>
   );
 }
+
+
 
 /* ─────────────────────────────────────────
    TIMELINE STEP
@@ -286,7 +294,7 @@ export default function Home() {
       {/* ── MARQUEE ─────────────────────────── */}
       <Marquee />
 
-      {/* ── THE PROBLEM ─────────────────────── */}
+   {/* ── THE PROBLEM ─────────────────────── */}
       <section id="problem" className="px-6 py-24 max-w-5xl mx-auto">
         <FadeIn>
           <div className="text-center mb-16">
@@ -304,17 +312,17 @@ export default function Home() {
 
         <div className="grid sm:grid-cols-2 gap-6">
           <ProblemCard
-            tag="Script 9 — Stop Guessing"
-            title="The Guesswork"
-            body="A lot of D2C brands launch an ad, wait for the numbers, make one change and launch another. There's no real testing framework behind it. No clear reason why one creative performs and another fails. So every new campaign starts with another guess."
+            tag="Stop Guessing"
+            title="The Guesswork Trap"
+            body="Imagine launching an ad, holding your breath for the numbers, tweaking one random thing, and trying again. Without a real testing framework, you never actually know why one creative prints money while another bleeds it dry. Every new campaign becomes just another expensive roll of the dice."
             caption="guessing = wasting money"
             accent="bg-[radial-gradient(ellipse_at_top-left,rgba(239,68,68,0.08),transparent_70%)]"
             delay={0}
           />
           <ProblemCard
-            tag="Script 10 — ROAS Isn't The Whole Problem"
+            tag="Beyond The Metrics"
             title="The ROAS Illusion"
-            body="You can have the right audience, the right budget and still have terrible performance. Because if the creative is not converting attention, or the funnel is not converting clicks, Meta cannot fix that for you. Throwing more money on an ad campaign just makes the problem more expensive."
+            body="You’ve nailed the audience targeting and set a healthy budget, yet your returns are still tanking. Here is the harsh truth Meta won’t tell you: if your creative isn't capturing attention or your funnel is leaking clicks, the algorithm can't save you. Blindly throwing more ad spend at a broken system just makes your failures more expensive."
             caption="More money ≠ better performance"
             accent="bg-[radial-gradient(ellipse_at_top-right,rgba(168,85,247,0.08),transparent_70%)]"
             delay={0.1}
