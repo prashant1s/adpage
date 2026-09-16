@@ -7,7 +7,7 @@ import dynamic from "next/dynamic";
 const GhostFibers = dynamic(() => import("@/components/GhostFibers"), { ssr: false });
 
 /* ─────────────────────────────────────────
-   REUSABLE — fade-in wrapper
+   REUSABLE fade-in wrapper
 ───────────────────────────────────────── */
 function FadeIn({
   children,
@@ -211,7 +211,7 @@ export default function Home() {
         {/* Top/bottom anchors */}
         <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[#0a0a0f]/70 via-transparent to-[#0a0a0f]/80 pointer-events-none" />
 
-        {/* Text content — fixed left */}
+        {/* Text content fixed left */}
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-20">
           <div className="max-w-2xl">
             <motion.div
@@ -353,21 +353,21 @@ export default function Home() {
           <TimelineStep
             step={1}
             title="Structure Creative Testing Around Data"
-            body="We structure creative testing around hooks, angles, formats and actual performance data. Then we know what deserves more budget — and what needs to be stopped."
+            body="We structure creative testing around hooks, angles, formats and actual performance data. Then we know what deserves more budget and what needs to be stopped."
             delay={0}
             isLast={false}
           />
           <TimelineStep
             step={2}
             title="Find & Fix the Real Problem First"
-            body="We look at the entire system — account structure, creatives, funnel and data. Then we identify exactly where the performance issue is, and we fix that first. Once the system is working, that's when scaling actually makes sense."
+            body="We look at the entire system account structure, creatives, funnel and data. Then we identify exactly where the performance issue is, and we fix that first. Once the system is working, that's when scaling actually makes sense."
             delay={0.15}
             isLast={false}
           />
           <TimelineStep
             step={3}
             title="Scale with Confidence, Not Guesses"
-            body="Once the system is proven to work, scaling makes sense. Budget decisions are data-driven — not gut-driven. We know what deserves more spend and what needs to be cut. No more expensive guesses."
+            body="Once the system is proven to work, scaling makes sense. Budget decisions are data-driven not gut-driven. We know what deserves more spend and what needs to be cut. No more expensive guesses."
             delay={0.3}
             isLast={true}
           />
@@ -418,13 +418,13 @@ export default function Home() {
           </h2>
 
           <p className="text-neutral-400 text-lg sm:text-xl mb-4 max-w-2xl mx-auto">
-            If you&apos;re spending 2 to 4 lakhs a month on ads — or if your ROAS isn&apos;t where it should be — book a free strategy call with us.
+            If you&apos;re spending 2 to 4 lakhs a month on ads or if your ROAS isn&apos;t where it should be book a free strategy call with us.
           </p>
           <p className="text-white font-medium text-base sm:text-lg mb-10 max-w-xl mx-auto">
             Let&apos;s replace guessing with a system. Let&apos;s find the actual problem before you spend another rupee.
           </p>
 
-          {/* Caption flash pills — all 6 from both scripts */}
+          {/* Caption flash pills all 6 from both scripts */}
           <div className="flex flex-wrap justify-center gap-3 mb-10">
             {[
               "guessing = wasting money",

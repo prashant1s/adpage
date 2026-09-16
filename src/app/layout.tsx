@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Stop Guessing — Replace Bad ROAS with a System | Meta Ads Intelligence",
+  title: "Stop Guessing Replace Bad ROAS with a System | Meta Ads Intelligence",
   description:
     "If you're spending ₹2–4 lakhs a month on Meta ads and guessing which creatives will work, you're already losing money. Book a free strategy call.",
 };
