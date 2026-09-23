@@ -208,7 +208,7 @@ export default function Home() {
             over the whole width; desktop veils left-to-right. */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 z-1 bg-linear-to-t from-[#07070b] via-[#07070b]/85 via-55% to-[#07070b]/40 md:bg-linear-to-r md:from-[#07070b] md:via-[#07070b]/80 md:via-40% md:to-transparent"
+          className="pointer-events-none absolute inset-0 z-1 bg-linear-to-t from-[#07070b] via-[#07070b]/85 via-55% to-[#07070b]/40 md:bg-linear-to-r md:from-[#07070b] md:via-[#07070b]/85 md:via-55% md:to-transparent"
         />
         <div
           aria-hidden
@@ -216,7 +216,7 @@ export default function Home() {
         />
 
         <div className={`relative z-10 ${CONTAINER}`}>
-          <div className="max-w-2xl">
+          <div className="max-w-3xl">
             <motion.p
               initial={{ opacity: 0, y: -16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -237,7 +237,9 @@ export default function Home() {
               className="mb-5 text-display font-extrabold text-white text-balance"
             >
               Spending lakhs on Meta ads.{" "}
-              <span className="bg-linear-to-r from-rose-400 to-orange-400 bg-clip-text text-transparent">
+              {/* Own line from md up so the second sentence never splits
+                  across a line break mid-phrase. */}
+              <span className="bg-linear-to-r from-rose-400 to-orange-400 bg-clip-text text-transparent md:block">
                 Still stuck at 1.5x ROAS?
               </span>
             </motion.h1>
