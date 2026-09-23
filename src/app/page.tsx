@@ -4,6 +4,12 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import dynamic from "next/dynamic";
 
+import Faq from "@/components/Faq";
+import LeakCalculator from "@/components/LeakCalculator";
+import StickyCta from "@/components/StickyCta";
+import StrategyCallForm from "@/components/StrategyCallForm";
+import Testimonials from "@/components/Testimonials";
+
 const GhostFibers = dynamic(() => import("@/components/GhostFibers"), { ssr: false });
 
 /* ─────────────────────────────────────────
@@ -35,147 +41,156 @@ function FadeIn({
 }
 
 /* ─────────────────────────────────────────
-   MARQUEE
+   SECTION SHELL
 ───────────────────────────────────────── */
-const MARQUEE_ITEMS = [
-  "guessing = wasting money",
-  "no more random testing",
-  "data > gut feeling",
-  "ROAS isn't always the problem",
-  "More money ≠ better performance",
-  "Find the real problem",
-  "guessing = wasting money",
-  "no more random testing",
-  "data > gut feeling",
-  "ROAS isn't always the problem",
-  "More money ≠ better performance",
-  "Find the real problem",
-];
-
-function Marquee() {
-  return (
-    <div className="w-full overflow-hidden border-y border-neutral-800 py-4 bg-neutral-950">
-      <div className="marquee-track">
-        {MARQUEE_ITEMS.map((item, i) => (
-          <span
-            key={i}
-            className="mx-8 text-sm font-semibold tracking-widest uppercase text-blue-400 whitespace-nowrap"
-          >
-            {i % 2 === 0 ? (
-              <>
-                <span className="text-purple-400 mr-2">◆</span>
-                {item}
-              </>
-            ) : (
-              <>
-                <span className="text-blue-500 mr-2">◆</span>
-                {item}
-              </>
-            )}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ────────────────────────────────────────
-   PROBLEM CARD
-───────────────────────────────────────── */
-function ProblemCard({
-  tag,
-  title,
-  body,
-  caption,
-  accent,
-  delay,
+function Section({
+  id,
+  eyebrow,
+  heading,
+  children,
+  className = "",
+  width = "max-w-4xl",
 }: {
-  tag: string;
-  title: string;
-  body: string;
-  caption: string;
-  accent: string;
-  delay: number;
+  id?: string;
+  eyebrow?: string;
+  heading?: React.ReactNode;
+  children: React.ReactNode;
+  className?: string;
+  width?: string;
 }) {
   return (
-    <FadeIn delay={delay} className="h-full">
-      <motion.div
-        whileHover={{ scale: 1.025, y: -4 }}
-        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        className="group relative h-full flex flex-col rounded-2xl border border-neutral-800 bg-neutral-900/60 backdrop-blur-sm p-8 overflow-hidden cursor-default"
-      >
-        {/* Hover glow */}
-        <div
-          className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${accent}`}
-        />
-        <span className="inline-block text-xs font-bold tracking-widest uppercase text-neutral-500 mb-4">
-          {tag}
-        </span>
-        <h3 className="text-2xl font-bold text-white mb-4 leading-snug">
-          {title}
-        </h3>
-        
-        {/* flex-1 makes the text take up the remaining space */}
-        <p className="text-neutral-400 text-base leading-relaxed mb-6 flex-1">
-          {body}
-        </p>
-        
-        {/* mt-auto pushes the caption to the bottom, self-start keeps it from stretching horizontally */}
-        <div className="mt-auto self-start rounded-full bg-neutral-800 border border-neutral-700 px-4 py-1.5 text-xs font-bold tracking-wider text-blue-400 uppercase">
-          {caption}
-        </div>
-      </motion.div>
-    </FadeIn>
+    <section id={id} className={`px-6 py-20 sm:py-24 ${className}`}>
+      <div className={`mx-auto ${width}`}>
+        {(eyebrow || heading) && (
+          <FadeIn className="mb-12">
+            {eyebrow && (
+              <span className="mb-4 block text-xs font-bold tracking-[0.2em] uppercase text-blue-500">
+                {eyebrow}
+              </span>
+            )}
+            {heading && (
+              <h2 className="text-3xl font-extrabold leading-[1.15] tracking-tight text-white text-balance sm:text-4xl xl:text-5xl">
+                {heading}
+              </h2>
+            )}
+          </FadeIn>
+        )}
+        {children}
+      </div>
+    </section>
   );
 }
-
-
 
 /* ─────────────────────────────────────────
-   TIMELINE STEP
+   CTA BUTTON — every CTA points at the form
 ───────────────────────────────────────── */
-function TimelineStep({
-  step,
-  title,
-  body,
-  delay,
-  isLast,
+function Cta({
+  children,
+  variant = "solid",
+  className = "",
 }: {
-  step: number;
-  title: string;
-  body: string;
-  delay: number;
-  isLast: boolean;
+  children: React.ReactNode;
+  variant?: "solid" | "outline";
+  className?: string;
 }) {
+  const base =
+    "inline-flex items-center justify-center gap-2 rounded-xl px-8 py-4 text-base font-bold transition-colors";
+  const styles =
+    variant === "solid"
+      ? "glow-btn bg-blue-600 text-white hover:bg-blue-500"
+      : "border border-white/15 text-neutral-300 hover:border-white/40 hover:text-white";
+
   return (
-    <FadeIn delay={delay} className="relative flex gap-6">
-      {/* Connector line */}
-      <div className="flex flex-col items-center">
-        <div className="w-10 h-10 rounded-full bg-blue-600 border-2 border-blue-400 flex items-center justify-center text-white font-bold text-sm shrink-0 z-10">
-          {step}
-        </div>
-        {!isLast && (
-          <div className="w-px flex-1 bg-gradient-to-b from-blue-500/60 to-transparent mt-2" />
-        )}
-      </div>
-      {/* Content */}
-      <div className="pb-12">
-        <h4 className="text-xl font-bold text-white mb-2">{title}</h4>
-        <p className="text-neutral-400 leading-relaxed">{body}</p>
-      </div>
-    </FadeIn>
+    <a href="#book" className={`${base} ${styles} ${className}`}>
+      {children}
+      <span aria-hidden>→</span>
+    </a>
   );
 }
+
+/* ─────────────────────────────────────────
+   CONTENT
+───────────────────────────────────────── */
+const SYMPTOMS = [
+  "You raised the budget. Sales stayed the same.",
+  "The same 2–3 ads have been running for weeks.",
+  "Your cost per order goes up every month.",
+  "Lots of clicks. Very few people actually buy.",
+  "One ad works, then dies in a week. Nobody knows why.",
+  "Every new campaign feels like a guess.",
+  "Your agency sends reports. Nothing changes.",
+];
+
+const REASONS = [
+  {
+    title: "Your ads are tired.",
+    body: "People have seen them too many times. They scroll past.",
+  },
+  {
+    title: "Nobody is testing.",
+    body: "New ads go live on hope, not on data.",
+  },
+  {
+    title: "Your tracking is off.",
+    body: "Meta learns from wrong numbers, so it shows your ads to the wrong people.",
+  },
+  {
+    title: "Ad and page don’t match.",
+    body: "People click, land somewhere confusing, and leave.",
+  },
+  {
+    title: "Budget goes up too fast.",
+    body: "Winning ads break when you push them too hard, too soon.",
+  },
+];
+
+const STEPS = [
+  {
+    step: 1,
+    title: "Find the leak",
+    meta: "First 7 days",
+    body: "We go through your ads, tracking and landing page, and show you exactly where money is being wasted.",
+  },
+  {
+    step: 2,
+    title: "Test new ads every week",
+    meta: "Every week",
+    body: "Fresh hooks and angles every week. Ads that don’t sell are switched off within 72 hours.",
+  },
+  {
+    step: 3,
+    title: "Scale only the winners",
+    meta: "Ongoing",
+    body: "Budget goes up only on ads that are actually selling. Slowly, so they don’t break.",
+  },
+];
+
+const FIT = {
+  yes: [
+    "You run a D2C brand that sells online",
+    "You spend ₹1–3L a month on Meta ads",
+    "You want to grow sales without wasting more money",
+  ],
+  no: [
+    "You’re just starting and have no sales yet",
+    "You’re looking for the cheapest agency",
+  ],
+};
+
+const CALL_AGENDA = [
+  "Look at your ad account with you, live",
+  "Show you the 2–3 biggest places you’re losing money",
+  "Tell you what to fix first, even if you don’t work with us",
+];
 
 /* ─────────────────────────────────────────
    MAIN PAGE
 ───────────────────────────────────────── */
 export default function Home() {
   return (
-    <main className="min-h-screen bg-neutral-950 text-white selection:bg-blue-600/40">
-      {/* ── HERO ───────────────────────────── */}
-      <section className="relative min-h-screen flex items-center overflow-hidden bg-[#0a0a0f]">
-        {/* GhostFibers WebGL background */}
+    <main className="min-h-screen bg-[#07070b] text-white selection:bg-blue-600/40">
+      {/* ── 1. HERO ────────────────────────── */}
+      <section className="relative flex min-h-screen items-center overflow-hidden bg-[#07070b]">
         <div className="absolute inset-0 z-0">
           <GhostFibers
             lineColor="#1a1040"
@@ -206,37 +221,31 @@ export default function Home() {
           />
         </div>
 
-        {/* Left-side vignette so text stays readable */}
-        <div className="absolute inset-0 z-[1] bg-gradient-to-r from-[#0a0a0f] via-[#0a0a0f]/80 via-[40%] to-transparent pointer-events-none" />
-        {/* Top/bottom anchors */}
-        <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[#0a0a0f]/70 via-transparent to-[#0a0a0f]/80 pointer-events-none" />
+        {/* Readability veils */}
+        <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-[#07070b] via-[#07070b]/80 via-[40%] to-transparent" />
+        <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-[#07070b]/70 via-transparent to-[#07070b]/90" />
 
-        {/* Text content fixed left */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-20">
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-24 sm:px-10 lg:px-16">
           <div className="max-w-2xl">
             <motion.div
               initial={{ opacity: 0, y: -16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold text-blue-400 uppercase tracking-widest mb-6"
+              className="mb-7 inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold text-blue-300"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
-              Meta Ads Intelligence
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-blue-400" />
+              For D2C brands spending ₹1–3L a month on Meta ads
             </motion.div>
 
             <motion.h1
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.75, delay: 0.1 }}
-              className="text-4xl sm:text-5xl xl:text-6xl font-extrabold leading-[1.1] tracking-tight text-white mb-6"
+              className="mb-6 text-4xl font-extrabold leading-[1.08] tracking-tight text-white text-balance sm:text-5xl xl:text-6xl"
             >
-              If you&apos;re{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-                guessing
-              </span>{" "}
-              which ads will work, you&apos;re already{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">
-                losing money.
+              Spending lakhs on Meta ads.{" "}
+              <span className="bg-gradient-to-r from-rose-400 to-orange-400 bg-clip-text text-transparent">
+                Still stuck at 1.5x ROAS?
               </span>
             </motion.h1>
 
@@ -244,11 +253,12 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.25 }}
-              className="text-neutral-400 text-lg sm:text-xl leading-relaxed mb-8"
+              className="mb-9 text-lg leading-relaxed text-neutral-400 sm:text-xl"
             >
-              Right audience. Right budget. Still bad ROAS?{" "}
-              <span className="text-white font-medium">
-                Here&apos;s what Meta won&apos;t tell you.
+              Your product isn&apos;t the problem. Your budget isn&apos;t the
+              problem.{" "}
+              <span className="font-medium text-white">
+                The way your ads are being run is.
               </span>
             </motion.p>
 
@@ -256,219 +266,276 @@ export default function Home() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, delay: 0.4 }}
-              className="flex flex-col sm:flex-row gap-4"
             >
-              <a
-                href="#cta"
-                className="glow-btn inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 transition-colors px-8 py-4 text-white font-bold text-base"
-              >
-                Book a Free Strategy Call
-                <span className="text-lg">→</span>
-              </a>
-              <a
-                href="#problem"
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-neutral-700 hover:border-neutral-500 transition-colors px-8 py-4 text-neutral-300 font-semibold text-base backdrop-blur-sm"
-              >
-                See the problem
-              </a>
+              <Cta className="w-full sm:w-auto">Book my free strategy call</Cta>
+              <p className="mt-4 text-sm text-neutral-500">
+                Free 30-min call · No pitch
+              </p>
             </motion.div>
           </div>
         </div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-neutral-600 z-10"
-        >
-          <span className="text-xs tracking-widest uppercase">Scroll</span>
-          <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-            className="w-px h-8 bg-gradient-to-b from-neutral-600 to-transparent"
-          />
-        </motion.div>
       </section>
 
-      {/* ── MARQUEE ─────────────────────────── */}
-      <Marquee />
-
-   {/* ── THE PROBLEM ─────────────────────── */}
-      <section id="problem" className="px-6 py-24 max-w-5xl mx-auto">
-        <FadeIn>
-          <div className="text-center mb-16">
-            <span className="inline-block text-xs font-bold tracking-widest uppercase text-blue-500 mb-4">
-              Why Ads Fail
-            </span>
-            <h2 className="text-3xl sm:text-4xl xl:text-5xl font-extrabold text-white leading-tight">
-              Two problems D2C brands{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">
-                keep ignoring
-              </span>
-            </h2>
-          </div>
-        </FadeIn>
-
-        <div className="grid sm:grid-cols-2 gap-6">
-          <ProblemCard
-            tag="Stop Guessing"
-            title="The Guesswork Trap"
-            body="Imagine launching an ad, holding your breath for the numbers, tweaking one random thing, and trying again. Without a real testing framework, you never actually know why one creative prints money while another bleeds it dry. Every new campaign becomes just another expensive roll of the dice."
-            caption="guessing = wasting money"
-            accent="bg-[radial-gradient(ellipse_at_top-left,rgba(239,68,68,0.08),transparent_70%)]"
-            delay={0}
-          />
-          <ProblemCard
-            tag="Beyond The Metrics"
-            title="The ROAS Illusion"
-            body="You’ve nailed the audience targeting and set a healthy budget, yet your returns are still tanking. Here is the harsh truth Meta won’t tell you: if your creative isn't capturing attention or your funnel is leaking clicks, the algorithm can't save you. Blindly throwing more ad spend at a broken system just makes your failures more expensive."
-            caption="More money ≠ better performance"
-            accent="bg-[radial-gradient(ellipse_at_top-right,rgba(168,85,247,0.08),transparent_70%)]"
-            delay={0.1}
-          />
-        </div>
-      </section>
-
-      {/* ── MARQUEE (second) ────────────────── */}
-      <Marquee />
-
-      {/* ── THE SOLUTION ────────────────────── */}
-      <section className="px-6 py-24 max-w-3xl mx-auto">
-        <FadeIn>
-          <div className="text-center mb-16">
-            <span className="inline-block text-xs font-bold tracking-widest uppercase text-blue-500 mb-4">
-              How We Fix It
-            </span>
-            <h2 className="text-3xl sm:text-4xl xl:text-5xl font-extrabold text-white leading-tight">
-              We take the{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-                guesswork out
-              </span>
-            </h2>
-          </div>
-        </FadeIn>
-
-        <div className="mt-4">
-          <TimelineStep
-            step={1}
-            title="Structure Creative Testing Around Data"
-            body="We structure creative testing around hooks, angles, formats and actual performance data. Then we know what deserves more budget and what needs to be stopped."
-            delay={0}
-            isLast={false}
-          />
-          <TimelineStep
-            step={2}
-            title="Find & Fix the Real Problem First"
-            body="We look at the entire system account structure, creatives, funnel and data. Then we identify exactly where the performance issue is, and we fix that first. Once the system is working, that's when scaling actually makes sense."
-            delay={0.15}
-            isLast={false}
-          />
-          <TimelineStep
-            step={3}
-            title="Scale with Confidence, Not Guesses"
-            body="Once the system is proven to work, scaling makes sense. Budget decisions are data-driven not gut-driven. We know what deserves more spend and what needs to be cut. No more expensive guesses."
-            delay={0.3}
-            isLast={true}
-          />
-        </div>
-      </section>
-
-      {/* ── STATS STRIP ─────────────────────── */}
-      <FadeIn>
-        <div className="border-y border-neutral-800 bg-neutral-900/40">
-          <div className="max-w-5xl mx-auto px-6 py-12 grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
-            {[
-              { value: "3×", label: "Average ROAS improvement" },
-              { value: "₹2–4L", label: "Monthly ad spend managed" },
-              { value: "100%", label: "Data-backed decisions" },
-              { value: "0", label: "Random guesses" },
-            ].map((s) => (
-              <div key={s.label}>
-                <p className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-1">
-                  {s.value}
+      {/* ── 2. THE PROBLEM ─────────────────── */}
+      <Section
+        id="problem"
+        eyebrow="Sound familiar?"
+        heading="If this is your ad account, keep reading."
+      >
+        <div className="grid gap-3 sm:grid-cols-2">
+          {SYMPTOMS.map((symptom, index) => (
+            <FadeIn key={symptom} delay={index * 0.05}>
+              <div className="flex h-full items-start gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                <span
+                  aria-hidden
+                  className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-500/15 text-sm font-bold text-rose-400"
+                >
+                  ✕
+                </span>
+                <p className="text-[0.975rem] leading-snug text-neutral-300">
+                  {symptom}
                 </p>
-                <p className="text-sm text-neutral-500">{s.label}</p>
               </div>
-            ))}
+            </FadeIn>
+          ))}
+        </div>
+
+        <FadeIn delay={0.1} className="mt-10">
+          <p className="border-l-2 border-rose-500 pl-5 text-xl font-bold leading-snug text-white text-balance sm:text-2xl">
+            Putting more money into this only makes the loss bigger.
+          </p>
+          <Cta variant="outline" className="mt-8 w-full sm:w-auto">
+            Find where my money is going
+          </Cta>
+        </FadeIn>
+      </Section>
+
+      {/* ── 3. WHY IT HAPPENS ──────────────── */}
+      <Section
+        eyebrow="The root cause"
+        heading="Why this keeps happening"
+        className="border-y border-white/[0.07] bg-white/[0.015]"
+      >
+        <div className="space-y-px overflow-hidden rounded-2xl border border-white/10">
+          {REASONS.map((reason, index) => (
+            <FadeIn key={reason.title} delay={index * 0.06}>
+              <div className="flex gap-5 bg-white/[0.03] p-5 sm:gap-7 sm:p-7">
+                <span
+                  aria-hidden
+                  className="text-2xl font-extrabold tabular-nums text-white/15 sm:text-3xl"
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <div>
+                  <h3 className="text-lg font-bold text-white sm:text-xl">
+                    {reason.title}
+                  </h3>
+                  <p className="mt-1.5 leading-relaxed text-neutral-400">
+                    {reason.body}
+                  </p>
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+
+        <FadeIn delay={0.1}>
+          <Cta variant="outline" className="mt-10 w-full sm:w-auto">
+            Check which one is hurting me
+          </Cta>
+        </FadeIn>
+      </Section>
+
+      {/* ── 4. CALCULATOR ──────────────────── */}
+      <Section
+        id="calculator"
+        eyebrow="The leak"
+        heading="How much are your ads leaking?"
+        width="max-w-2xl"
+      >
+        <FadeIn>
+          <LeakCalculator />
+        </FadeIn>
+      </Section>
+
+      {/* ── 5. THE FIX ─────────────────────── */}
+      <Section
+        eyebrow="The system"
+        heading="Here’s how we fix it"
+        className="border-y border-white/[0.07] bg-white/[0.015]"
+      >
+        <div className="grid gap-4 md:grid-cols-3">
+          {STEPS.map((step, index) => (
+            <FadeIn key={step.step} delay={index * 0.1} className="h-full">
+              <div className="flex h-full flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+                <div className="flex items-center justify-between">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
+                    {step.step}
+                  </span>
+                  <span className="text-[0.7rem] font-bold tracking-[0.15em] uppercase text-neutral-500">
+                    {step.meta}
+                  </span>
+                </div>
+                <h3 className="mt-5 text-xl font-bold text-white">{step.title}</h3>
+                <p className="mt-2 leading-relaxed text-neutral-400">
+                  {step.body}
+                </p>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+
+        <FadeIn delay={0.1} className="mt-4">
+          <div className="rounded-2xl border border-blue-500/25 bg-blue-500/[0.07] p-6">
+            <p className="text-xs font-bold tracking-[0.18em] uppercase text-blue-400">
+              Every week you get
+            </p>
+            <p className="mt-3 text-lg font-bold text-white">
+              A short WhatsApp update.
+            </p>
+            <p className="mt-1 text-neutral-400">
+              What we tested, what worked, what&apos;s next. No 20-page reports.
+            </p>
           </div>
+          <Cta className="mt-10 w-full sm:w-auto">Fix my ads</Cta>
+        </FadeIn>
+      </Section>
+
+      {/* ── 6. GUARANTEE ───────────────────── */}
+      <FadeIn>
+        <div className="border-b border-white/[0.07] bg-gradient-to-r from-emerald-500/[0.06] via-emerald-500/[0.12] to-emerald-500/[0.06]">
+          <p className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-3 px-6 py-7 text-center text-lg font-extrabold tracking-tight text-white sm:text-2xl">
+            <span
+              aria-hidden
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/20 text-base text-emerald-400"
+            >
+              ✓
+            </span>
+            No results in 90 days? You don&apos;t pay us.
+          </p>
         </div>
       </FadeIn>
 
-      {/* ── CTA ─────────────────────────────── */}
-      <section
-        id="cta"
-        className="relative px-6 py-32 overflow-hidden text-center"
-      >
-        {/* Background glows */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,rgba(59,130,246,0.1),transparent)] pointer-events-none" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_50%_50%,rgba(168,85,247,0.07),transparent)] pointer-events-none" />
-
-        <FadeIn className="relative z-10 max-w-3xl mx-auto">
-          <span className="inline-block text-xs font-bold tracking-widest uppercase text-blue-500 mb-6">
-            👇 Free Strategy Call
-          </span>
-
-          <h2 className="text-3xl sm:text-4xl xl:text-5xl font-extrabold text-white leading-tight mb-6">
-            Spending{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-              ₹2 to ₹4 lakhs
-            </span>{" "}
-            a month on ads?
-          </h2>
-
-          <p className="text-neutral-400 text-lg sm:text-xl mb-4 max-w-2xl mx-auto">
-            If you&apos;re spending 2 to 4 lakhs a month on ads or if your ROAS isn&apos;t where it should be book a free strategy call with us.
-          </p>
-          <p className="text-white font-medium text-base sm:text-lg mb-10 max-w-xl mx-auto">
-            Let&apos;s replace guessing with a system. Let&apos;s find the actual problem before you spend another rupee.
-          </p>
-
-          {/* Caption flash pills all 6 from both scripts */}
-          <div className="flex flex-wrap justify-center gap-3 mb-10">
-            {[
-              "guessing = wasting money",
-              "no more random testing",
-              "data > gut feeling",
-              "ROAS isn't always the problem",
-              "More money ≠ better performance",
-              "Find the real problem",
-            ].map((cap, i) => (
-              <motion.span
-                key={cap}
-                initial={{ opacity: 0, scale: 0.85 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 + i * 0.1 }}
-                className="rounded-full border border-neutral-700 bg-neutral-900 px-4 py-1.5 text-xs font-semibold text-neutral-300 tracking-wide"
-              >
-                {cap}
-              </motion.span>
-            ))}
-          </div>
-
-          <motion.a
-            href="#"
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-            className="glow-btn inline-flex items-center gap-3 rounded-2xl bg-blue-600 hover:bg-blue-500 transition-colors px-10 py-5 text-white font-extrabold text-lg tracking-wide"
-          >
-            👇 Book a Free Strategy Call
-            <span className="text-2xl">→</span>
-          </motion.a>
-
-          <p className="mt-4 text-neutral-500 text-sm">
-            Link below. No pitch. No pressure. Just clarity on what&apos;s actually broken.
-          </p>
+      {/* ── 7. TESTIMONIALS ────────────────── */}
+      <Section eyebrow="Proof" heading="Founders who stopped guessing" width="max-w-5xl">
+        <FadeIn>
+          <Testimonials />
         </FadeIn>
+      </Section>
+
+      {/* ── 8. IS THIS FOR YOU? ────────────── */}
+      <Section
+        eyebrow="Fit check"
+        heading="Is this for you?"
+        className="border-y border-white/[0.07] bg-white/[0.015]"
+      >
+        <div className="grid gap-4 md:grid-cols-2">
+          <FadeIn className="h-full">
+            <div className="h-full rounded-2xl border border-emerald-500/25 bg-emerald-500/[0.05] p-6 sm:p-7">
+              <p className="text-sm font-bold tracking-[0.15em] uppercase text-emerald-400">
+                This is for you if
+              </p>
+              <ul className="mt-5 space-y-4">
+                {FIT.yes.map((item) => (
+                  <li key={item} className="flex items-start gap-3">
+                    <span
+                      aria-hidden
+                      className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-xs font-bold text-emerald-400"
+                    >
+                      ✓
+                    </span>
+                    <span className="text-neutral-200">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.1} className="h-full">
+            <div className="h-full rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-7">
+              <p className="text-sm font-bold tracking-[0.15em] uppercase text-neutral-500">
+                Not for you if
+              </p>
+              <ul className="mt-5 space-y-4">
+                {FIT.no.map((item) => (
+                  <li key={item} className="flex items-start gap-3">
+                    <span
+                      aria-hidden
+                      className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-rose-500/15 text-xs font-bold text-rose-400"
+                    >
+                      ✕
+                    </span>
+                    <span className="text-neutral-400">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </FadeIn>
+        </div>
+      </Section>
+
+      {/* ── 9. FORM ────────────────────────── */}
+      <section id="book" className="relative overflow-hidden px-6 py-20 sm:py-28">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_0%,rgba(59,130,246,0.12),transparent)]" />
+
+        <div className="relative mx-auto grid max-w-5xl gap-12 lg:grid-cols-2 lg:gap-16">
+          <FadeIn>
+            <span className="mb-4 block text-xs font-bold tracking-[0.2em] uppercase text-blue-500">
+              Free strategy call
+            </span>
+            <h2 className="text-3xl font-extrabold leading-[1.15] tracking-tight text-white text-balance sm:text-4xl">
+              Spending ₹1 to ₹3 lakhs a month on ads?
+            </h2>
+            <p className="mt-5 text-lg text-neutral-400">
+              Let&apos;s find what&apos;s broken before you spend another rupee.
+            </p>
+
+            <p className="mt-10 text-sm font-bold tracking-[0.15em] uppercase text-neutral-500">
+              On this call we
+            </p>
+            <ul className="mt-5 space-y-4">
+              {CALL_AGENDA.map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <span
+                    aria-hidden
+                    className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-500/20 text-xs font-bold text-blue-400"
+                  >
+                    ✓
+                  </span>
+                  <span className="text-neutral-300">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </FadeIn>
+
+          <FadeIn delay={0.15}>
+            <StrategyCallForm />
+          </FadeIn>
+        </div>
       </section>
 
-      {/* ── FOOTER ──────────────────────────── */}
-      <footer className="border-t border-neutral-800 py-8 text-center text-neutral-600 text-sm">
+      {/* ── 10. FAQ ────────────────────────── */}
+      <Section
+        eyebrow="Questions"
+        heading="Before you book"
+        className="border-t border-white/[0.07] bg-white/[0.015]"
+        width="max-w-3xl"
+      >
+        <FadeIn>
+          <Faq />
+        </FadeIn>
+      </Section>
+
+      {/* ── FOOTER ─────────────────────────── */}
+      <footer className="border-t border-white/[0.07] px-6 py-10 pb-24 text-center text-sm text-neutral-600 md:pb-10">
         <p>
-          Built for D2C brands serious about performance.{" "}
-          <span className="text-blue-500">Replace guessing with a system.</span>
+          Whizoid Studio · Meta ads for D2C brands.{" "}
+          <span className="text-blue-500">Stop guessing. Start scaling.</span>
         </p>
       </footer>
+
+      {/* ── 11. STICKY MOBILE BUTTON ───────── */}
+      <StickyCta />
     </main>
   );
 }

@@ -9,9 +9,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Stop Guessing Replace Bad ROAS with a System | Meta Ads Intelligence",
+  title: "Spending lakhs on Meta ads. Still stuck at 1.5x ROAS? | Whizoid Studio",
   description:
-    "If you're spending ₹2–4 lakhs a month on Meta ads and guessing which creatives will work, you're already losing money. Book a free strategy call.",
+    "For D2C brands spending ₹1–3L a month on Meta ads. Your product isn't the problem. Your budget isn't the problem. The way your ads are being run is. Book a free 30-min strategy call.",
 };
 
 export default function RootLayout({
