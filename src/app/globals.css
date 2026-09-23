@@ -7,45 +7,45 @@
    font-size overrides in the markup.
 ───────────────────────────────────────────────────────────── */
 @theme {
-  /* Uppercase kicker above headings — 11px → 12px */
-  --text-eyebrow: clamp(0.6875rem, 0.66rem + 0.12vw, 0.75rem);
+  /* Uppercase kicker above headings — 11.5px → 12.5px */
+  --text-eyebrow: clamp(0.71875rem, 0.695rem + 0.11vw, 0.78125rem);
   --text-eyebrow--line-height: 1.3;
   --text-eyebrow--letter-spacing: 0.18em;
 
-  /* Fine print: notes, captions, footer — 12.5px → 14px */
-  --text-micro: clamp(0.78125rem, 0.74rem + 0.18vw, 0.875rem);
+  /* Fine print: notes, captions, footer — 13px → 14.5px */
+  --text-micro: clamp(0.8125rem, 0.776rem + 0.16vw, 0.90625rem);
   --text-micro--line-height: 1.5;
 
-  /* Body copy — 15px → 16.5px */
-  --text-body: clamp(0.9375rem, 0.9rem + 0.2vw, 1.03125rem);
+  /* Body copy — 16px → 17.5px */
+  --text-body: clamp(1rem, 0.963rem + 0.16vw, 1.09375rem);
   --text-body--line-height: 1.6;
 
-  /* Intro / sub-headline — 17px → 20px */
-  --text-lead: clamp(1.0625rem, 1rem + 0.42vw, 1.25rem);
+  /* Intro / sub-headline — 18.5px → 21.5px */
+  --text-lead: clamp(1.15625rem, 1.083rem + 0.33vw, 1.34375rem);
   --text-lead--line-height: 1.55;
 
-  /* Card titles — 18px → 21px */
-  --text-h3: clamp(1.125rem, 1.06rem + 0.36vw, 1.3125rem);
+  /* Card titles — 19.5px → 22.5px */
+  --text-h3: clamp(1.21875rem, 1.145rem + 0.33vw, 1.40625rem);
   --text-h3--line-height: 1.3;
   --text-h3--letter-spacing: -0.01em;
 
-  /* Section headings — 27px → 45px */
-  --text-h2: clamp(1.6875rem, 1.33rem + 2vw, 2.8125rem);
+  /* Section headings — 30px → 48px */
+  --text-h2: clamp(1.875rem, 1.434rem + 1.96vw, 3rem);
   --text-h2--line-height: 1.12;
   --text-h2--letter-spacing: -0.025em;
 
-  /* Hero headline — 32px → 48px */
-  --text-display: clamp(2rem, 1.46rem + 2.4vw, 3rem);
+  /* Hero headline — 34px → 52px */
+  --text-display: clamp(2.125rem, 1.684rem + 1.96vw, 3.25rem);
   --text-display--line-height: 1.08;
   --text-display--letter-spacing: -0.03em;
 
-  /* Emphasis lines: punch line, guarantee strip — 20px → 27px */
-  --text-punch: clamp(1.25rem, 1.09rem + 0.9vw, 1.6875rem);
+  /* Emphasis lines: punch line, guarantee strip — 21.5px → 29px */
+  --text-punch: clamp(1.34375rem, 1.16rem + 0.81vw, 1.8125rem);
   --text-punch--line-height: 1.3;
   --text-punch--letter-spacing: -0.015em;
 
-  /* Calculator readouts — 23px → 34px */
-  --text-stat: clamp(1.4375rem, 1.2rem + 1.2vw, 2.125rem);
+  /* Calculator readouts — 25px → 37px */
+  --text-stat: clamp(1.5625rem, 1.269rem + 1.3vw, 2.3125rem);
   --text-stat--line-height: 1.1;
   --text-stat--letter-spacing: -0.02em;
 }

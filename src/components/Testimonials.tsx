@@ -2,14 +2,7 @@
 
 import { useRef } from "react";
 
-/* Placeholders are intentional: the content doc says to fill these only with
-   each client's real words and numbers, approved by them.                    */
-const TESTIMONIALS = [
-  { brand: "11:11", quote: "[one-line quote]", result: "ROAS [X]x → [Y]x" },
-  { brand: "Wankies", quote: "[one-line quote]", result: "Cost per order ₹[X] → ₹[Y]" },
-  { brand: "Rhino Cult", quote: "[one-line quote]", result: "[real Meta ads result]" },
-  { brand: "[Client]", quote: "[one-line quote]", result: "[real result]" },
-];
+import { TESTIMONIALS } from "@/content/testimonials";
 
 export default function Testimonials() {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -30,26 +23,26 @@ export default function Testimonials() {
       >
         {TESTIMONIALS.map((item) => (
           <figure
-            key={item.brand}
-            className="flex min-w-[80%] shrink-0 snap-center flex-col rounded-2xl border border-white/10 bg-white/4 p-5 sm:min-w-[16rem] sm:p-6 lg:min-w-0 lg:shrink lg:flex-1"
+            key={item.id}
+            className="flex min-w-[85%] shrink-0 snap-center flex-col rounded-2xl border border-white/10 bg-white/4 p-5 sm:min-w-[20rem] sm:p-6 lg:min-w-[22rem]"
           >
             <span aria-hidden className="text-h2 leading-none text-blue-500/50">
               &ldquo;
             </span>
-            <blockquote className="mt-1 flex-1 text-lead font-medium text-white text-pretty">
+            <blockquote className="mt-1 flex-1 text-body font-medium text-white text-pretty">
               {item.quote}
             </blockquote>
             <figcaption className="mt-5 border-t border-white/10 pt-4">
-              <p className="text-body font-bold text-white">{item.brand}</p>
-              <p className="mt-1 text-body font-semibold text-emerald-400">
-                {item.result}
+              <p className="text-body font-bold text-white">{item.name}</p>
+              <p className="mt-1 text-micro text-neutral-400 text-pretty">
+                {item.role} · {item.company}
               </p>
             </figcaption>
           </figure>
         ))}
       </div>
 
-      <div className="mt-6 flex justify-center gap-3 lg:hidden">
+      <div className="mt-6 flex justify-center gap-3">
         <button
           type="button"
           onClick={() => scrollByCard(-1)}
