@@ -205,18 +205,21 @@ export default function Home() {
   return (
     <main className="min-h-svh bg-[#07070b] text-white selection:bg-blue-600/40">
       {/* ── 1. HERO ────────────────────────── */}
-      <section className="relative flex min-h-svh items-center overflow-hidden bg-[#07070b] py-20 sm:py-24">
+      <section className="relative flex min-h-[85svh] items-center overflow-hidden bg-[#07070b] py-14 sm:min-h-svh sm:py-24">
         <HeroBackground />
 
-        {/* Readability veils. Mobile reads bottom-to-top because the copy sits
-            over the whole width; desktop veils left-to-right. */}
+        {/* Readability veils. Mobile reads bottom-to-top and stays light so the
+            gradient behind it is still visible; desktop veils left-to-right to
+            clear the shader off the copy. */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 z-1 bg-linear-to-t from-[#07070b] via-[#07070b]/85 via-55% to-[#07070b]/40 md:bg-linear-to-r md:from-[#07070b] md:via-[#07070b]/85 md:via-55% md:to-transparent"
+          className="pointer-events-none absolute inset-0 z-1 bg-linear-to-t from-[#07070b] via-[#07070b]/70 via-45% to-transparent md:bg-linear-to-r md:from-[#07070b] md:via-[#07070b]/85 md:via-55% md:to-transparent"
         />
+        {/* Desktop-only: anchors the shader top and bottom. On mobile it
+            stacked with the veil above and flattened the hero to plain black. */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 z-1 bg-linear-to-b from-[#07070b]/70 via-transparent to-[#07070b]/90"
+          className="pointer-events-none absolute inset-0 z-1 hidden bg-linear-to-b from-[#07070b]/70 via-transparent to-[#07070b]/90 md:block"
         />
 
         <div className={`relative z-10 ${HERO_CONTAINER}`}>
@@ -241,9 +244,10 @@ export default function Home() {
               className="mb-5 text-display font-extrabold text-white text-balance"
             >
               Spending lakhs on Meta ads.{" "}
-              {/* Own line from md up so the second sentence never splits
-                  across a line break mid-phrase. */}
-              <span className="bg-linear-to-r from-rose-400 to-orange-400 bg-clip-text text-transparent md:block">
+              {/* Always its own line. On mobile the sentence is too long to fit
+                  either way, and without this the break orphans "Still" at the
+                  end of line 2, splitting the coloured phrase. */}
+              <span className="block bg-linear-to-r from-rose-400 to-orange-400 bg-clip-text text-transparent">
                 Still stuck at 1.5x ROAS?
               </span>
             </motion.h1>

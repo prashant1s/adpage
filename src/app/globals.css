@@ -174,8 +174,8 @@ body {
    whenever motion is reduced. */
 .hero-fallback {
   background:
-    radial-gradient(ellipse 80% 60% at 75% 15%, rgba(59, 130, 246, 0.22), transparent 70%),
-    radial-gradient(ellipse 60% 50% at 20% 85%, rgba(99, 47, 190, 0.18), transparent 70%),
+    radial-gradient(ellipse 85% 55% at 72% 12%, rgba(59, 130, 246, 0.38), transparent 70%),
+    radial-gradient(ellipse 70% 45% at 15% 72%, rgba(109, 52, 200, 0.3), transparent 70%),
     var(--background);
 }
 

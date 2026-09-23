@@ -33,12 +33,14 @@ export default function Testimonials() {
         {TESTIMONIALS.map((item) => (
           <figure
             key={item.id}
-            className="flex w-[85%] max-w-full shrink-0 grow-0 basis-auto snap-center flex-col rounded-2xl border border-white/10 bg-white/4 p-5 sm:w-[calc((100%-1rem)/2)] sm:snap-start sm:p-6 lg:w-[calc((100%-2rem)/3)]"
+            /* Two per view from md up rather than three, so each card is wide
+               enough to read as a landscape rectangle instead of a column. */
+            className="flex w-[85%] max-w-full shrink-0 grow-0 basis-auto snap-center flex-col rounded-2xl border border-white/10 bg-white/4 p-5 sm:p-6 md:w-[calc((100%-1rem)/2)] md:snap-start"
           >
             <span aria-hidden className="text-h2 leading-none text-blue-500/50">
               &ldquo;
             </span>
-            <blockquote className="mt-1 line-clamp-6 flex-1 min-h-[9rem] text-body font-medium text-white text-pretty">
+            <blockquote className="mt-1 line-clamp-6 flex-1 min-h-24 text-body font-medium text-white text-pretty">
               {item.quote}
             </blockquote>
             <figcaption className="mt-5 flex items-center gap-3 border-t border-white/10 pt-4">
