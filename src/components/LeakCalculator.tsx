@@ -145,7 +145,7 @@ export default function LeakCalculator() {
           aria-live="polite"
           className="mt-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/7 px-4 py-5 text-center sm:px-5 sm:py-6"
         >
-          <p className="text-punch font-extrabold text-emerald-400 text-balance">
+          <p className="text-punch font-bold text-emerald-400 text-balance">
             You&apos;re losing{" "}
             <span className="tabular-nums">{inr(leak)}</span> every month.
           </p>
