@@ -40,9 +40,7 @@ export default function LeakCalculator() {
     };
   }, [spend, mode]);
 
-  const isNow = mode === "now";
   const fill = ((spend - MIN_SPEND) / (MAX_SPEND - MIN_SPEND)) * 100;
-  const valueColor = isNow ? "text-rose-400" : "text-emerald-400";
 
   return (
     <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-linear-to-b from-white/6 to-white/2 p-5 sm:p-8 lg:p-10">
@@ -107,20 +105,12 @@ export default function LeakCalculator() {
                   <motion.span
                     layoutId="calc-mode"
                     transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                    className={`absolute inset-0 rounded-xl border ${
-                      option.id === "now"
-                        ? "border-rose-500/40 bg-rose-500/15"
-                        : "border-emerald-500/40 bg-emerald-500/15"
-                    }`}
+                    className="absolute inset-0 rounded-xl border border-emerald-500/40 bg-emerald-500/15"
                   />
                 )}
                 <span
                   className={`relative ${
-                    selected
-                      ? option.id === "now"
-                        ? "text-rose-300"
-                        : "text-emerald-300"
-                      : "text-neutral-500"
+                    selected ? "text-emerald-300" : "text-neutral-500"
                   }`}
                 >
                   {option.label}
@@ -143,9 +133,7 @@ export default function LeakCalculator() {
               <p className="text-eyebrow font-bold uppercase text-neutral-500">
                 {stat.label}
               </p>
-              <p
-                className={`mt-2 text-stat font-extrabold tabular-nums transition-colors duration-300 ${valueColor}`}
-              >
+              <p className="mt-2 text-stat font-extrabold tabular-nums text-emerald-400">
                 {stat.value}
               </p>
             </div>
@@ -155,9 +143,9 @@ export default function LeakCalculator() {
         {/* ── The leak ───────────────────────────────────── */}
         <div
           aria-live="polite"
-          className="mt-4 rounded-2xl border border-rose-500/30 bg-rose-500/7 px-4 py-5 text-center sm:px-5 sm:py-6"
+          className="mt-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/7 px-4 py-5 text-center sm:px-5 sm:py-6"
         >
-          <p className="text-punch font-extrabold text-rose-400 text-balance">
+          <p className="text-punch font-extrabold text-emerald-400 text-balance">
             You&apos;re losing{" "}
             <span className="tabular-nums">{inr(leak)}</span> every month.
           </p>
