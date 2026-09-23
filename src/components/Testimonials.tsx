@@ -4,6 +4,15 @@ import { useRef } from "react";
 
 import { TESTIMONIALS } from "@/content/testimonials";
 
+/* Initials for the caption avatar — first letter of the first two words. */
+const initials = (name: string) =>
+  name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
+
 export default function Testimonials() {
   const trackRef = useRef<HTMLDivElement>(null);
 
@@ -19,24 +28,32 @@ export default function Testimonials() {
     <div className="relative">
       <div
         ref={trackRef}
-        className="no-scrollbar -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 sm:mx-0 sm:px-0"
+        className="no-scrollbar -mx-5 flex snap-x snap-mandatory items-stretch gap-4 overflow-x-auto px-5 pb-2 sm:mx-0 sm:px-0"
       >
         {TESTIMONIALS.map((item) => (
           <figure
             key={item.id}
-            className="flex min-w-[85%] shrink-0 snap-center flex-col rounded-2xl border border-white/10 bg-white/4 p-5 sm:min-w-[20rem] sm:p-6 lg:min-w-[22rem]"
+            className="flex w-[85%] max-w-full shrink-0 grow-0 basis-auto snap-center flex-col rounded-2xl border border-white/10 bg-white/4 p-5 sm:w-80 sm:p-6 lg:w-[22rem]"
           >
             <span aria-hidden className="text-h2 leading-none text-blue-500/50">
               &ldquo;
             </span>
-            <blockquote className="mt-1 flex-1 text-body font-medium text-white text-pretty">
+            <blockquote className="mt-1 line-clamp-6 flex-1 min-h-[9rem] text-body font-medium text-white text-pretty">
               {item.quote}
             </blockquote>
-            <figcaption className="mt-5 border-t border-white/10 pt-4">
-              <p className="text-body font-bold text-white">{item.name}</p>
-              <p className="mt-1 text-micro text-neutral-400 text-pretty">
-                {item.role} · {item.company}
-              </p>
+            <figcaption className="mt-5 flex items-center gap-3 border-t border-white/10 pt-4">
+              <span
+                aria-hidden
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/10 text-micro font-bold text-white"
+              >
+                {initials(item.name)}
+              </span>
+              <div className="min-w-0">
+                <p className="text-body font-bold text-white">{item.name}</p>
+                <p className="mt-0.5 text-micro text-neutral-400 text-pretty">
+                  {item.role} · {item.company}
+                </p>
+              </div>
             </figcaption>
           </figure>
         ))}
