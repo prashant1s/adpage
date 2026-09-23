@@ -26,22 +26,22 @@ export default function Testimonials() {
     <div className="relative">
       <div
         ref={trackRef}
-        className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2"
+        className="no-scrollbar -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 sm:mx-0 sm:px-0"
       >
         {TESTIMONIALS.map((item) => (
           <figure
             key={item.brand}
-            className="flex min-w-[85%] shrink-0 snap-center flex-col rounded-2xl border border-white/10 bg-white/[0.04] p-6 sm:min-w-[17rem] lg:min-w-0 lg:shrink lg:flex-1"
+            className="flex min-w-[80%] shrink-0 snap-center flex-col rounded-2xl border border-white/10 bg-white/4 p-5 sm:min-w-[16rem] sm:p-6 lg:min-w-0 lg:shrink lg:flex-1"
           >
-            <span aria-hidden className="text-3xl leading-none text-blue-500/60">
+            <span aria-hidden className="text-h2 leading-none text-blue-500/50">
               &ldquo;
             </span>
-            <blockquote className="mt-2 flex-1 text-lg font-medium leading-snug text-white">
+            <blockquote className="mt-1 flex-1 text-lead font-medium text-white text-pretty">
               {item.quote}
             </blockquote>
-            <figcaption className="mt-6 border-t border-white/10 pt-4">
-              <p className="text-sm font-bold text-white">{item.brand}</p>
-              <p className="mt-1 text-sm font-semibold text-emerald-400">
+            <figcaption className="mt-5 border-t border-white/10 pt-4">
+              <p className="text-body font-bold text-white">{item.brand}</p>
+              <p className="mt-1 text-body font-semibold text-emerald-400">
                 {item.result}
               </p>
             </figcaption>
@@ -54,7 +54,7 @@ export default function Testimonials() {
           type="button"
           onClick={() => scrollByCard(-1)}
           aria-label="Previous testimonial"
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-neutral-400 transition-colors hover:border-white/40 hover:text-white"
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-neutral-400 transition-colors hover:border-white/40 hover:text-white"
         >
           ←
         </button>
@@ -62,7 +62,7 @@ export default function Testimonials() {
           type="button"
           onClick={() => scrollByCard(1)}
           aria-label="Next testimonial"
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-neutral-400 transition-colors hover:border-white/40 hover:text-white"
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-neutral-400 transition-colors hover:border-white/40 hover:text-white"
         >
           →
         </button>

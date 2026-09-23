@@ -2,44 +2,75 @@
 
 import { useState } from "react";
 
+import { WHATSAPP_NUMBER } from "@/lib/site";
+
 const SPEND_BANDS = ["Under ₹1L", "₹1–2L", "₹2–3L", "₹3L+"];
 
 const FIELD_CLASS =
-  "w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3.5 text-white placeholder:text-neutral-600 transition-colors focus:border-blue-500 focus:outline-none";
+  "w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3.5 text-body text-white placeholder:text-neutral-600 transition-colors focus:border-blue-500 focus:outline-none";
 
-type Status = "idle" | "sending" | "sent";
+const LABEL_CLASS = "mb-2 block text-body font-semibold text-neutral-300";
+
+/** Formats the lead as the opening WhatsApp message the founder will send. */
+function buildChatUrl(form: FormData) {
+  const field = (name: string) => String(form.get(name) ?? "").trim();
+
+  const message = [
+    "Hi Whizoid, I'd like to book a free strategy call.",
+    "",
+    `Name: ${field("name")}`,
+    `Brand website: ${field("website")}`,
+    `WhatsApp: ${field("whatsapp")}`,
+    `Monthly ad spend: ${field("spend")}`,
+  ].join("\n");
+
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+}
 
 export default function StrategyCallForm() {
-  const [status, setStatus] = useState<Status>("idle");
+  const [chatUrl, setChatUrl] = useState<string | null>(null);
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setStatus("sending");
 
-    const lead = Object.fromEntries(new FormData(event.currentTarget));
+    const url = buildChatUrl(new FormData(event.currentTarget));
+    setChatUrl(url);
 
-    // TODO: send `lead` to the real destination (CRM / sheet / WhatsApp API).
-    // Nothing is transmitted yet — the browser console is the only sink.
-    console.log("Strategy call request", lead);
-
-    setStatus("sent");
+    // Opened synchronously inside the submit handler so the browser still
+    // counts it as user-initiated and doesn't block it. If a blocker catches
+    // it anyway, fall back to navigating this tab.
+    const opened = window.open(url, "_blank", "noopener,noreferrer");
+    if (!opened) window.location.href = url;
   }
 
-  if (status === "sent") {
+  if (chatUrl) {
     return (
-      <div className="rounded-3xl border border-emerald-500/30 bg-emerald-500/[0.07] p-8 text-center">
+      <div
+        role="status"
+        className="rounded-3xl border border-emerald-500/30 bg-emerald-500/7 p-6 text-center sm:p-8"
+      >
         <span
           aria-hidden
-          className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/15 text-2xl text-emerald-400"
+          className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/15 text-stat text-emerald-400"
         >
           ✓
         </span>
-        <h3 className="mt-5 text-2xl font-extrabold tracking-tight text-white">
-          Got it.
+        <h3 className="mt-5 text-h2 font-extrabold text-white">
+          WhatsApp is opening.
         </h3>
-        <p className="mt-2 text-neutral-400">
-          We&apos;ll WhatsApp you within 24 hours to lock a time.
+        <p className="mt-2 text-body text-neutral-400 text-pretty">
+          Your details are already typed out — just hit send and we&apos;ll
+          reply within 24 hours.
         </p>
+        <a
+          href={chatUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-6 inline-flex min-h-13 items-center justify-center gap-2 rounded-xl border border-emerald-500/40 px-6 py-3.5 text-body font-bold text-emerald-300 transition-colors hover:bg-emerald-500/10"
+        >
+          Didn&apos;t open? Tap here
+          <span aria-hidden>→</span>
+        </a>
       </div>
     );
   }
@@ -47,11 +78,11 @@ export default function StrategyCallForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 sm:p-8"
+      className="rounded-3xl border border-white/10 bg-white/4 p-5 sm:p-7"
     >
       <div className="grid gap-4">
         <div>
-          <label htmlFor="name" className="mb-2 block text-sm font-semibold text-neutral-300">
+          <label htmlFor="name" className={LABEL_CLASS}>
             Name
           </label>
           <input
@@ -65,7 +96,7 @@ export default function StrategyCallForm() {
         </div>
 
         <div>
-          <label htmlFor="website" className="mb-2 block text-sm font-semibold text-neutral-300">
+          <label htmlFor="website" className={LABEL_CLASS}>
             Brand website
           </label>
           <input
@@ -73,13 +104,14 @@ export default function StrategyCallForm() {
             name="website"
             required
             inputMode="url"
+            autoComplete="url"
             placeholder="yourbrand.com"
             className={FIELD_CLASS}
           />
         </div>
 
         <div>
-          <label htmlFor="whatsapp" className="mb-2 block text-sm font-semibold text-neutral-300">
+          <label htmlFor="whatsapp" className={LABEL_CLASS}>
             WhatsApp number
           </label>
           <input
@@ -95,15 +127,13 @@ export default function StrategyCallForm() {
           />
         </div>
 
-        <div>
-          <span className="mb-2 block text-sm font-semibold text-neutral-300">
-            Monthly ad spend
-          </span>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <fieldset>
+          <legend className={LABEL_CLASS}>Monthly ad spend</legend>
+          <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
             {SPEND_BANDS.map((band, index) => (
               <label
                 key={band}
-                className="cursor-pointer rounded-xl border border-white/10 bg-black/40 px-3 py-3 text-center text-sm font-semibold text-neutral-400 transition-colors has-[:checked]:border-blue-500 has-[:checked]:bg-blue-500/15 has-[:checked]:text-white"
+                className="flex min-h-11.5 cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-black/40 px-2 py-2.5 text-center text-body font-semibold text-neutral-400 transition-colors has-checked:border-blue-500 has-checked:bg-blue-500/15 has-checked:text-white"
               >
                 <input
                   type="radio"
@@ -117,19 +147,18 @@ export default function StrategyCallForm() {
               </label>
             ))}
           </div>
-        </div>
+        </fieldset>
       </div>
 
       <button
         type="submit"
-        disabled={status === "sending"}
-        className="glow-btn mt-7 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-8 py-4 text-base font-bold text-white transition-colors hover:bg-blue-500 disabled:opacity-70"
+        className="glow-btn mt-7 flex min-h-13 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-body font-bold text-white transition-colors hover:bg-blue-500"
       >
-        {status === "sending" ? "Sending…" : "Book my free strategy call"}
-        {status === "idle" && <span aria-hidden>→</span>}
+        Book my free strategy call
+        <span aria-hidden>→</span>
       </button>
 
-      <p className="mt-4 text-center text-sm text-neutral-500">
+      <p className="mt-4 text-center text-micro text-neutral-500 text-pretty">
         No pitch. No pressure. We&apos;ll WhatsApp you within 24 hours.
       </p>
     </form>

@@ -1,16 +1,18 @@
 "use client";
 
-import { useRef } from "react";
+import { useId, useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import dynamic from "next/dynamic";
 
 import Faq from "@/components/Faq";
+import HeroBackground from "@/components/HeroBackground";
 import LeakCalculator from "@/components/LeakCalculator";
 import StickyCta from "@/components/StickyCta";
 import StrategyCallForm from "@/components/StrategyCallForm";
 import Testimonials from "@/components/Testimonials";
 
-const GhostFibers = dynamic(() => import("@/components/GhostFibers"), { ssr: false });
+/* Every section shares this gutter + max width so headings line up down the
+   whole page, including the hero. */
+const CONTAINER = "mx-auto w-full max-w-5xl px-5 sm:px-6 lg:px-8";
 
 /* ─────────────────────────────────────────
    REUSABLE fade-in wrapper
@@ -49,33 +51,42 @@ function Section({
   heading,
   children,
   className = "",
-  width = "max-w-4xl",
+  inner = "",
 }: {
   id?: string;
   eyebrow?: string;
   heading?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
-  width?: string;
+  inner?: string;
 }) {
+  const headingId = useId();
+
   return (
-    <section id={id} className={`px-6 py-20 sm:py-24 ${className}`}>
-      <div className={`mx-auto ${width}`}>
+    <section
+      id={id}
+      aria-labelledby={heading ? headingId : undefined}
+      className={`scroll-mt-8 py-16 sm:py-20 lg:py-28 ${className}`}
+    >
+      <div className={CONTAINER}>
         {(eyebrow || heading) && (
-          <FadeIn className="mb-12">
+          <FadeIn className="mb-10 sm:mb-12">
             {eyebrow && (
-              <span className="mb-4 block text-xs font-bold tracking-[0.2em] uppercase text-blue-500">
+              <span className="mb-3 block text-eyebrow font-bold uppercase text-blue-400">
                 {eyebrow}
               </span>
             )}
             {heading && (
-              <h2 className="text-3xl font-extrabold leading-[1.15] tracking-tight text-white text-balance sm:text-4xl xl:text-5xl">
+              <h2
+                id={headingId}
+                className="text-h2 font-extrabold text-white text-balance"
+              >
                 {heading}
               </h2>
             )}
           </FadeIn>
         )}
-        {children}
+        <div className={inner}>{children}</div>
       </div>
     </section>
   );
@@ -94,7 +105,7 @@ function Cta({
   className?: string;
 }) {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-xl px-8 py-4 text-base font-bold transition-colors";
+    "inline-flex min-h-13 items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-center text-body font-bold transition-colors sm:px-8";
   const styles =
     variant === "solid"
       ? "glow-btn bg-blue-600 text-white hover:bg-blue-500"
@@ -188,63 +199,45 @@ const CALL_AGENDA = [
 ───────────────────────────────────────── */
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#07070b] text-white selection:bg-blue-600/40">
+    <main className="min-h-svh bg-[#07070b] text-white selection:bg-blue-600/40">
       {/* ── 1. HERO ────────────────────────── */}
-      <section className="relative flex min-h-screen items-center overflow-hidden bg-[#07070b]">
-        <div className="absolute inset-0 z-0">
-          <GhostFibers
-            lineColor="#1a1040"
-            glowColor="#3b82f6"
-            speed={0.18}
-            scale={2.2}
-            rotation={-15}
-            rotationSpeed={0.12}
-            layers={6}
-            waveAmplitude={0.018}
-            waveFrequency={3.5}
-            waveSpeed={0.12}
-            layerSpeed={0.06}
-            twist={0.12}
-            twistFrequency={5}
-            twistSpeed={1.0}
-            lineFrequency={5}
-            lineSpacing={2}
-            lineSharpness={18}
-            glowFalloff={8}
-            glowIntensity={2.0}
-            brightness={2.2}
-            blueBoost={1.4}
-            vignette={0.6}
-            grain={0.03}
-            dpr={1}
-            fps={60}
-          />
-        </div>
+      <section className="relative flex min-h-svh items-center overflow-hidden bg-[#07070b] py-20 sm:py-24">
+        <HeroBackground />
 
-        {/* Readability veils */}
-        <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-[#07070b] via-[#07070b]/80 via-[40%] to-transparent" />
-        <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-[#07070b]/70 via-transparent to-[#07070b]/90" />
+        {/* Readability veils. Mobile reads bottom-to-top because the copy sits
+            over the whole width; desktop veils left-to-right. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-1 bg-linear-to-t from-[#07070b] via-[#07070b]/85 via-55% to-[#07070b]/40 md:bg-linear-to-r md:from-[#07070b] md:via-[#07070b]/80 md:via-40% md:to-transparent"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-1 bg-linear-to-b from-[#07070b]/70 via-transparent to-[#07070b]/90"
+        />
 
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-24 sm:px-10 lg:px-16">
+        <div className={`relative z-10 ${CONTAINER}`}>
           <div className="max-w-2xl">
-            <motion.div
+            <motion.p
               initial={{ opacity: 0, y: -16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="mb-7 inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5 text-xs font-semibold text-blue-300"
+              className="mb-6 inline-flex items-start gap-2 rounded-2xl border border-blue-500/30 bg-blue-500/10 px-3.5 py-2 text-left text-eyebrow font-semibold uppercase text-blue-300 sm:items-center sm:rounded-full sm:px-4"
             >
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-blue-400" />
+              <span
+                aria-hidden
+                className="mt-1.5 h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-blue-400 sm:mt-0"
+              />
               For D2C brands spending ₹1–3L a month on Meta ads
-            </motion.div>
+            </motion.p>
 
             <motion.h1
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.75, delay: 0.1 }}
-              className="mb-6 text-4xl font-extrabold leading-[1.08] tracking-tight text-white text-balance sm:text-5xl xl:text-6xl"
+              className="mb-5 text-display font-extrabold text-white text-balance"
             >
               Spending lakhs on Meta ads.{" "}
-              <span className="bg-gradient-to-r from-rose-400 to-orange-400 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-rose-400 to-orange-400 bg-clip-text text-transparent">
                 Still stuck at 1.5x ROAS?
               </span>
             </motion.h1>
@@ -253,7 +246,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.25 }}
-              className="mb-9 text-lg leading-relaxed text-neutral-400 sm:text-xl"
+              className="mb-8 max-w-xl text-lead text-neutral-400 text-pretty"
             >
               Your product isn&apos;t the problem. Your budget isn&apos;t the
               problem.{" "}
@@ -268,7 +261,7 @@ export default function Home() {
               transition={{ duration: 0.65, delay: 0.4 }}
             >
               <Cta className="w-full sm:w-auto">Book my free strategy call</Cta>
-              <p className="mt-4 text-sm text-neutral-500">
+              <p className="mt-4 text-micro text-neutral-500">
                 Free 30-min call · No pitch
               </p>
             </motion.div>
@@ -284,15 +277,22 @@ export default function Home() {
       >
         <div className="grid gap-3 sm:grid-cols-2">
           {SYMPTOMS.map((symptom, index) => (
-            <FadeIn key={symptom} delay={index * 0.05}>
-              <div className="flex h-full items-start gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+            <FadeIn
+              key={symptom}
+              delay={index * 0.05}
+              /* 7 items in 2 columns leaves an orphan — let it span the row. */
+              className={
+                index === SYMPTOMS.length - 1 ? "sm:col-span-2" : undefined
+              }
+            >
+              <div className="flex h-full items-start gap-3 rounded-xl border border-white/10 bg-white/3 p-4">
                 <span
                   aria-hidden
-                  className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-500/15 text-sm font-bold text-rose-400"
+                  className="mt-px flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-500/15 text-micro font-bold text-rose-400"
                 >
                   ✕
                 </span>
-                <p className="text-[0.975rem] leading-snug text-neutral-300">
+                <p className="text-body text-neutral-300 text-pretty">
                   {symptom}
                 </p>
               </div>
@@ -301,7 +301,7 @@ export default function Home() {
         </div>
 
         <FadeIn delay={0.1} className="mt-10">
-          <p className="border-l-2 border-rose-500 pl-5 text-xl font-bold leading-snug text-white text-balance sm:text-2xl">
+          <p className="border-l-2 border-rose-500 pl-4 text-punch font-bold text-white text-balance sm:pl-5">
             Putting more money into this only makes the loss bigger.
           </p>
           <Cta variant="outline" className="mt-8 w-full sm:w-auto">
@@ -314,30 +314,32 @@ export default function Home() {
       <Section
         eyebrow="The root cause"
         heading="Why this keeps happening"
-        className="border-y border-white/[0.07] bg-white/[0.015]"
+        className="border-y border-white/7 bg-white/1.5"
       >
-        <div className="space-y-px overflow-hidden rounded-2xl border border-white/10">
+        <ol className="space-y-px overflow-hidden rounded-2xl border border-white/10">
           {REASONS.map((reason, index) => (
-            <FadeIn key={reason.title} delay={index * 0.06}>
-              <div className="flex gap-5 bg-white/[0.03] p-5 sm:gap-7 sm:p-7">
-                <span
-                  aria-hidden
-                  className="text-2xl font-extrabold tabular-nums text-white/15 sm:text-3xl"
-                >
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <div>
-                  <h3 className="text-lg font-bold text-white sm:text-xl">
-                    {reason.title}
-                  </h3>
-                  <p className="mt-1.5 leading-relaxed text-neutral-400">
-                    {reason.body}
-                  </p>
+            <li key={reason.title}>
+              <FadeIn delay={index * 0.06}>
+                <div className="flex gap-4 bg-white/3 p-5 sm:gap-7 sm:p-7">
+                  <span
+                    aria-hidden
+                    className="text-h2 font-extrabold tabular-nums leading-none text-white/15"
+                  >
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <h3 className="text-h3 font-bold text-white">
+                      {reason.title}
+                    </h3>
+                    <p className="mt-1.5 text-body text-neutral-400 text-pretty">
+                      {reason.body}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </FadeIn>
+              </FadeIn>
+            </li>
           ))}
-        </div>
+        </ol>
 
         <FadeIn delay={0.1}>
           <Cta variant="outline" className="mt-10 w-full sm:w-auto">
@@ -351,7 +353,7 @@ export default function Home() {
         id="calculator"
         eyebrow="The leak"
         heading="How much are your ads leaking?"
-        width="max-w-2xl"
+        inner="mx-auto max-w-2xl"
       >
         <FadeIn>
           <LeakCalculator />
@@ -362,22 +364,24 @@ export default function Home() {
       <Section
         eyebrow="The system"
         heading="Here’s how we fix it"
-        className="border-y border-white/[0.07] bg-white/[0.015]"
+        className="border-y border-white/7 bg-white/1.5"
       >
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 lg:grid-cols-3">
           {STEPS.map((step, index) => (
             <FadeIn key={step.step} delay={index * 0.1} className="h-full">
-              <div className="flex h-full flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-                <div className="flex items-center justify-between">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
+              <div className="flex h-full flex-col rounded-2xl border border-white/10 bg-white/3 p-5 sm:p-6">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-600 text-micro font-bold text-white">
                     {step.step}
                   </span>
-                  <span className="text-[0.7rem] font-bold tracking-[0.15em] uppercase text-neutral-500">
+                  <span className="text-eyebrow font-bold uppercase text-neutral-500">
                     {step.meta}
                   </span>
                 </div>
-                <h3 className="mt-5 text-xl font-bold text-white">{step.title}</h3>
-                <p className="mt-2 leading-relaxed text-neutral-400">
+                <h3 className="mt-5 text-h3 font-bold text-white">
+                  {step.title}
+                </h3>
+                <p className="mt-2 text-body text-neutral-400 text-pretty">
                   {step.body}
                 </p>
               </div>
@@ -386,14 +390,14 @@ export default function Home() {
         </div>
 
         <FadeIn delay={0.1} className="mt-4">
-          <div className="rounded-2xl border border-blue-500/25 bg-blue-500/[0.07] p-6">
-            <p className="text-xs font-bold tracking-[0.18em] uppercase text-blue-400">
+          <div className="rounded-2xl border border-blue-500/25 bg-blue-500/7 p-5 sm:p-6">
+            <p className="text-eyebrow font-bold uppercase text-blue-400">
               Every week you get
             </p>
-            <p className="mt-3 text-lg font-bold text-white">
+            <p className="mt-3 text-h3 font-bold text-white">
               A short WhatsApp update.
             </p>
-            <p className="mt-1 text-neutral-400">
+            <p className="mt-1 text-body text-neutral-400 text-pretty">
               What we tested, what worked, what&apos;s next. No 20-page reports.
             </p>
           </div>
@@ -403,11 +407,13 @@ export default function Home() {
 
       {/* ── 6. GUARANTEE ───────────────────── */}
       <FadeIn>
-        <div className="border-b border-white/[0.07] bg-gradient-to-r from-emerald-500/[0.06] via-emerald-500/[0.12] to-emerald-500/[0.06]">
-          <p className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-3 px-6 py-7 text-center text-lg font-extrabold tracking-tight text-white sm:text-2xl">
+        <div className="border-b border-white/7 bg-linear-to-r from-emerald-500/6 via-emerald-500/12 to-emerald-500/6">
+          <p
+            className={`${CONTAINER} flex items-center justify-center gap-3 py-6 text-center text-punch font-extrabold text-white text-balance sm:py-7`}
+          >
             <span
               aria-hidden
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/20 text-base text-emerald-400"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-micro text-emerald-400"
             >
               ✓
             </span>
@@ -417,7 +423,7 @@ export default function Home() {
       </FadeIn>
 
       {/* ── 7. TESTIMONIALS ────────────────── */}
-      <Section eyebrow="Proof" heading="Founders who stopped guessing" width="max-w-5xl">
+      <Section eyebrow="Proof" heading="Founders who stopped guessing">
         <FadeIn>
           <Testimonials />
         </FadeIn>
@@ -427,24 +433,26 @@ export default function Home() {
       <Section
         eyebrow="Fit check"
         heading="Is this for you?"
-        className="border-y border-white/[0.07] bg-white/[0.015]"
+        className="border-y border-white/7 bg-white/1.5"
       >
         <div className="grid gap-4 md:grid-cols-2">
           <FadeIn className="h-full">
-            <div className="h-full rounded-2xl border border-emerald-500/25 bg-emerald-500/[0.05] p-6 sm:p-7">
-              <p className="text-sm font-bold tracking-[0.15em] uppercase text-emerald-400">
+            <div className="h-full rounded-2xl border border-emerald-500/25 bg-emerald-500/5 p-5 sm:p-7">
+              <h3 className="text-eyebrow font-bold uppercase text-emerald-400">
                 This is for you if
-              </p>
+              </h3>
               <ul className="mt-5 space-y-4">
                 {FIT.yes.map((item) => (
                   <li key={item} className="flex items-start gap-3">
                     <span
                       aria-hidden
-                      className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-xs font-bold text-emerald-400"
+                      className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-micro font-bold text-emerald-400"
                     >
                       ✓
                     </span>
-                    <span className="text-neutral-200">{item}</span>
+                    <span className="text-body text-neutral-200 text-pretty">
+                      {item}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -452,20 +460,22 @@ export default function Home() {
           </FadeIn>
 
           <FadeIn delay={0.1} className="h-full">
-            <div className="h-full rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-7">
-              <p className="text-sm font-bold tracking-[0.15em] uppercase text-neutral-500">
+            <div className="h-full rounded-2xl border border-white/10 bg-white/3 p-5 sm:p-7">
+              <h3 className="text-eyebrow font-bold uppercase text-neutral-500">
                 Not for you if
-              </p>
+              </h3>
               <ul className="mt-5 space-y-4">
                 {FIT.no.map((item) => (
                   <li key={item} className="flex items-start gap-3">
                     <span
                       aria-hidden
-                      className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-rose-500/15 text-xs font-bold text-rose-400"
+                      className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-rose-500/15 text-micro font-bold text-rose-400"
                     >
                       ✕
                     </span>
-                    <span className="text-neutral-400">{item}</span>
+                    <span className="text-body text-neutral-400 text-pretty">
+                      {item}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -475,34 +485,48 @@ export default function Home() {
       </Section>
 
       {/* ── 9. FORM ────────────────────────── */}
-      <section id="book" className="relative overflow-hidden px-6 py-20 sm:py-28">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_0%,rgba(59,130,246,0.12),transparent)]" />
+      <section
+        id="book"
+        aria-labelledby="book-heading"
+        className="relative scroll-mt-8 overflow-hidden py-16 sm:py-20 lg:py-28"
+      >
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_0%,rgba(59,130,246,0.12),transparent)]"
+        />
 
-        <div className="relative mx-auto grid max-w-5xl gap-12 lg:grid-cols-2 lg:gap-16">
+        <div
+          className={`relative ${CONTAINER} grid gap-10 lg:grid-cols-2 lg:gap-14`}
+        >
           <FadeIn>
-            <span className="mb-4 block text-xs font-bold tracking-[0.2em] uppercase text-blue-500">
+            <span className="mb-3 block text-eyebrow font-bold uppercase text-blue-400">
               Free strategy call
             </span>
-            <h2 className="text-3xl font-extrabold leading-[1.15] tracking-tight text-white text-balance sm:text-4xl">
+            <h2
+              id="book-heading"
+              className="text-h2 font-extrabold text-white text-balance"
+            >
               Spending ₹1 to ₹3 lakhs a month on ads?
             </h2>
-            <p className="mt-5 text-lg text-neutral-400">
+            <p className="mt-4 text-lead text-neutral-400 text-pretty">
               Let&apos;s find what&apos;s broken before you spend another rupee.
             </p>
 
-            <p className="mt-10 text-sm font-bold tracking-[0.15em] uppercase text-neutral-500">
+            <h3 className="mt-9 text-eyebrow font-bold uppercase text-neutral-500">
               On this call we
-            </p>
+            </h3>
             <ul className="mt-5 space-y-4">
               {CALL_AGENDA.map((item) => (
                 <li key={item} className="flex items-start gap-3">
                   <span
                     aria-hidden
-                    className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-500/20 text-xs font-bold text-blue-400"
+                    className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-500/20 text-micro font-bold text-blue-400"
                   >
                     ✓
                   </span>
-                  <span className="text-neutral-300">{item}</span>
+                  <span className="text-body text-neutral-300 text-pretty">
+                    {item}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -518,8 +542,8 @@ export default function Home() {
       <Section
         eyebrow="Questions"
         heading="Before you book"
-        className="border-t border-white/[0.07] bg-white/[0.015]"
-        width="max-w-3xl"
+        className="border-t border-white/7 bg-white/1.5"
+        inner="mx-auto max-w-3xl"
       >
         <FadeIn>
           <Faq />
@@ -527,11 +551,13 @@ export default function Home() {
       </Section>
 
       {/* ── FOOTER ─────────────────────────── */}
-      <footer className="border-t border-white/[0.07] px-6 py-10 pb-24 text-center text-sm text-neutral-600 md:pb-10">
-        <p>
-          Whizoid Studio · Meta ads for D2C brands.{" "}
-          <span className="text-blue-500">Stop guessing. Start scaling.</span>
-        </p>
+      <footer className="border-t border-white/7 py-8 pb-28 text-center text-micro text-neutral-600 md:pb-8">
+        <div className={CONTAINER}>
+          <p className="text-pretty">
+            Whizoid Studio · Meta ads for D2C brands.{" "}
+            <span className="text-blue-500">Stop guessing. Start scaling.</span>
+          </p>
+        </div>
       </footer>
 
       {/* ── 11. STICKY MOBILE BUTTON ───────── */}
