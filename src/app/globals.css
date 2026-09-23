@@ -34,8 +34,8 @@
   --text-h2--line-height: 1.12;
   --text-h2--letter-spacing: -0.025em;
 
-  /* Hero headline — 34px → 52px */
-  --text-display: clamp(2.125rem, 1.684rem + 1.96vw, 3.25rem);
+  /* Hero headline — 36px → 58px */
+  --text-display: clamp(2.25rem, 1.712rem + 2.39vw, 3.625rem);
   --text-display--line-height: 1.08;
   --text-display--letter-spacing: -0.03em;
 

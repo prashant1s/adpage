@@ -33,7 +33,7 @@ export default function Testimonials() {
         {TESTIMONIALS.map((item) => (
           <figure
             key={item.id}
-            className="flex w-[85%] max-w-full shrink-0 grow-0 basis-auto snap-center flex-col rounded-2xl border border-white/10 bg-white/4 p-5 sm:w-80 sm:p-6 lg:w-[22rem]"
+            className="flex w-[85%] max-w-full shrink-0 grow-0 basis-auto snap-center flex-col rounded-2xl border border-white/10 bg-white/4 p-5 sm:w-[calc((100%-1rem)/2)] sm:snap-start sm:p-6 lg:w-[calc((100%-2rem)/3)]"
           >
             <span aria-hidden className="text-h2 leading-none text-blue-500/50">
               &ldquo;

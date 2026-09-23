@@ -11,8 +11,12 @@ import StrategyCallForm from "@/components/StrategyCallForm";
 import Testimonials from "@/components/Testimonials";
 
 /* Every section shares this gutter + max width so headings line up down the
-   whole page, including the hero. */
+   whole page. */
 const CONTAINER = "mx-auto w-full max-w-5xl px-5 sm:px-6 lg:px-8";
+
+/* The hero gets a wider box so its headline starts further left than the
+   sections below it, and has room to stay on two lines at full size. */
+const HERO_CONTAINER = "mx-auto w-full max-w-6xl px-5 sm:px-6 lg:px-8";
 
 /* ─────────────────────────────────────────
    REUSABLE fade-in wrapper
@@ -215,8 +219,8 @@ export default function Home() {
           className="pointer-events-none absolute inset-0 z-1 bg-linear-to-b from-[#07070b]/70 via-transparent to-[#07070b]/90"
         />
 
-        <div className={`relative z-10 ${CONTAINER}`}>
-          <div className="max-w-3xl">
+        <div className={`relative z-10 ${HERO_CONTAINER}`}>
+          <div className="max-w-4xl">
             <motion.p
               initial={{ opacity: 0, y: -16 }}
               animate={{ opacity: 1, y: 0 }}
