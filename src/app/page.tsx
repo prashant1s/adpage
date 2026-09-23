@@ -333,7 +333,7 @@ export default function Home() {
                 <div className="flex gap-4 bg-white/3 p-5 sm:gap-7 sm:p-7">
                   <span
                     aria-hidden
-                    className="text-h2 font-extrabold tabular-nums leading-none text-white/15"
+                    className="text-h2 font-extrabold tabular-nums leading-none text-emerald-500/40"
                   >
                     {String(index + 1).padStart(2, "0")}
                   </span>
