@@ -24,8 +24,8 @@ const MODES: { id: Mode; label: string }[] = [
 ];
 
 type LeakCalculatorProps = {
-  /* Tighter layout for the hero column: smaller readouts, no CTA (the hero
-     has its own). */
+  /* Tighter layout for the hero column: smaller readouts, and the CTA only
+     shows on desktop (on mobile the hero's own CTA sits right above). */
   compact?: boolean;
 };
 
@@ -170,15 +170,13 @@ export default function LeakCalculator({
         <div
           className={`${compact ? "mt-4" : "mt-6"} flex flex-col items-center gap-3`}
         >
-          {!compact && (
-            <a
-              href="#book"
-              className="glow-btn inline-flex min-h-16 w-full items-center justify-center gap-2.5 rounded-2xl bg-blue-600 px-8 py-4.5 text-center text-lg font-bold text-white transition-colors hover:bg-blue-500 sm:w-auto sm:px-12 sm:text-xl"
-            >
-              Get my real numbers checked
-              <span aria-hidden>→</span>
-            </a>
-          )}
+          <a
+            href="#book"
+            className={`glow-btn ${compact ? "hidden lg:inline-flex" : "inline-flex"} min-h-16 w-full items-center justify-center gap-2.5 rounded-2xl bg-blue-600 px-8 py-4.5 text-center text-lg font-bold text-white transition-colors hover:bg-blue-500 sm:w-auto sm:px-12 sm:text-xl`}
+          >
+            Get my real numbers checked
+            <span aria-hidden>→</span>
+          </a>
           <p className="text-micro text-neutral-500">
             Sample numbers. Your call shows your real ones.
           </p>
