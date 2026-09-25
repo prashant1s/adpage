@@ -4,9 +4,8 @@ import { useCallback, useEffect, useRef } from "react";
 
 import { TESTIMONIALS } from "@/content/testimonials";
 
-/* Drift speed of the auto-scroll, in pixels per second. Slow enough that a
-   card stays readable while it moves. */
-const SPEED = 40;
+/* How long each position holds before the carousel slides one card left. */
+const STEP_MS = 1500;
 
 /* Initials for the caption avatar — first letter of the first two words. */
 const initials = (name: string) =>
@@ -48,34 +47,31 @@ export default function Testimonials() {
     const observer = new ResizeObserver(measureCycle);
     observer.observe(track);
 
-    let frame = 0;
-    let last = performance.now();
+    const advance = () => {
+      if (pausedRef.current || document.hidden || cycleRef.current <= 0) return;
+      const cards = track.children;
+      const first = cards[0] as HTMLElement | undefined;
+      const second = cards[1] as HTMLElement | undefined;
+      if (!first || !second) return;
+      // Card width plus the gap to the next one.
+      const stride = second.offsetLeft - first.offsetLeft;
 
-    const step = (now: number) => {
-      const delta = now - last;
-      last = now;
-
-      if (!pausedRef.current && cycleRef.current > 0) {
-        let next = track.scrollLeft + (SPEED * delta) / 1000;
-        if (next >= cycleRef.current) next -= cycleRef.current;
-        track.scrollLeft = next;
+      // Past the first pass: jump back one cycle, which is invisible because
+      // the list is rendered twice and both positions look identical.
+      if (track.scrollLeft >= cycleRef.current - 1) {
+        track.scrollTo({ left: track.scrollLeft - cycleRef.current, behavior: "instant" });
       }
 
-      frame = requestAnimationFrame(step);
+      // Snap to the nearest card edge, then slide one card to the left.
+      const index = Math.round(track.scrollLeft / stride);
+      track.scrollTo({ left: (index + 1) * stride, behavior: "smooth" });
     };
 
-    frame = requestAnimationFrame(step);
-
-    // Don't accumulate a huge time delta while the tab is in the background.
-    const onVisibility = () => {
-      last = performance.now();
-    };
-    document.addEventListener("visibilitychange", onVisibility);
+    const timer = window.setInterval(advance, STEP_MS);
 
     return () => {
-      cancelAnimationFrame(frame);
+      window.clearInterval(timer);
       observer.disconnect();
-      document.removeEventListener("visibilitychange", onVisibility);
     };
   }, [measureCycle]);
 
@@ -120,18 +116,18 @@ export default function Testimonials() {
               aria-hidden={isClone || undefined}
               /* Two per view from md up rather than three, so each card is wide
                  enough to read as a landscape rectangle instead of a column. */
-              className="flex w-[85%] max-w-full shrink-0 grow-0 basis-auto flex-col rounded-2xl border border-white/10 bg-white/4 p-5 sm:p-6 md:w-[calc((100%-1rem)/2)]"
+              className="flex w-[85%] max-w-full shrink-0 grow-0 basis-auto flex-col rounded-2xl border border-white/10 bg-white/4 p-4 sm:p-5 md:w-[calc((100%-1rem)/2)]"
             >
-              <span aria-hidden className="text-h2 leading-none text-blue-500/50">
+              <span aria-hidden className="text-h3 leading-none text-blue-500/50">
                 &ldquo;
               </span>
-              <blockquote className="mt-1 line-clamp-6 flex-1 min-h-24 text-body font-medium text-white text-pretty">
+              <blockquote className="mt-1 line-clamp-3 flex-1 text-body font-medium text-white text-pretty">
                 {item.quote}
               </blockquote>
-              <figcaption className="mt-5 flex items-center gap-3 border-t border-white/10 pt-4">
+              <figcaption className="mt-3 flex items-center gap-3 border-t border-white/10 pt-3">
                 <span
                   aria-hidden
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/10 text-micro font-bold text-white"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-micro font-bold text-white"
                 >
                   {initials(item.name)}
                 </span>

@@ -16,7 +16,7 @@ const CONTAINER = "mx-auto w-full max-w-5xl px-5 sm:px-6 lg:px-8";
 
 /* The hero gets a wider box so its headline starts further left than the
    sections below it, and has room to stay on two lines at full size. */
-const HERO_CONTAINER = "mx-auto w-full max-w-6xl px-5 sm:px-6 lg:px-8";
+const HERO_CONTAINER = "mx-auto w-full max-w-[81.25rem] px-5 sm:px-6 lg:px-8";
 
 /* ─────────────────────────────────────────
    REUSABLE fade-in wrapper
@@ -127,13 +127,14 @@ function Cta({
    CONTENT
 ───────────────────────────────────────── */
 const SYMPTOMS = [
-  "You raised the budget. Sales stayed the same.",
-  "The same 2–3 ads have been running for weeks.",
-  "Your cost per order goes up every month.",
-  "Lots of clicks. Very few people actually buy.",
-  "One ad works, then dies in a week. Nobody knows why.",
   "Every new campaign feels like a guess.",
+  "Your cost per order goes up every month.",
   "Your agency sends reports. Nothing changes.",
+  "The same 2–3 ads have been running for weeks.",
+  "You raised the budget. Sales stayed the same.",
+  "Lots of clicks. Very few people actually buy.",
+  "You can't tell which ad actually made you money.",
+  "One ad works, then dies in a week. Nobody knows why.",
 ];
 
 const REASONS = [
@@ -222,7 +223,9 @@ export default function Home() {
           className="pointer-events-none absolute inset-0 z-1 hidden bg-linear-to-b from-[#07070b]/70 via-transparent to-[#07070b]/90 md:block"
         />
 
-        <div className={`relative z-10 ${HERO_CONTAINER}`}>
+        <div
+          className={`relative z-10 grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_26rem] ${HERO_CONTAINER}`}
+        >
           <div className="max-w-4xl">
             <motion.p
               initial={{ opacity: 0, y: -16 }}
@@ -241,13 +244,14 @@ export default function Home() {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.75, delay: 0.1 }}
-              className="mb-5 text-display font-extrabold text-white text-balance"
+              className="mb-7 text-display font-extrabold sm:mb-9 text-white text-balance lg:text-[length:min(calc((100vw_-_513px)/14),3.625rem)] xl:text-[length:min(calc((100vw_-_545px)/14),3.45rem)] lg:whitespace-nowrap"
             >
-              Spending lakhs on Meta ads.{" "}
-              {/* Always its own line. On mobile the sentence is too long to fit
-                  either way, and without this the break orphans "Still" at the
-                  end of line 2, splitting the coloured phrase. */}
-              <span className="block bg-linear-to-r from-rose-400 to-orange-400 bg-clip-text text-transparent">
+              {/* Two sentences, two lines. On desktop the size tracks the text
+                  column's width (viewport minus padding, gap and the fixed
+                  calculator column; each sentence is ~13.3 font-sizes wide, 14 leaves margin) so each stays
+                  unbroken. On mobile they wrap within their line. */}
+              <span className="block">Spending lakhs on Meta ads.</span>{" "}
+              <span className="mt-2 block text-rose-500 sm:mt-3">
                 Still stuck at 1.5x ROAS?
               </span>
             </motion.h1>
@@ -276,6 +280,15 @@ export default function Home() {
               </p>
             </motion.div>
           </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.75, delay: 0.5 }}
+            className="w-full max-w-lg lg:justify-self-end min-[1400px]:relative min-[1400px]:left-12"
+          >
+            <LeakCalculator compact />
+          </motion.div>
         </div>
       </section>
 
@@ -285,24 +298,21 @@ export default function Home() {
         eyebrow="Sound familiar?"
         heading="If this is your ad account, keep reading."
       >
-        <div className="grid gap-3 sm:grid-cols-2">
+        {/* auto-rows-fr keeps every card the height of the tallest one. */}
+        <div className="grid auto-rows-fr gap-3 sm:grid-cols-2">
           {SYMPTOMS.map((symptom, index) => (
             <FadeIn
               key={symptom}
               delay={index * 0.05}
-              /* 7 items in 2 columns leaves an orphan — let it span the row. */
-              className={
-                index === SYMPTOMS.length - 1 ? "sm:col-span-2" : undefined
-              }
             >
-              <div className="flex h-full items-start gap-3 rounded-xl border border-white/10 bg-white/3 p-4">
+              <div className="flex h-full items-center gap-3 rounded-xl border border-white/10 bg-white/3 p-4">
                 <span
                   aria-hidden
                   className="mt-px flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-500/15 text-micro font-bold text-rose-400"
                 >
                   ✕
                 </span>
-                <p className="text-body text-neutral-300 text-pretty">
+                <p className="text-body text-neutral-300">
                   {symptom}
                 </p>
               </div>
@@ -314,9 +324,6 @@ export default function Home() {
           <p className="border-l-2 border-rose-500 pl-4 text-punch font-bold text-white text-balance sm:pl-5">
             Putting more money into this only makes the loss bigger.
           </p>
-          <Cta variant="outline" className="mt-8 w-full sm:w-auto">
-            Find where my money is going
-          </Cta>
         </FadeIn>
       </Section>
 

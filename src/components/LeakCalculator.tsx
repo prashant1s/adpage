@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 
 /* Spec from the content doc:
@@ -23,11 +23,23 @@ const MODES: { id: Mode; label: string }[] = [
   { id: "whizoid", label: "With Whizoid" },
 ];
 
-export default function LeakCalculator() {
+type LeakCalculatorProps = {
+  /* Tighter layout for the hero column: smaller readouts, no CTA (the hero
+     has its own). */
+  compact?: boolean;
+};
+
+export default function LeakCalculator({
+  compact = false,
+}: LeakCalculatorProps) {
+  /* The calculator renders twice on the page (hero + its own section), so
+     ids and the toggle's layoutId must be unique per instance. */
+  const uid = useId();
+  const spendId = `${uid}-spend`;
   const [spend, setSpend] = useState(START_SPEND);
   const [mode, setMode] = useState<Mode>("now");
 
-  const { roas, revenue, leak } = useMemo(() => {
+  const { roas, revenue } = useMemo(() => {
     const t = (spend - MIN_SPEND) / (MAX_SPEND - MIN_SPEND);
     const roasNow = 1.55 - 0.45 * t;
     const roasWhizoid = 2.85 - 0.25 * t;
@@ -36,14 +48,19 @@ export default function LeakCalculator() {
     return {
       roas: active,
       revenue: spend * active,
-      leak: spend * (roasWhizoid - roasNow),
     };
   }, [spend, mode]);
 
   const fill = ((spend - MIN_SPEND) / (MAX_SPEND - MIN_SPEND)) * 100;
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-linear-to-b from-white/6 to-white/2 p-5 sm:p-8 lg:p-10">
+    <div
+      className={`relative overflow-hidden rounded-3xl border border-white/10 bg-linear-to-b from-white/6 to-white/2 ${
+        compact
+          ? "bg-[#07070b]/60 p-5 backdrop-blur-md sm:p-6"
+          : "p-5 sm:p-8 lg:p-10"
+      }`}
+    >
       <div
         aria-hidden
         className="pointer-events-none absolute -top-32 left-1/2 h-64 w-xl -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl"
@@ -51,23 +68,31 @@ export default function LeakCalculator() {
 
       <div className="relative">
         {/* ── Spend slider ───────────────────────────────── */}
-        <div className="flex flex-col gap-1 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:gap-4">
+        {/* Compact always stacks: side-by-side, wider amounts (₹1,00,000+)
+            wrapped under the label while ₹50,000 didn't, so the header jumped. */}
+        <div
+          className={`flex flex-col gap-1 ${
+            compact
+              ? ""
+              : "sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:gap-4"
+          }`}
+        >
           <label
-            htmlFor="spend"
+            htmlFor={spendId}
             className="text-eyebrow font-bold uppercase text-neutral-500"
           >
             Your monthly ad spend
           </label>
           <output
-            htmlFor="spend"
-            className="text-stat font-extrabold text-white tabular-nums"
+            htmlFor={spendId}
+            className={`${compact ? "text-punch" : "text-stat"} font-extrabold text-white tabular-nums`}
           >
             {inr(spend)}
           </output>
         </div>
 
         <input
-          id="spend"
+          id={spendId}
           type="range"
           min={MIN_SPEND}
           max={MAX_SPEND}
@@ -88,7 +113,7 @@ export default function LeakCalculator() {
         <div
           role="tablist"
           aria-label="Compare scenarios"
-          className="mt-7 grid grid-cols-2 gap-1 rounded-2xl border border-white/10 bg-black/40 p-1"
+          className={`${compact ? "mt-5" : "mt-7"} grid grid-cols-2 gap-1 rounded-2xl border border-white/10 bg-black/40 p-1`}
         >
           {MODES.map((option) => {
             const selected = option.id === mode;
@@ -103,7 +128,7 @@ export default function LeakCalculator() {
               >
                 {selected && (
                   <motion.span
-                    layoutId="calc-mode"
+                    layoutId={`${uid}-calc-mode`}
                     transition={{ type: "spring", stiffness: 380, damping: 32 }}
                     className="absolute inset-0 rounded-xl border border-emerald-500/40 bg-emerald-500/15"
                   />
@@ -133,32 +158,45 @@ export default function LeakCalculator() {
               <p className="text-eyebrow font-bold uppercase text-neutral-500">
                 {stat.label}
               </p>
-              <p className="mt-2 text-stat font-extrabold tabular-nums text-emerald-400">
+              <p
+                className={`mt-2 ${compact ? "text-punch" : "text-stat"} font-extrabold tabular-nums text-emerald-400`}
+              >
                 {stat.value}
               </p>
             </div>
           ))}
         </div>
 
-        {/* ── The leak ───────────────────────────────────── */}
-        <div
-          aria-live="polite"
-          className="mt-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/7 px-4 py-5 text-center sm:px-5 sm:py-6"
+        {/* ── Contact prompt ─────────────────────────────── */}
+        <a
+          href="#book"
+          className="group mt-4 block rounded-2xl border border-emerald-500/30 bg-emerald-500/7 px-4 py-5 text-center transition-colors hover:border-emerald-500/50 hover:bg-emerald-500/12 sm:px-5 sm:py-6"
         >
-          <p className="text-punch font-bold text-emerald-400 text-balance">
-            You&apos;re losing{" "}
-            <span className="tabular-nums">{inr(leak)}</span> every month.
-          </p>
-        </div>
-
-        <div className="mt-6 flex flex-col items-center gap-3">
-          <a
-            href="#book"
-            className="glow-btn inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-center text-body font-bold text-white transition-colors hover:bg-blue-500 sm:w-auto sm:px-8"
+          <span
+            className={`inline-flex items-center gap-2 ${compact ? "text-h3" : "text-punch"} font-bold text-emerald-400`}
           >
-            Get my real numbers checked
-            <span aria-hidden>→</span>
-          </a>
+            Contact us to know more
+            <span
+              aria-hidden
+              className="transition-transform group-hover:translate-x-0.5"
+            >
+              →
+            </span>
+          </span>
+        </a>
+
+        <div
+          className={`${compact ? "mt-4" : "mt-6"} flex flex-col items-center gap-3`}
+        >
+          {!compact && (
+            <a
+              href="#book"
+              className="glow-btn inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-center text-body font-bold text-white transition-colors hover:bg-blue-500 sm:w-auto sm:px-8"
+            >
+              Get my real numbers checked
+              <span aria-hidden>→</span>
+            </a>
+          )}
           <p className="text-micro text-neutral-500">
             Sample numbers. Your call shows your real ones.
           </p>
