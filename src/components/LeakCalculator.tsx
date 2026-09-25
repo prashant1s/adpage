@@ -172,7 +172,7 @@ export default function LeakCalculator({
         >
           <a
             href="#book"
-            className={`glow-btn ${compact ? "hidden lg:inline-flex" : "inline-flex"} min-h-16 w-full items-center justify-center gap-2.5 rounded-2xl bg-blue-600 px-8 py-4.5 text-center text-lg font-bold text-white transition-colors hover:bg-blue-500 sm:w-auto sm:px-12 sm:text-xl`}
+            className={`glow-btn ${compact ? "hidden min-h-12 gap-2 rounded-xl px-6 py-3 text-body lg:inline-flex" : "inline-flex min-h-16 gap-2.5 rounded-2xl px-8 py-4.5 text-lg sm:px-12 sm:text-xl"} w-full items-center justify-center bg-blue-600 text-center font-bold text-white transition-colors hover:bg-blue-500 sm:w-auto`}
           >
             Get my real numbers checked
             <span aria-hidden>→</span>
