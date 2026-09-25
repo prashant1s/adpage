@@ -167,31 +167,13 @@ export default function LeakCalculator({
           ))}
         </div>
 
-        {/* ── Contact prompt ─────────────────────────────── */}
-        <a
-          href="#book"
-          className="group mt-4 block rounded-2xl border border-emerald-500/30 bg-emerald-500/7 px-4 py-5 text-center transition-colors hover:border-emerald-500/50 hover:bg-emerald-500/12 sm:px-5 sm:py-6"
-        >
-          <span
-            className={`inline-flex items-center gap-2 ${compact ? "text-h3" : "text-punch"} font-bold text-emerald-400`}
-          >
-            Contact us to know more
-            <span
-              aria-hidden
-              className="transition-transform group-hover:translate-x-0.5"
-            >
-              →
-            </span>
-          </span>
-        </a>
-
         <div
           className={`${compact ? "mt-4" : "mt-6"} flex flex-col items-center gap-3`}
         >
           {!compact && (
             <a
               href="#book"
-              className="glow-btn inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-center text-body font-bold text-white transition-colors hover:bg-blue-500 sm:w-auto sm:px-8"
+              className="glow-btn inline-flex min-h-16 w-full items-center justify-center gap-2.5 rounded-2xl bg-blue-600 px-8 py-4.5 text-center text-lg font-bold text-white transition-colors hover:bg-blue-500 sm:w-auto sm:px-12 sm:text-xl"
             >
               Get my real numbers checked
               <span aria-hidden>→</span>

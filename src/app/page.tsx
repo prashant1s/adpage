@@ -6,7 +6,6 @@ import { motion, useInView } from "framer-motion";
 import Faq from "@/components/Faq";
 import HeroBackground from "@/components/HeroBackground";
 import LeakCalculator from "@/components/LeakCalculator";
-import StickyCta from "@/components/StickyCta";
 import StrategyCallForm from "@/components/StrategyCallForm";
 import Testimonials from "@/components/Testimonials";
 
@@ -576,9 +575,6 @@ export default function Home() {
           </p>
         </div>
       </footer>
-
-      {/* ── 11. STICKY MOBILE BUTTON ───────── */}
-      <StickyCta />
     </main>
   );
 }
