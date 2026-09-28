@@ -3,13 +3,14 @@
 import { useState } from "react";
 
 import { WHATSAPP_NUMBER } from "@/lib/site";
+import { BUTTON_LG, BUTTON_PRIMARY, BUTTON_SECONDARY, BUTTON_MD } from "@/lib/ui";
 
 const SPEND_BANDS = ["Under ₹1L", "₹1–2L", "₹2–3L", "₹3L+"];
 
 const FIELD_CLASS =
-  "w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3.5 text-body text-white placeholder:text-neutral-600 transition-colors focus:border-blue-500 focus:outline-none";
+  "w-full rounded-lg border border-line bg-ink px-4 py-3 text-body text-fg placeholder:text-subtle/70 transition-colors hover:border-line-strong focus:border-accent focus:outline-none";
 
-const LABEL_CLASS = "mb-2 block text-body font-semibold text-neutral-300";
+const LABEL_CLASS = "mb-2 block text-micro font-medium text-muted";
 
 /** Formats the lead as the opening WhatsApp message the founder will send. */
 function buildChatUrl(form: FormData) {
@@ -47,26 +48,23 @@ export default function StrategyCallForm() {
     return (
       <div
         role="status"
-        className="rounded-3xl border border-emerald-500/30 bg-emerald-500/7 p-6 text-center sm:p-8"
+        className="rounded-2xl border border-line bg-raised p-6 sm:p-10"
       >
-        <span
-          aria-hidden
-          className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/15 text-stat text-emerald-400"
-        >
-          ✓
-        </span>
-        <h3 className="mt-5 text-h2 font-extrabold text-white">
+        <p className="text-eyebrow font-semibold uppercase text-accent">
+          Request ready
+        </p>
+        <h3 className="mt-4 text-h2 font-semibold text-fg">
           WhatsApp is opening.
         </h3>
-        <p className="mt-2 text-body text-neutral-400 text-pretty">
-          Your details are already typed out — just hit send and we&apos;ll
-          reply within 24 hours.
+        <p className="mt-3 max-w-md text-body text-muted text-pretty">
+          Your details are already typed out. Hit send and we&apos;ll reply
+          within 24 hours.
         </p>
         <a
           href={chatUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-6 inline-flex min-h-13 items-center justify-center gap-2 rounded-xl border border-emerald-500/40 px-6 py-3.5 text-body font-bold text-emerald-300 transition-colors hover:bg-emerald-500/10"
+          className={`mt-8 ${BUTTON_SECONDARY} ${BUTTON_MD}`}
         >
           Didn&apos;t open? Tap here
           <span aria-hidden>→</span>
@@ -78,34 +76,19 @@ export default function StrategyCallForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-3xl border border-white/10 bg-white/4 p-5 sm:p-7"
+      className="rounded-2xl border border-line bg-raised p-5 sm:p-8"
     >
-      <div className="grid gap-4">
+      <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <label htmlFor="name" className={LABEL_CLASS}>
-            Name
+            Your name
           </label>
           <input
             id="name"
             name="name"
             required
             autoComplete="name"
-            placeholder="Your name"
-            className={FIELD_CLASS}
-          />
-        </div>
-
-        <div>
-          <label htmlFor="website" className={LABEL_CLASS}>
-            Brand website
-          </label>
-          <input
-            id="website"
-            name="website"
-            required
-            inputMode="url"
-            autoComplete="url"
-            placeholder="yourbrand.com"
+            placeholder="Priya Sharma"
             className={FIELD_CLASS}
           />
         </div>
@@ -127,13 +110,28 @@ export default function StrategyCallForm() {
           />
         </div>
 
-        <fieldset>
-          <legend className={LABEL_CLASS}>Monthly ad spend</legend>
-          <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+        <div className="sm:col-span-2">
+          <label htmlFor="website" className={LABEL_CLASS}>
+            Brand website
+          </label>
+          <input
+            id="website"
+            name="website"
+            required
+            inputMode="url"
+            autoComplete="url"
+            placeholder="yourbrand.com"
+            className={FIELD_CLASS}
+          />
+        </div>
+
+        <fieldset className="sm:col-span-2">
+          <legend className={LABEL_CLASS}>Monthly Meta ad spend</legend>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {SPEND_BANDS.map((band, index) => (
               <label
                 key={band}
-                className="flex min-h-11.5 cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-black/40 px-2 py-2.5 text-center text-body font-semibold text-neutral-400 transition-colors has-checked:border-blue-500 has-checked:bg-blue-500/15 has-checked:text-white"
+                className="flex min-h-11 cursor-pointer items-center justify-center rounded-lg border border-line bg-ink px-2 py-2.5 text-center text-micro font-medium text-muted transition-colors hover:border-line-strong has-checked:border-accent has-checked:bg-accent/15 has-checked:text-fg has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-accent"
               >
                 <input
                   type="radio"
@@ -152,14 +150,14 @@ export default function StrategyCallForm() {
 
       <button
         type="submit"
-        className="glow-btn mt-7 flex min-h-13 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-body font-bold text-white transition-colors hover:bg-blue-500"
+        className={`mt-8 w-full ${BUTTON_PRIMARY} ${BUTTON_LG}`}
       >
         Book my free strategy call
         <span aria-hidden>→</span>
       </button>
 
-      <p className="mt-4 text-center text-micro text-neutral-500 text-pretty">
-        No pitch. No pressure. We&apos;ll WhatsApp you within 24 hours.
+      <p className="mt-4 text-center text-micro text-subtle text-pretty">
+        Opens WhatsApp with your details filled in. We reply within 24 hours.
       </p>
     </form>
   );

@@ -3,9 +3,10 @@
 import { useCallback, useEffect, useRef } from "react";
 
 import { TESTIMONIALS } from "@/content/testimonials";
+import { CARD } from "@/lib/ui";
 
 /* How long each position holds before the carousel slides one card left. */
-const STEP_MS = 1500;
+const STEP_MS = 2400;
 
 /* Initials for the caption avatar — first letter of the first two words. */
 const initials = (name: string) =>
@@ -114,26 +115,26 @@ export default function Testimonials() {
             <figure
               key={`${item.id}-${index}`}
               aria-hidden={isClone || undefined}
-              /* Two per view from md up rather than three, so each card is wide
-                 enough to read as a landscape rectangle instead of a column. */
-              className="flex w-[85%] max-w-full shrink-0 grow-0 basis-auto flex-col rounded-2xl border border-white/10 bg-white/4 p-4 sm:p-5 md:w-[calc((100%-1rem)/2)]"
+              /* Compact cards: two per view on tablets, three from lg up.
+                 Long quotes are clipped to six lines. */
+              className={`${CARD} flex w-[78%] max-w-full shrink-0 grow-0 basis-auto flex-col p-5 sm:p-6 md:w-[calc((100%-1rem)/2)] lg:w-[calc((100%-2rem)/3)]`}
             >
-              <span aria-hidden className="text-h3 leading-none text-blue-500/50">
+              <span aria-hidden className="text-h3 leading-none text-accent/50">
                 &ldquo;
               </span>
-              <blockquote className="mt-1 line-clamp-3 flex-1 text-body font-medium text-white text-pretty">
+              <blockquote className="mt-1 line-clamp-6 flex-1 text-[0.9375rem] leading-relaxed text-muted text-pretty">
                 {item.quote}
               </blockquote>
-              <figcaption className="mt-3 flex items-center gap-3 border-t border-white/10 pt-3">
+              <figcaption className="mt-5 flex items-center gap-3 border-t border-line pt-4">
                 <span
                   aria-hidden
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-micro font-bold text-white"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent/15 text-micro font-bold text-accent-soft"
                 >
                   {initials(item.name)}
                 </span>
                 <div className="min-w-0">
-                  <p className="text-body font-bold text-white">{item.name}</p>
-                  <p className="mt-0.5 text-micro text-neutral-400 text-pretty">
+                  <p className="text-body font-semibold text-fg">{item.name}</p>
+                  <p className="mt-0.5 text-micro text-subtle text-pretty">
                     {item.role} · {item.company}
                   </p>
                 </div>
@@ -143,12 +144,12 @@ export default function Testimonials() {
         })}
       </div>
 
-      <div className="mt-6 flex justify-center gap-3">
+      <div className="mt-5 flex justify-center gap-3">
         <button
           type="button"
           onClick={() => scrollByCard(-1)}
           aria-label="Previous testimonial"
-          className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-neutral-400 transition-colors hover:border-white/40 hover:text-white"
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-muted transition-colors hover:border-line-strong hover:text-fg"
         >
           ←
         </button>
@@ -156,7 +157,7 @@ export default function Testimonials() {
           type="button"
           onClick={() => scrollByCard(1)}
           aria-label="Next testimonial"
-          className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-neutral-400 transition-colors hover:border-white/40 hover:text-white"
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-muted transition-colors hover:border-line-strong hover:text-fg"
         >
           →
         </button>

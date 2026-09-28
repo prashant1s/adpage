@@ -11,8 +11,9 @@ import {
   SITE_URL,
 } from "@/lib/site";
 
+/* latin-ext carries the ₹ glyph. */
 const inter = Inter({
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   variable: "--font-inter",
   display: "swap",
 });
@@ -73,7 +74,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#07070b",
+  themeColor: "#0a0a0b",
   colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
@@ -136,8 +137,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en-IN" className={inter.variable} data-scroll-behavior="smooth">
-      <body className="antialiased bg-[#07070b]">
+    <html
+      lang="en-IN"
+      className={inter.variable}
+      data-scroll-behavior="smooth"
+    >
+      <body className="bg-ink font-sans text-fg antialiased">
         {children}
         <script
           type="application/ld+json"

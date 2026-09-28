@@ -3,6 +3,8 @@
 import { useId, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
+import { BUTTON_PRIMARY } from "@/lib/ui";
+
 /* Spec from the content doc:
    slider ₹50,000 → ₹5,00,000, steps of ₹25,000, starts at ₹1,50,000
    t = (spend − 50,000) ÷ 4,50,000
@@ -53,191 +55,174 @@ export default function LeakCalculator({
   }, [spend, mode]);
 
   /* Shared by the leak callout and the CTA so they match. */
-  const ctaSize = compact
-    ? "min-h-12 gap-2 rounded-xl px-6 py-3 text-body"
-    : "min-h-16 gap-2.5 rounded-2xl px-8 py-4.5 text-lg sm:px-12 sm:text-xl";
+  const ctaSize = "min-h-12 px-6 py-3 text-body";
 
-  const fill =((spend - MIN_SPEND) / (MAX_SPEND - MIN_SPEND)) * 100;
+  const fill = ((spend - MIN_SPEND) / (MAX_SPEND - MIN_SPEND)) * 100;
 
   return (
     <div
-      className={`relative overflow-hidden rounded-3xl border border-white/10 bg-linear-to-b from-white/6 to-white/2 ${
-        compact
-          ? "bg-[#07070b]/60 p-5 backdrop-blur-md sm:p-6"
-          : "p-5 sm:p-8 lg:p-10"
+      className={`relative rounded-2xl border border-line bg-raised ${
+        compact ? "p-5 sm:p-6" : "p-5 sm:p-7"
       }`}
     >
+      {/* ── Spend slider ───────────────────────────────── */}
+      {/* Compact always stacks: side-by-side, wider amounts (₹1,00,000+)
+          wrapped under the label while ₹50,000 didn't, so the header jumped. */}
       <div
-        aria-hidden
-        className="pointer-events-none absolute -top-32 left-1/2 h-64 w-xl -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl"
+        className={`flex flex-col gap-2 ${
+          compact
+            ? ""
+            : "sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:gap-4"
+        }`}
+      >
+        <label
+          htmlFor={spendId}
+          className="text-micro font-medium text-muted"
+        >
+          Monthly ad spend
+        </label>
+        <output
+          htmlFor={spendId}
+          className={`${compact ? "text-punch" : "text-stat"} font-semibold text-fg tabular-nums`}
+        >
+          {inr(spend)}
+        </output>
+      </div>
+
+      <input
+        id={spendId}
+        type="range"
+        min={MIN_SPEND}
+        max={MAX_SPEND}
+        step={SPEND_STEP}
+        value={spend}
+        onChange={(event) => setSpend(Number(event.target.value))}
+        style={{ ["--fill" as string]: `${fill}%` }}
+        className="leak-range mt-2 sm:mt-3"
+        aria-label="Your monthly ad spend"
       />
 
-      <div className="relative">
-        {/* ── Spend slider ───────────────────────────────── */}
-        {/* Compact always stacks: side-by-side, wider amounts (₹1,00,000+)
-            wrapped under the label while ₹50,000 didn't, so the header jumped. */}
-        <div
-          className={`flex flex-col gap-1 ${
-            compact
-              ? ""
-              : "sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:gap-4"
-          }`}
-        >
-          <label
-            htmlFor={spendId}
-            className="text-eyebrow font-bold uppercase text-neutral-500"
-          >
-            Your monthly ad spend
-          </label>
-          <output
-            htmlFor={spendId}
-            className={`${compact ? "text-punch" : "text-stat"} font-extrabold text-white tabular-nums`}
-          >
-            {inr(spend)}
-          </output>
-        </div>
-
-        <input
-          id={spendId}
-          type="range"
-          min={MIN_SPEND}
-          max={MAX_SPEND}
-          step={SPEND_STEP}
-          value={spend}
-          onChange={(event) => setSpend(Number(event.target.value))}
-          style={{ ["--fill" as string]: `${fill}%` }}
-          className="leak-range mt-3 sm:mt-4"
-          aria-label="Your monthly ad spend"
-        />
-
-        <div className="flex justify-between text-micro font-medium text-neutral-600 tabular-nums">
-          <span>{inr(MIN_SPEND)}</span>
-          <span>{inr(MAX_SPEND)}</span>
-        </div>
-
-        {/* ── Mode toggle ────────────────────────────────── */}
-        <div
-          role="tablist"
-          aria-label="Compare scenarios"
-          className={`${compact ? "mt-5" : "mt-7"} grid grid-cols-2 gap-1 rounded-2xl border border-white/10 bg-black/40 p-1`}
-        >
-          {MODES.map((option) => {
-            const selected = option.id === mode;
-            return (
-              <button
-                key={option.id}
-                type="button"
-                role="tab"
-                aria-selected={selected}
-                onClick={() => setMode(option.id)}
-                className="relative min-h-11.5 rounded-xl px-3 py-3 text-body font-bold transition-colors sm:px-4"
-              >
-                {selected && (
-                  <motion.span
-                    layoutId={`${uid}-calc-mode`}
-                    transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                    className="absolute inset-0 rounded-xl border border-emerald-500/40 bg-emerald-500/15"
-                  />
-                )}
-                <span
-                  className={`relative ${
-                    selected ? "text-emerald-300" : "text-neutral-500"
-                  }`}
-                >
-                  {option.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* ── Revenue + ROAS ─────────────────────────────── */}
-        <div className="mt-5 grid grid-cols-2 gap-3 sm:gap-4">
-          {[
-            { label: "Revenue", value: inr(revenue) },
-            { label: "ROAS", value: `${roas.toFixed(2)}x` },
-          ].map((stat) => (
-            <div
-              key={stat.label}
-              className="rounded-2xl border border-white/10 bg-black/30 px-4 py-4 sm:px-5 sm:py-5"
-            >
-              <p className="text-eyebrow font-bold uppercase text-neutral-500">
-                {stat.label}
-              </p>
-              <p
-                className={`mt-2 ${compact ? "text-punch" : "text-stat"} font-extrabold tabular-nums text-emerald-400`}
-              >
-                {stat.value}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        {/* ── Leak callout ───────────────────────────────── */}
-        {/* Sized like the CTA below; fixed min-height so swapping messages
-            doesn't shift it. */}
-        <div
-          className={`flex justify-center ${compact ? "mt-4 min-h-12" : "mt-6 min-h-16"}`}
-        >
-          <AnimatePresence mode="wait" initial={false}>
-            {mode === "now" ? (
-              <motion.button
-                key="now"
-                type="button"
-                onClick={() => setMode("whizoid")}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.2 }}
-                className={`group inline-flex w-full items-center justify-center border border-red-800/60 bg-red-950 text-center font-bold text-red-200 transition-colors hover:border-red-700 hover:bg-red-900 sm:w-auto ${ctaSize}`}
-              >
-                See what you&apos;re missing
-                <span
-                  aria-hidden
-                  className="transition-transform group-hover:translate-x-0.5"
-                >
-                  →
-                </span>
-              </motion.button>
-            ) : (
-              <motion.div
-                key="whizoid"
-                aria-live="polite"
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.2 }}
-                className={`inline-flex w-full items-center justify-center border border-red-800/60 bg-red-950 text-center font-bold text-red-200 sm:w-auto ${ctaSize}`}
-              >
-                {/* One text child, so it flows as a single line instead of
-                    wrapping as separate flex items. */}
-                <span>
-                  You&apos;re missing{" "}
-                  <span className="whitespace-nowrap font-extrabold tabular-nums text-red-400">
-                    {inr(leak)}
-                  </span>{" "}
-                  every month
-                </span>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        <div
-          className={`${compact ? "mt-4" : "mt-6"} flex flex-col items-center gap-3`}
-        >
-          <a
-            href="#book"
-            className={`glow-btn ${compact ? "hidden lg:inline-flex" : "inline-flex"} w-full items-center justify-center bg-blue-600 text-center font-bold text-white transition-colors hover:bg-blue-500 sm:w-auto ${ctaSize}`}
-          >
-            Get my real numbers checked
-            <span aria-hidden>→</span>
-          </a>
-          <p className="text-micro text-neutral-500">
-            Sample numbers. Your call shows your real ones.
-          </p>
-        </div>
+      <div className="flex justify-between text-micro text-subtle tabular-nums">
+        <span>{inr(MIN_SPEND)}</span>
+        <span>{inr(MAX_SPEND)}</span>
       </div>
+
+      {/* ── Mode toggle ────────────────────────────────── */}
+      <div
+        role="tablist"
+        aria-label="Compare scenarios"
+        className={`${compact ? "mt-5" : "mt-6"} grid grid-cols-2 gap-1 rounded-xl border border-line bg-ink p-1`}
+      >
+        {MODES.map((option) => {
+          const selected = option.id === mode;
+          return (
+            <button
+              key={option.id}
+              type="button"
+              role="tab"
+              aria-selected={selected}
+              onClick={() => setMode(option.id)}
+              className="relative min-h-11 rounded-lg px-3 py-2.5 text-micro font-semibold transition-colors sm:px-4 sm:text-body"
+            >
+              {selected && (
+                <motion.span
+                  layoutId={`${uid}-calc-mode`}
+                  transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                  className="absolute inset-0 rounded-lg border border-accent/40 bg-accent/15"
+                />
+              )}
+              <span
+                className={`relative ${selected ? "text-accent-soft" : "text-subtle hover:text-muted"}`}
+              >
+                {option.label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ── Revenue + ROAS ─────────────────────────────── */}
+      {/* Two cells split by a hairline instead of two separate boxes. */}
+      <dl className="mt-5 grid grid-cols-2 divide-x divide-line border-y border-line">
+        {[
+          { label: "Revenue", value: inr(revenue) },
+          { label: "ROAS", value: `${roas.toFixed(2)}x` },
+        ].map((stat, index) => (
+          <div
+            key={stat.label}
+            className={`py-4 sm:py-5 ${index === 0 ? "pr-4" : "pl-4 sm:pl-6"}`}
+          >
+            <dt className="text-micro font-medium text-muted">
+              {stat.label}
+            </dt>
+            <dd
+              className={`mt-2 ${compact ? "text-punch" : "text-stat"} font-bold tabular-nums text-accent-soft`}
+            >
+              {stat.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+
+      {/* ── Leak callout ───────────────────────────────── */}
+      {/* Sized like the CTA below; fixed min-height so swapping messages
+          doesn't shift it. */}
+      <div className={`${compact ? "mt-5 min-h-12" : "mt-6 min-h-14"}`}>
+        <AnimatePresence mode="wait" initial={false}>
+          {mode === "now" ? (
+            <motion.button
+              key="now"
+              type="button"
+              onClick={() => setMode("whizoid")}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.2 }}
+              className={`group flex w-full items-center justify-center gap-2 rounded-lg border border-loss/30 bg-loss-deep text-center font-semibold text-loss transition-colors hover:border-loss/60 ${ctaSize}`}
+            >
+              See what you&apos;re missing
+              <span
+                aria-hidden
+                className="transition-transform group-hover:translate-x-0.5"
+              >
+                →
+              </span>
+            </motion.button>
+          ) : (
+            <motion.p
+              key="whizoid"
+              aria-live="polite"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.2 }}
+              className={`flex w-full items-center justify-center rounded-lg border border-loss/30 bg-loss-deep text-center font-medium text-fg ${ctaSize}`}
+            >
+              {/* One text child, so it flows as a single line instead of
+                  wrapping as separate flex items. */}
+              <span>
+                You&apos;re missing{" "}
+                <span className="whitespace-nowrap font-bold tabular-nums text-loss">
+                  {inr(leak)}
+                </span>{" "}
+                every month
+              </span>
+            </motion.p>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <a
+        href="#book"
+        className={`mt-3 w-full ${BUTTON_PRIMARY} ${compact ? "hidden lg:flex" : "flex"} ${ctaSize}`}
+      >
+        Get my real numbers checked
+        <span aria-hidden>→</span>
+      </a>
+
+      <p className="mt-4 text-center text-micro text-subtle">
+        Sample numbers. Your call shows your real ones.
+      </p>
     </div>
   );
 }

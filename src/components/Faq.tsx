@@ -1,38 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { FAQS } from "@/content/faqs";
 
 export default function Faq() {
+  const uid = useId();
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <div className="divide-y divide-white/10 overflow-hidden rounded-2xl border border-white/10 bg-white/3">
+    <div className="space-y-2">
       {FAQS.map((item, index) => {
         const isOpen = open === index;
-        const panelId = `faq-panel-${index}`;
+        const panelId = `${uid}-faq-${index}`;
 
         return (
-          <div key={item.q}>
+          <div key={item.q} className="rounded-lg border border-line bg-raised px-4 sm:px-5">
             <h3>
               <button
                 type="button"
                 onClick={() => setOpen(isOpen ? null : index)}
                 aria-expanded={isOpen}
                 aria-controls={panelId}
-                className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left sm:px-6 sm:py-5"
+                className="group flex w-full items-center justify-between gap-4 py-3.5 text-left sm:py-4"
               >
-                <span className="text-h3 font-bold text-white">{item.q}</span>
-                <motion.span
-                  animate={{ rotate: isOpen ? 45 : 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/15 text-lead leading-none text-blue-400"
+                <span className="text-micro font-semibold text-fg sm:text-body">
+                  {item.q}
+                </span>
+                {/* Plus that turns into a minus: the vertical bar collapses. */}
+                <span
                   aria-hidden
+                  className="relative h-3 w-3 shrink-0 text-accent-soft"
                 >
-                  +
-                </motion.span>
+                  <span className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-current" />
+                  <span
+                    className={`absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-current transition-transform duration-200 ${
+                      isOpen ? "scale-y-0" : ""
+                    }`}
+                  />
+                </span>
               </button>
             </h3>
 
@@ -46,7 +53,7 @@ export default function Faq() {
                   transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                   className="overflow-hidden"
                 >
-                  <p className="px-4 pb-4 text-body text-neutral-400 text-pretty sm:px-6 sm:pb-5">
+                  <p className="max-w-2xl pb-4 text-micro text-muted text-pretty">
                     {item.a}
                   </p>
                 </motion.div>

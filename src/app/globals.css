@@ -1,86 +1,146 @@
 @import "tailwindcss";
 
 /* ─────────────────────────────────────────────────────────────
-   TYPE SCALE
-   Fluid sizes: each clamp() interpolates between a phone-width
-   minimum and a desktop maximum, so nothing needs per-breakpoint
-   font-size overrides in the markup.
+   DESIGN SYSTEM
+   Near-black page, two raised surface steps, one border colour and
+   a single blue accent (solid for text, gradient for buttons).
+   Loss/"money you're missing" is the one place red is used.
 ───────────────────────────────────────────────────────────── */
 @theme {
-  /* Uppercase kicker above headings — 11.5px → 12.5px */
-  --text-eyebrow: clamp(0.71875rem, 0.695rem + 0.11vw, 0.78125rem);
-  --text-eyebrow--line-height: 1.3;
-  --text-eyebrow--letter-spacing: 0.18em;
+  /* Neutrals */
+  --color-ink: #0a0a0a;          /* page background */
+  --color-surface: #111111;      /* alternate section background */
+  --color-raised: #171717;       /* cards, inputs */
+  --color-line: #262626;         /* borders */
+  --color-line-strong: #3f3f46;  /* hover borders */
+  --color-fg: #fafafa;           /* primary text — 19:1 on ink */
+  --color-muted: #a1a1aa;        /* secondary text — 7.8:1 on ink */
+  --color-subtle: #8b8b94;       /* captions — 5.6:1 on ink */
 
-  /* Fine print: notes, captions, footer — 13px → 14.5px */
-  --text-micro: clamp(0.8125rem, 0.776rem + 0.16vw, 0.90625rem);
-  --text-micro--line-height: 1.5;
+  /* Accent */
+  --color-accent: #3b82f6;       /* 5.2:1 on ink */
+  --color-accent-soft: #60a5fa;  /* accent text on raised cards */
+  --color-accent-deep: #2563eb;
 
-  /* Body copy — 16px → 17.5px */
-  --text-body: clamp(1rem, 0.963rem + 0.16vw, 1.09375rem);
-  --text-body--line-height: 1.6;
+  /* Loss (calculator callout only) */
+  --color-loss: #f87171;
+  --color-loss-deep: #2a0f0f;
 
-  /* Intro / sub-headline — 18.5px → 21.5px */
-  --text-lead: clamp(1.15625rem, 1.083rem + 0.33vw, 1.34375rem);
-  --text-lead--line-height: 1.55;
+  /* ── Type scale ─────────────────────────────────────────────
+     Fluid sizes clamp between a 375px phone and a 1280px desktop. */
 
-  /* Card titles — 19.5px → 22.5px */
-  --text-h3: clamp(1.21875rem, 1.145rem + 0.33vw, 1.40625rem);
-  --text-h3--line-height: 1.3;
+  /* Letter-spaced accent kicker above headings — 12px → 13px */
+  --text-eyebrow: clamp(0.75rem, 0.724rem + 0.11vw, 0.8125rem);
+  --text-eyebrow--line-height: 1.4;
+  --text-eyebrow--letter-spacing: 0.2em;
+
+  /* Fine print — 13px → 14px */
+  --text-micro: clamp(0.8125rem, 0.787rem + 0.11vw, 0.875rem);
+  --text-micro--line-height: 1.55;
+
+  /* Body — 16px → 17px */
+  --text-body: clamp(1rem, 0.974rem + 0.11vw, 1.0625rem);
+  --text-body--line-height: 1.65;
+
+  /* Lead / sub-headline — 17px → 20px */
+  --text-lead: clamp(1.0625rem, 0.985rem + 0.33vw, 1.25rem);
+  --text-lead--line-height: 1.6;
+
+  /* H3 — 18px → 21px */
+  --text-h3: clamp(1.125rem, 1.047rem + 0.33vw, 1.3125rem);
+  --text-h3--line-height: 1.35;
   --text-h3--letter-spacing: -0.01em;
 
-  /* Section headings — 30px → 48px */
-  --text-h2: clamp(1.875rem, 1.434rem + 1.96vw, 3rem);
-  --text-h2--line-height: 1.12;
-  --text-h2--letter-spacing: -0.025em;
-
-  /* Hero headline — 36px → 58px */
-  --text-display: clamp(2.25rem, 1.712rem + 2.39vw, 3.625rem);
-  --text-display--line-height: 1.08;
-  --text-display--letter-spacing: -0.03em;
-
-  /* Emphasis lines: punch line, guarantee strip — 21.5px → 29px */
-  --text-punch: clamp(1.34375rem, 1.16rem + 0.81vw, 1.8125rem);
+  /* Emphasis lines — 21px → 28px */
+  --text-punch: clamp(1.3125rem, 1.131rem + 0.77vw, 1.75rem);
   --text-punch--line-height: 1.3;
   --text-punch--letter-spacing: -0.015em;
 
-  /* Calculator readouts — 25px → 37px */
-  --text-stat: clamp(1.5625rem, 1.269rem + 1.3vw, 2.3125rem);
+  /* Stats / calculator readouts — 26px → 38px */
+  --text-stat: clamp(1.625rem, 1.315rem + 1.33vw, 2.375rem);
   --text-stat--line-height: 1.1;
   --text-stat--letter-spacing: -0.02em;
+
+  /* H2 — 28px → 42px */
+  --text-h2: clamp(1.75rem, 1.388rem + 1.55vw, 2.625rem);
+  --text-h2--line-height: 1.15;
+  --text-h2--letter-spacing: -0.025em;
+
+  /* H1 — 32px → 50px */
+  --text-display: clamp(2rem, 1.534rem + 1.99vw, 3.125rem);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.025em;
 }
 
-:root {
-  --background: #07070b;
-  --foreground: #ededed;
-  --accent: #3b82f6;
-  --accent-soft: rgba(59, 130, 246, 0.15);
-  --danger: #f43f5e;
-  --success: #10b981;
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
+/* ── Base ─────────────────────────────────────────────────── */
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--color-ink);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
   font-size: var(--text-body);
   line-height: var(--text-body--line-height);
-  overflow-x: hidden;
+  /* clip, not hidden: hidden would break position: sticky. */
+  overflow-x: clip;
 }
 
-/* Anchor targets clear the sticky mobile bar and sit off the viewport edge */
-:target {
+::selection {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent-soft);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+:target,
+section[id] {
   scroll-margin-top: 2rem;
 }
 
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--background); }
-::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+/* Highlighted words in headlines: blue gradient text. */
+.text-gradient {
+  background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Primary CTA: blue gradient with a soft glow that lifts on hover. */
+.btn-gradient {
+  background: linear-gradient(90deg, #2563eb 0%, #3b82f6 50%, #60a5fa 100%);
+  box-shadow: 0 8px 30px -6px rgb(59 130 246 / 0.55);
+  transition: box-shadow 0.2s ease, transform 0.1s ease, filter 0.2s ease;
+}
+
+.btn-gradient:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 10px 38px -4px rgb(59 130 246 / 0.7);
+}
+
+.btn-gradient:active {
+  transform: translateY(1px);
+}
+
+/* Soft blue halo behind a hero element. */
+.halo {
+  background: radial-gradient(
+    ellipse 60% 55% at 50% 45%,
+    rgb(37 99 235 / 0.22),
+    transparent 70%
+  );
+}
 
 /* ── Spend slider (calculator) ───────────────────────────── */
 .leak-range {
@@ -90,63 +150,105 @@ body {
   /* Tall enough to be an easy touch target, thin visible track */
   height: 44px;
   background: transparent;
-  outline: none;
   cursor: pointer;
 }
 
+.leak-range:focus-visible {
+  outline: none;
+}
+
 .leak-range::-webkit-slider-runnable-track {
-  height: 8px;
+  height: 6px;
   border-radius: 999px;
   background: linear-gradient(
     to right,
-    var(--accent) 0%,
-    var(--accent) var(--fill, 0%),
-    rgba(255, 255, 255, 0.1) var(--fill, 0%),
-    rgba(255, 255, 255, 0.1) 100%
+    var(--color-accent-deep) 0%,
+    var(--color-accent) var(--fill, 0%),
+    var(--color-line) var(--fill, 0%),
+    var(--color-line) 100%
   );
 }
 
 .leak-range::-moz-range-track {
-  height: 8px;
+  height: 6px;
   border-radius: 999px;
   background: linear-gradient(
     to right,
-    var(--accent) 0%,
-    var(--accent) var(--fill, 0%),
-    rgba(255, 255, 255, 0.1) var(--fill, 0%),
-    rgba(255, 255, 255, 0.1) 100%
+    var(--color-accent-deep) 0%,
+    var(--color-accent) var(--fill, 0%),
+    var(--color-line) var(--fill, 0%),
+    var(--color-line) 100%
   );
 }
 
 .leak-range::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  height: 26px;
-  width: 26px;
-  /* Centre the thumb on the 8px track */
-  margin-top: -9px;
+  height: 22px;
+  width: 22px;
+  /* Centre the thumb on the 6px track */
+  margin-top: -8px;
   border-radius: 50%;
   background: #fff;
-  border: 5px solid var(--accent);
-  box-shadow: 0 0 0 6px var(--accent-soft), 0 4px 14px rgba(0, 0, 0, 0.6);
+  border: 4px solid var(--color-accent);
+  box-shadow: 0 0 0 6px rgb(59 130 246 / 0.18);
   transition: box-shadow 0.2s ease;
 }
 
 .leak-range::-moz-range-thumb {
-  height: 26px;
-  width: 26px;
+  height: 22px;
+  width: 22px;
   border-radius: 50%;
   background: #fff;
-  border: 5px solid var(--accent);
-  box-shadow: 0 0 0 6px var(--accent-soft), 0 4px 14px rgba(0, 0, 0, 0.6);
+  border: 4px solid var(--color-accent);
+  box-shadow: 0 0 0 6px rgb(59 130 246 / 0.18);
 }
 
 .leak-range:focus-visible::-webkit-slider-thumb,
 .leak-range:active::-webkit-slider-thumb {
-  box-shadow: 0 0 0 10px var(--accent-soft), 0 4px 14px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 0 10px rgb(59 130 246 / 0.3);
 }
 
-/* ── Horizontal snap carousel (testimonials) ─────────────── */
+.leak-range:focus-visible::-moz-range-thumb,
+.leak-range:active::-moz-range-thumb {
+  box-shadow: 0 0 0 10px rgb(59 130 246 / 0.3);
+}
+
+/* ── Motion ──────────────────────────────────────────────────
+   Pure CSS, so nothing waits on JavaScript to become visible.
+   .intro  — hero entrance on page load, staggered via --delay.
+   .reveal — rises in as it scrolls into view (scroll-driven
+             animations; unsupported browsers just show it). */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .intro {
+    animation: rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--delay, 0s);
+  }
+
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Hide the scrollbar on horizontally scrolled tracks (testimonials carousel). */
 .no-scrollbar {
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -154,37 +256,4 @@ body {
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;
-}
-
-/* ── Primary CTA glow ───────────────────────────────────── */
-@keyframes glow-pulse {
-  0%, 100% {
-    box-shadow: 0 0 22px rgba(59, 130, 246, 0.45), 0 0 48px rgba(59, 130, 246, 0.18);
-  }
-  50% {
-    box-shadow: 0 0 34px rgba(59, 130, 246, 0.8), 0 0 72px rgba(59, 130, 246, 0.4);
-  }
-}
-
-.glow-btn {
-  animation: glow-pulse 3s ease-in-out infinite;
-}
-
-/* Static stand-in for the WebGL hero background on phones and
-   whenever motion is reduced. */
-.hero-fallback {
-  background:
-    radial-gradient(ellipse 85% 55% at 72% 12%, rgba(59, 130, 246, 0.38), transparent 70%),
-    radial-gradient(ellipse 70% 45% at 15% 72%, rgba(109, 52, 200, 0.3), transparent 70%),
-    var(--background);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  .glow-btn { animation: none; }
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
 }
