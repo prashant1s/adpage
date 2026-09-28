@@ -230,11 +230,15 @@ section[id] {
     animation-delay: var(--delay, 0s);
   }
 
-  @supports (animation-timeline: view()) {
-    .reveal {
-      animation: rise linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 70%;
+  /* Tablet/desktop only: dozens of scroll-linked animations add up on
+     low-end phones, so phones just show the content. */
+  @media (min-width: 768px) {
+    @supports (animation-timeline: view()) {
+      .reveal {
+        animation: rise linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 70%;
+      }
     }
   }
 }

@@ -7,6 +7,9 @@
    - the wheel handler only reacts to horizontal scrolling, so vertical page
      scroll never gets trapped while the cursor is over the carousel
    - a drag no longer counts as a click on the card under the pointer
+   - performance: darkening uses a cheap overlay instead of a brightness()
+     filter, blur is desktop-only, hidden cards are taken out of rendering,
+     and autoplay pauses while the carousel is off screen
    - colours follow the site's card / accent tokens */
 
 import {
@@ -71,6 +74,7 @@ interface CarouselConfig {
   ease: string;
   loop: boolean;
   cardWidth: number;
+  cardHeight: number;
   autoplayDelay: number;
 }
 
@@ -132,6 +136,26 @@ const DepthCarousel = ({
   const wheelTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const autoTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const reducedRef = useRef(false);
+  /* Phones / touch devices: no blur filter, fewer cards stacked behind.
+     Per-frame CSS filters on 10+ large layers is what makes mobile lag. */
+  const liteRef = useRef(false);
+  /* Autoplay only runs while the carousel is actually on screen. */
+  const inViewRef = useRef(false);
+  const widthRef = useRef(0);
+  const heightRef = useRef(0);
+
+  /* Scale cards to fit the container. On phones the card gets most of the
+     width (a small peek of the next one); on desktop room is left for the
+     full fan of cards on the side. */
+  const fitScale = useCallback(() => {
+    const cfg = cfgRef.current;
+    const spread = Math.abs(cfg.spread);
+    const needed = liteRef.current ? cfg.cardWidth + spread * 0.6 + 24 : cfg.cardWidth + spread * 2 + 120;
+    const byWidth = widthRef.current / needed;
+    // Leave ~88px for the dots below the card so they never overlap it.
+    const byHeight = heightRef.current > 0 ? (heightRef.current - 88) / cfg.cardHeight : 1;
+    scaleRef.current = clamp(Math.min(byWidth, byHeight), 0.4, 1);
+  }, []);
 
   const [active, setActive] = useState(0);
 
@@ -150,6 +174,7 @@ const DepthCarousel = ({
       ease,
       loop,
       cardWidth,
+      cardHeight,
       autoplayDelay
     };
   });
@@ -173,7 +198,9 @@ const DepthCarousel = ({
 
       const back = Math.max(0, d);
       const az = Math.abs(d);
-      const shown = az <= cfg.visibleCards + 0.5;
+      const lite = liteRef.current;
+      const maxVisible = lite ? Math.min(cfg.visibleCards, 2) : cfg.visibleCards;
+      const shown = az <= maxVisible + 0.5;
 
       const tz = -cfg.depth * d;
       const tx = dir * cfg.spread * d;
@@ -182,18 +209,21 @@ const DepthCarousel = ({
       let opacity = d < 0 ? Math.max(0, 1 + d) : 1;
       if (!shown) opacity = 0;
 
-      const brightness = Math.max(0.15, 1 - back * cfg.falloff);
-      const blurPx = cfg.blur > 0 ? Math.min(cfg.blur, (back / Math.max(1, cfg.visibleCards)) * cfg.blur) : 0;
+      const blurPx =
+        !lite && cfg.blur > 0 ? Math.min(cfg.blur, (back / Math.max(1, cfg.visibleCards)) * cfg.blur) : 0;
       const zi = Math.round(2000 - d * 20);
 
       el.style.transform = `translate(-50%, -50%) scale(${sc}) translateX(${tx.toFixed(2)}px) translateZ(${tz.toFixed(2)}px) rotateY(${ry.toFixed(3)}deg)`;
       el.style.opacity = opacity.toFixed(3);
-      el.style.filter = `brightness(${brightness.toFixed(3)}) blur(${blurPx.toFixed(2)}px)`;
+      el.style.filter = blurPx > 0.05 ? `blur(${blurPx.toFixed(2)}px)` : 'none';
+      el.style.visibility = opacity > 0.001 ? 'visible' : 'hidden';
       el.style.zIndex = String(zi);
       el.style.pointerEvents = shown && opacity > 0.05 ? 'auto' : 'none';
 
+      // Darkening for cards further back. A plain opacity change on the
+      // overlay is cheap; the old brightness() filter was not.
       const ov = overlayRefs.current[i];
-      if (ov) ov.style.opacity = clamp(back * cfg.falloff * 1.25, 0, 0.86).toFixed(3);
+      if (ov) ov.style.opacity = clamp(back * cfg.falloff * 1.6, 0, 0.9).toFixed(3);
     }
   }, []);
 
@@ -254,16 +284,39 @@ const DepthCarousel = ({
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
+
+    const media = window.matchMedia('(max-width: 767px), (pointer: coarse)');
+    const syncLite = () => {
+      liteRef.current = media.matches;
+      fitScale();
+      layout(posRef.current);
+    };
+    syncLite();
+    media.addEventListener('change', syncLite);
+
+    const io = new IntersectionObserver(([entry]) => {
+      inViewRef.current = entry.isIntersecting;
+    });
+    io.observe(root);
+
+    return () => {
+      media.removeEventListener('change', syncLite);
+      io.disconnect();
+    };
+  }, [layout, fitScale]);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
     const ro = new ResizeObserver(entries => {
-      const w = entries[0].contentRect.width;
-      const cfg = cfgRef.current;
-      const needed = cfg.cardWidth + Math.abs(cfg.spread) * 2 + 120;
-      scaleRef.current = clamp(w / needed, 0.4, 1);
+      widthRef.current = entries[0].contentRect.width;
+      heightRef.current = entries[0].contentRect.height;
+      fitScale();
       layout(posRef.current);
     });
     ro.observe(root);
     return () => ro.disconnect();
-  }, [layout]);
+  }, [layout, fitScale]);
 
   /* Horizontal wheel / trackpad swipes only. Vertical wheel is left alone
      so the page keeps scrolling normally over the carousel. */
@@ -384,7 +437,7 @@ const DepthCarousel = ({
       stop();
       autoTimerRef.current = setInterval(
         () => {
-          if (!hovered && !focused && !document.hidden) navigateBy(1);
+          if (!hovered && !focused && !document.hidden && inViewRef.current) navigateBy(1);
         },
         Math.max(cfgRef.current.autoplayDelay, 600)
       );
@@ -447,7 +500,7 @@ const DepthCarousel = ({
         {data.map((item, i) => (
           <div
             key={i}
-            className="absolute top-1/2 left-1/2 flex cursor-pointer flex-col overflow-hidden border border-line bg-raised shadow-[0_30px_60px_-20px_rgba(0,0,0,0.65),0_8px_20px_-10px_rgba(0,0,0,0.5)] [transform:translate(-50%,-50%)] origin-center will-change-[transform,opacity,filter]"
+            className="absolute top-1/2 left-1/2 flex cursor-pointer flex-col overflow-hidden border border-line bg-raised shadow-[0_30px_60px_-20px_rgba(0,0,0,0.65),0_8px_20px_-10px_rgba(0,0,0,0.5)] [transform:translate(-50%,-50%)] origin-center will-change-[transform,opacity]"
             ref={el => {
               cardRefs.current[i] = el;
             }}
@@ -491,7 +544,7 @@ const DepthCarousel = ({
               )}
             </div>
             <span
-              className="pointer-events-none absolute inset-0 opacity-0 mix-blend-multiply"
+              className="pointer-events-none absolute inset-0 opacity-0"
               ref={el => {
                 overlayRefs.current[i] = el;
               }}
@@ -505,7 +558,7 @@ const DepthCarousel = ({
         <>
           <button
             type="button"
-            className="absolute top-1/2 left-2 z-3000 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-[rgba(18,20,26,0.7)] text-white backdrop-blur-md transition-[background,border-color,transform] duration-200 hover:border-accent hover:bg-[rgba(28,31,40,0.9)] active:scale-95 sm:left-4"
+            className="absolute top-1/2 left-2 z-3000 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-[rgba(18,20,26,0.85)] text-white md:backdrop-blur-md transition-[background,border-color,transform] duration-200 hover:border-accent hover:bg-[rgba(28,31,40,0.9)] active:scale-95 sm:left-4"
             aria-label="Previous slide"
             onClick={() => navigateBy(-1)}
           >
@@ -515,7 +568,7 @@ const DepthCarousel = ({
           </button>
           <button
             type="button"
-            className="absolute top-1/2 right-2 z-3000 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-[rgba(18,20,26,0.7)] text-white backdrop-blur-md transition-[background,border-color,transform] duration-200 hover:border-accent hover:bg-[rgba(28,31,40,0.9)] active:scale-95 sm:right-4"
+            className="absolute top-1/2 right-2 z-3000 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-[rgba(18,20,26,0.85)] text-white md:backdrop-blur-md transition-[background,border-color,transform] duration-200 hover:border-accent hover:bg-[rgba(28,31,40,0.9)] active:scale-95 sm:right-4"
             aria-label="Next slide"
             onClick={() => navigateBy(1)}
           >
@@ -528,7 +581,7 @@ const DepthCarousel = ({
 
       {showIndicators && count > 1 && (
         <div
-          className="absolute bottom-0 left-1/2 z-3000 flex -translate-x-1/2 gap-2 rounded-full bg-[rgba(14,16,22,0.6)] px-3 py-2 backdrop-blur-sm"
+          className="absolute bottom-0 left-1/2 z-3000 flex -translate-x-1/2 gap-2 rounded-full bg-[rgba(14,16,22,0.8)] px-3 py-2 md:backdrop-blur-sm"
           role="tablist"
           aria-label="Slides"
         >

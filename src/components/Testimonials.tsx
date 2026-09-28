@@ -48,8 +48,15 @@ export default function Testimonials() {
     const observer = new ResizeObserver(measureCycle);
     observer.observe(track);
 
+    // Only auto-scroll while on screen, so it never competes with page scroll.
+    let inView = false;
+    const visibility = new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting;
+    });
+    visibility.observe(track);
+
     const advance = () => {
-      if (pausedRef.current || document.hidden || cycleRef.current <= 0) return;
+      if (!inView || pausedRef.current || document.hidden || cycleRef.current <= 0) return;
       const cards = track.children;
       const first = cards[0] as HTMLElement | undefined;
       const second = cards[1] as HTMLElement | undefined;
@@ -73,6 +80,7 @@ export default function Testimonials() {
     return () => {
       window.clearInterval(timer);
       observer.disconnect();
+      visibility.disconnect();
     };
   }, [measureCycle]);
 

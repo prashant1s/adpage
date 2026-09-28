@@ -458,7 +458,7 @@ export default function Home() {
               </p>
             </SectionIntro>
 
-            <div className="reveal relative mt-12 h-130 sm:h-140">
+            <div className="reveal relative mt-12 h-110 sm:h-130 md:h-140">
               <DepthCarousel
                 label="Behind the scenes photos"
                 captionPlacement="overlay"
