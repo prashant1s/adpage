@@ -6,7 +6,6 @@ import Faq from "@/components/Faq";
 import LeakCalculator from "@/components/LeakCalculator";
 import ProofWall from "@/components/ProofWall";
 import Reveal from "@/components/Reveal";
-import StickyCta from "@/components/StickyCta";
 import StrategyCallForm from "@/components/StrategyCallForm";
 import Testimonials from "@/components/Testimonials";
 import { BTS_SHOTS } from "@/content/bts";
@@ -458,7 +457,7 @@ export default function Home() {
               </p>
             </SectionIntro>
 
-            <div className="reveal relative mt-12 h-110 sm:h-130 md:h-140">
+            <div className="reveal relative mt-12 h-110 overflow-x-clip sm:h-130 md:h-140">
               <DepthCarousel
                 label="Behind the scenes photos"
                 captionPlacement="overlay"
@@ -669,7 +668,7 @@ export default function Home() {
       </main>
 
       {/* ── FOOTER ─────────────────────────── */}
-      <footer className="border-t border-line pt-14 pb-28 text-center md:pb-12">
+      <footer className="border-t border-line pt-14 pb-12 text-center">
         <div className={CONTAINER}>
           <Wordmark className="text-punch" />
           <p className="mt-3 text-body text-muted">
@@ -709,7 +708,6 @@ export default function Home() {
         </div>
       </footer>
 
-      <StickyCta />
     </>
   );
 }

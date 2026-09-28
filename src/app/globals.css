@@ -78,6 +78,9 @@
 
 /* ── Base ─────────────────────────────────────────────────── */
 html {
+  /* No sideways page scroll on phones, even if something pokes past the
+     edge (e.g. the carousels' side cards). */
+  overflow-x: clip;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   color-scheme: dark;
