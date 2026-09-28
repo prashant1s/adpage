@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
 /* Spec from the content doc:
    slider ₹50,000 → ₹5,00,000, steps of ₹25,000, starts at ₹1,50,000
@@ -39,7 +39,7 @@ export default function LeakCalculator({
   const [spend, setSpend] = useState(START_SPEND);
   const [mode, setMode] = useState<Mode>("now");
 
-  const { roas, revenue } = useMemo(() => {
+  const { roas, revenue, leak } = useMemo(() => {
     const t = (spend - MIN_SPEND) / (MAX_SPEND - MIN_SPEND);
     const roasNow = 1.55 - 0.45 * t;
     const roasWhizoid = 2.85 - 0.25 * t;
@@ -48,10 +48,16 @@ export default function LeakCalculator({
     return {
       roas: active,
       revenue: spend * active,
+      leak: spend * (roasWhizoid - roasNow),
     };
   }, [spend, mode]);
 
-  const fill = ((spend - MIN_SPEND) / (MAX_SPEND - MIN_SPEND)) * 100;
+  /* Shared by the leak callout and the CTA so they match. */
+  const ctaSize = compact
+    ? "min-h-12 gap-2 rounded-xl px-6 py-3 text-body"
+    : "min-h-16 gap-2.5 rounded-2xl px-8 py-4.5 text-lg sm:px-12 sm:text-xl";
+
+  const fill =((spend - MIN_SPEND) / (MAX_SPEND - MIN_SPEND)) * 100;
 
   return (
     <div
@@ -167,12 +173,62 @@ export default function LeakCalculator({
           ))}
         </div>
 
+        {/* ── Leak callout ───────────────────────────────── */}
+        {/* Sized like the CTA below; fixed min-height so swapping messages
+            doesn't shift it. */}
+        <div
+          className={`flex justify-center ${compact ? "mt-4 min-h-12" : "mt-6 min-h-16"}`}
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            {mode === "now" ? (
+              <motion.button
+                key="now"
+                type="button"
+                onClick={() => setMode("whizoid")}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.2 }}
+                className={`group inline-flex w-full items-center justify-center border border-red-800/60 bg-red-950 text-center font-bold text-red-200 transition-colors hover:border-red-700 hover:bg-red-900 sm:w-auto ${ctaSize}`}
+              >
+                See what you&apos;re missing
+                <span
+                  aria-hidden
+                  className="transition-transform group-hover:translate-x-0.5"
+                >
+                  →
+                </span>
+              </motion.button>
+            ) : (
+              <motion.div
+                key="whizoid"
+                aria-live="polite"
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.2 }}
+                className={`inline-flex w-full items-center justify-center border border-red-800/60 bg-red-950 text-center font-bold text-red-200 sm:w-auto ${ctaSize}`}
+              >
+                {/* One text child, so it flows as a single line instead of
+                    wrapping as separate flex items. */}
+                <span>
+                  You&apos;re missing{" "}
+                  <span className="whitespace-nowrap font-extrabold tabular-nums text-red-400">
+                    {inr(leak)}
+                  </span>{" "}
+                  every month
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
         <div
           className={`${compact ? "mt-4" : "mt-6"} flex flex-col items-center gap-3`}
         >
           <a
             href="#book"
-            className={`glow-btn ${compact ? "hidden min-h-12 gap-2 rounded-xl px-6 py-3 text-body lg:inline-flex" : "inline-flex min-h-16 gap-2.5 rounded-2xl px-8 py-4.5 text-lg sm:px-12 sm:text-xl"} w-full items-center justify-center bg-blue-600 text-center font-bold text-white transition-colors hover:bg-blue-500 sm:w-auto`}
+            className={`glow-btn ${compact ? "hidden lg:inline-flex" : "inline-flex"} w-full items-center justify-center bg-blue-600 text-center font-bold text-white transition-colors hover:bg-blue-500 sm:w-auto ${ctaSize}`}
           >
             Get my real numbers checked
             <span aria-hidden>→</span>
