@@ -143,6 +143,10 @@ const DepthCarousel = ({
   const inViewRef = useRef(false);
   const widthRef = useRef(0);
   const heightRef = useRef(0);
+  /* Last value written per card per property. layout() runs every frame,
+     so it only touches the DOM when a value actually changes. */
+  const styleCacheRef = useRef<Record<string, string>[]>([]);
+  const rafRef = useRef(0);
 
   /* Scale cards to fit the container. On phones the card gets most of the
      width (a small peek of the next one); on desktop room is left for the
@@ -211,21 +215,56 @@ const DepthCarousel = ({
 
       const blurPx =
         !lite && cfg.blur > 0 ? Math.min(cfg.blur, (back / Math.max(1, cfg.visibleCards)) * cfg.blur) : 0;
-      const zi = Math.round(2000 - d * 20);
+      // Stack order only changes when a card passes another one, instead of
+      // on every frame (each z-index change forces the layers to re-sort).
+      const zi = 2000 - Math.round(d) * 20;
 
-      el.style.transform = `translate(-50%, -50%) scale(${sc}) translateX(${tx.toFixed(2)}px) translateZ(${tz.toFixed(2)}px) rotateY(${ry.toFixed(3)}deg)`;
-      el.style.opacity = opacity.toFixed(3);
-      el.style.filter = blurPx > 0.05 ? `blur(${blurPx.toFixed(2)}px)` : 'none';
-      el.style.visibility = opacity > 0.001 ? 'visible' : 'hidden';
-      el.style.zIndex = String(zi);
-      el.style.pointerEvents = shown && opacity > 0.05 ? 'auto' : 'none';
+      const cache = (styleCacheRef.current[i] ??= {});
+      const set = (key: 'transform' | 'opacity' | 'filter' | 'visibility' | 'zIndex' | 'pointerEvents', value: string) => {
+        if (cache[key] !== value) {
+          cache[key] = value;
+          el.style[key] = value;
+        }
+      };
+
+      set(
+        'transform',
+        `translate(-50%, -50%) scale(${sc.toFixed(3)}) translateX(${tx.toFixed(1)}px) translateZ(${tz.toFixed(1)}px) rotateY(${ry.toFixed(2)}deg)`
+      );
+      set('opacity', opacity.toFixed(2));
+      set('filter', blurPx > 0.05 ? `blur(${blurPx.toFixed(1)}px)` : 'none');
+      set('visibility', opacity > 0.001 ? 'visible' : 'hidden');
+      set('zIndex', String(zi));
+      set('pointerEvents', shown && opacity > 0.05 ? 'auto' : 'none');
+
+      // Only the front card is exposed to screen readers. Set here rather
+      // than through React state so moving never re-renders every card.
+      const hidden = Math.round(d) !== 0 ? 'true' : 'false';
+      if (cache.ariaHidden !== hidden) {
+        cache.ariaHidden = hidden;
+        el.setAttribute('aria-hidden', hidden);
+      }
 
       // Darkening for cards further back. A plain opacity change on the
       // overlay is cheap; the old brightness() filter was not.
       const ov = overlayRefs.current[i];
-      if (ov) ov.style.opacity = clamp(back * cfg.falloff * 1.6, 0, 0.9).toFixed(3);
+      const ovOpacity = clamp(back * cfg.falloff * 1.6, 0, 0.9).toFixed(2);
+      if (ov && cache.overlay !== ovOpacity) {
+        cache.overlay = ovOpacity;
+        ov.style.opacity = ovOpacity;
+      }
     }
   }, []);
+
+  /* Pointer and wheel events can fire faster than the screen refreshes
+     (120Hz+ on touch). Coalesce them into one layout per frame. */
+  const scheduleLayout = useCallback(() => {
+    if (rafRef.current) return;
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = 0;
+      layout(posRef.current);
+    });
+  }, [layout]);
 
   const notify = useCallback(
     (idx: number) => {
@@ -332,7 +371,7 @@ const DepthCarousel = ({
       const delta = e.deltaMode === 1 ? e.deltaX * 24 : e.deltaX;
       const step = clamp(delta / (cfg.cardWidth * 0.9), -0.6, 0.6);
       posRef.current += step;
-      layout(posRef.current);
+      scheduleLayout();
       if (wheelTimerRef.current) clearTimeout(wheelTimerRef.current);
       wheelTimerRef.current = setTimeout(() => setFocus(Math.round(posRef.current), true), 130);
     };
@@ -341,7 +380,7 @@ const DepthCarousel = ({
       el.removeEventListener('wheel', onWheel);
       if (wheelTimerRef.current) clearTimeout(wheelTimerRef.current);
     };
-  }, [layout, setFocus]);
+  }, [scheduleLayout, setFocus]);
 
   const onPointerDown = useCallback((e: ReactPointerEvent<HTMLDivElement>) => {
     const cfg = cfgRef.current;
@@ -377,9 +416,9 @@ const DepthCarousel = ({
       drag.lastX = e.clientX;
       drag.lastT = now;
       posRef.current = drag.startPos - dx / stepPx;
-      layout(posRef.current);
+      scheduleLayout();
     },
-    [layout]
+    [scheduleLayout]
   );
 
   const onPointerEnd = useCallback(() => {
@@ -475,39 +514,28 @@ const DepthCarousel = ({
   useEffect(
     () => () => {
       tweenRef.current?.kill();
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
       if (wheelTimerRef.current) clearTimeout(wheelTimerRef.current);
       if (autoTimerRef.current) clearInterval(autoTimerRef.current);
     },
     []
   );
 
-  return (
-    <div
-      ref={rootRef}
-      className={`relative flex h-full min-h-80 w-full cursor-grab touch-pan-y select-none items-center justify-center outline-none [perspective-origin:50%_50%] active:cursor-grabbing focus-visible:rounded-xl focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-4 ${className}`.trim()}
-      style={{ perspective: `${perspective}px` }}
-      role="group"
-      aria-roledescription="carousel"
-      aria-label={label}
-      tabIndex={0}
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerEnd}
-      onPointerCancel={onPointerEnd}
-      onKeyDown={onKeyDown}
-    >
-      <div className="absolute inset-0 transform-3d">
-        {data.map((item, i) => (
+  /* Cards are built once per content change, not on every slide change, so
+     moving the carousel never re-renders them. Everything that changes while
+     moving (transform, opacity, aria-hidden…) is written directly in layout(). */
+  const cards = useMemo(
+    () =>
+      data.map((item, i) => (
           <div
             key={i}
-            className="absolute top-1/2 left-1/2 flex cursor-pointer flex-col overflow-hidden border border-line bg-raised shadow-[0_30px_60px_-20px_rgba(0,0,0,0.65),0_8px_20px_-10px_rgba(0,0,0,0.5)] [transform:translate(-50%,-50%)] origin-center will-change-[transform,opacity]"
+            className="absolute top-1/2 left-1/2 flex cursor-pointer flex-col overflow-hidden border border-line bg-raised backface-hidden [transform:translate(-50%,-50%)] origin-center will-change-[transform,opacity] md:shadow-[0_30px_60px_-20px_rgba(0,0,0,0.65),0_8px_20px_-10px_rgba(0,0,0,0.5)]"
             ref={el => {
               cardRefs.current[i] = el;
             }}
             style={{ width: cardWidth, height: cardHeight, borderRadius: radius }}
             aria-roledescription="slide"
             aria-label={`${i + 1} of ${count}${item.title ? `: ${item.title}` : ''}`}
-            aria-hidden={active !== i}
             onClick={() => onCardClick(i)}
           >
             {captionPlacement === 'top' && (item.title || item.caption) && (
@@ -529,7 +557,7 @@ const DepthCarousel = ({
                 src={item.image}
                 alt={item.alt || ''}
                 fill
-                sizes={`${cardWidth}px`}
+                sizes={`(max-width: 767px) ${Math.round(cardWidth * 0.85)}px, ${cardWidth}px`}
                 draggable={false}
                 className={`pointer-events-none select-none object-cover [-webkit-user-drag:none] ${
                   captionPlacement === 'top' ? 'object-top' : 'object-center'
@@ -551,7 +579,27 @@ const DepthCarousel = ({
               style={{ background: tint }}
             />
           </div>
-        ))}
+      )),
+    [data, count, cardWidth, cardHeight, radius, tint, captionPlacement, onCardClick]
+  );
+
+  return (
+    <div
+      ref={rootRef}
+      className={`relative flex h-full min-h-80 w-full cursor-grab touch-pan-y select-none items-center justify-center outline-none [perspective-origin:50%_50%] active:cursor-grabbing focus-visible:rounded-xl focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-4 ${className}`.trim()}
+      style={{ perspective: `${perspective}px` }}
+      role="group"
+      aria-roledescription="carousel"
+      aria-label={label}
+      tabIndex={0}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerEnd}
+      onPointerCancel={onPointerEnd}
+      onKeyDown={onKeyDown}
+    >
+      <div className="absolute inset-0 transform-3d">
+        {cards}
       </div>
 
       {showControls && count > 1 && (
