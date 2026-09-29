@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 
 import { WHATSAPP_NUMBER } from "@/lib/site";
 import { BUTTON_LG, BUTTON_PRIMARY, BUTTON_SECONDARY, BUTTON_MD } from "@/lib/ui";
@@ -28,8 +28,18 @@ function buildChatUrl(form: FormData) {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
-export default function StrategyCallForm() {
+export default function StrategyCallForm({
+  plain = false,
+}: {
+  /** Drop the card border/background, for use inside the booking popup. */
+  plain?: boolean;
+}) {
   const [chatUrl, setChatUrl] = useState<string | null>(null);
+  /* The form renders twice (page section + popup), so field ids must be
+     unique per instance for labels to stay linked to their inputs. */
+  const uid = useId();
+  const fieldId = (name: string) => `${uid}-${name}`;
+  const shell = plain ? "" : "rounded-2xl border border-line bg-raised";
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -48,7 +58,7 @@ export default function StrategyCallForm() {
     return (
       <div
         role="status"
-        className="rounded-2xl border border-line bg-raised p-6 sm:p-10"
+        className={`${shell} ${plain ? "" : "p-6 sm:p-10"}`}
       >
         <p className="text-eyebrow font-semibold uppercase text-accent">
           Request ready
@@ -76,15 +86,15 @@ export default function StrategyCallForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl border border-line bg-raised p-5 sm:p-8"
+      className={`${shell} ${plain ? "" : "p-5 sm:p-8"}`}
     >
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <label htmlFor="name" className={LABEL_CLASS}>
+          <label htmlFor={fieldId("name")} className={LABEL_CLASS}>
             Your name
           </label>
           <input
-            id="name"
+            id={fieldId("name")}
             name="name"
             required
             autoComplete="name"
@@ -94,11 +104,11 @@ export default function StrategyCallForm() {
         </div>
 
         <div>
-          <label htmlFor="whatsapp" className={LABEL_CLASS}>
+          <label htmlFor={fieldId("whatsapp")} className={LABEL_CLASS}>
             WhatsApp number
           </label>
           <input
-            id="whatsapp"
+            id={fieldId("whatsapp")}
             name="whatsapp"
             required
             type="tel"
@@ -111,11 +121,11 @@ export default function StrategyCallForm() {
         </div>
 
         <div className="sm:col-span-2">
-          <label htmlFor="website" className={LABEL_CLASS}>
+          <label htmlFor={fieldId("website")} className={LABEL_CLASS}>
             Brand website
           </label>
           <input
-            id="website"
+            id={fieldId("website")}
             name="website"
             required
             inputMode="url"

@@ -1,7 +1,8 @@
 /* Shared control styles so every CTA on the page matches. */
 
+/* btn-float: hover lift, arrow nudge and press feedback (globals.css). */
 const BUTTON_BASE =
-  "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-colors";
+  "btn-float inline-flex items-center justify-center gap-2 rounded-lg font-semibold";
 
 /* Blue gradient with glow — the one "click me" style on the page. */
 export const BUTTON_PRIMARY = `${BUTTON_BASE} btn-gradient text-white`;

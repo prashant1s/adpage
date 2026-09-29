@@ -1,9 +1,13 @@
 import Image from "next/image";
 
+import footerLogo from "../../public/footer-logo.avif";
 import heroAdsShot from "../../public/2.png";
+import BookingModal from "@/components/BookingModal";
 import DepthCarousel from "@/components/DepthCarousel";
 import Faq from "@/components/Faq";
+import GridBackdrop from "@/components/GridBackdrop";
 import LeakCalculator from "@/components/LeakCalculator";
+import MagneticButtons from "@/components/MagneticButtons";
 import ProofWall from "@/components/ProofWall";
 import Reveal from "@/components/Reveal";
 import StrategyCallForm from "@/components/StrategyCallForm";
@@ -153,14 +157,6 @@ function Cta({
   );
 }
 
-function Wordmark({ className = "" }: { className?: string }) {
-  return (
-    <span className={`font-extrabold tracking-tight ${className}`}>
-      Whizoid Studio<span className="text-accent">.</span>
-    </span>
-  );
-}
-
 /* ─────────────────────────────────────────
    PAGE
 ───────────────────────────────────────── */
@@ -180,6 +176,7 @@ export default function Home() {
           aria-labelledby="hero-heading"
           className="relative overflow-hidden pt-10 pb-20 sm:pt-14 sm:pb-24"
         >
+          <GridBackdrop />
           <div aria-hidden className="halo pointer-events-none absolute inset-0" />
 
           <div className={`relative ${CONTAINER} flex flex-col items-center text-center`}>
@@ -354,9 +351,10 @@ export default function Home() {
         <section
           id="calculator"
           aria-labelledby="calculator-heading"
-          className={`border-t border-line ${SECTION_Y}`}
+          className={`relative overflow-hidden border-t border-line ${SECTION_Y}`}
         >
-          <div className={CONTAINER}>
+          <GridBackdrop />
+          <div className={`relative ${CONTAINER}`}>
             <SectionIntro
               id="calculator-heading"
               kicker="The Leak"
@@ -368,7 +366,7 @@ export default function Home() {
               </p>
             </SectionIntro>
 
-            <Reveal className="mx-auto mt-12 max-w-lg">
+            <Reveal className="mx-auto mt-12 max-w-md">
               <LeakCalculator />
             </Reveal>
           </div>
@@ -457,7 +455,7 @@ export default function Home() {
               </p>
             </SectionIntro>
 
-            <div className="reveal relative mt-12 h-110 overflow-x-clip sm:h-130 md:h-140">
+            <div className="reveal relative mt-12 h-130 overflow-x-clip sm:h-150 md:h-170">
               <DepthCarousel
                 label="Behind the scenes photos"
                 captionPlacement="overlay"
@@ -467,22 +465,24 @@ export default function Home() {
                   title: shot.title,
                   caption: shot.caption,
                 }))}
-                cardWidth={400}
-                cardHeight={480}
+                /* 9:16, like Reels and Shorts. */
+                cardWidth={360}
+                cardHeight={640}
                 radius={18}
                 depth={220}
-                spread={90}
+                spread={110}
                 tilt={22}
                 tiltDirection="right"
                 perspective={1400}
-                visibleCards={4}
+                visibleCards={3}
+                symmetric
                 falloff={0.2}
                 blur={6}
                 tint="#05060a"
                 duration={1300}
                 ease="power3.out"
                 autoplay
-                autoplayDelay={5000}
+                autoplayDelay={1500}
                 loop
                 showControls
                 showIndicators
@@ -498,6 +498,7 @@ export default function Home() {
         >
           <div className={CONTAINER}>
             <Reveal className="relative mx-auto max-w-2xl overflow-hidden rounded-2xl border border-accent/30 bg-raised px-6 py-8 text-center sm:px-8 sm:py-10">
+              <GridBackdrop cell={36} />
               <div aria-hidden className="halo pointer-events-none absolute inset-0" />
               <div className="relative">
                 <p className={LABEL}>Our Guarantee</p>
@@ -602,6 +603,7 @@ export default function Home() {
           aria-labelledby="book-heading"
           className={`relative overflow-hidden border-t border-line bg-surface ${SECTION_Y}`}
         >
+          <GridBackdrop />
           <div aria-hidden className="halo pointer-events-none absolute inset-0" />
           <div className={`relative ${CONTAINER}`}>
             <SectionIntro
@@ -648,12 +650,13 @@ export default function Home() {
               title="Before You Book."
             >
               <p>
-                Something else on your mind?{" "}
+                Something else on your mind?
+                <br />
                 <a
                   href={WHATSAPP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-semibold text-accent-soft underline underline-offset-4"
+                  className="font-semibold whitespace-nowrap text-accent-soft underline underline-offset-4"
                 >
                   Ask us on WhatsApp
                 </a>
@@ -667,12 +670,24 @@ export default function Home() {
         </section>
       </main>
 
+      {/* Every "#book" button on the page opens this instead of scrolling. */}
+      <BookingModal />
+      <MagneticButtons />
+
       {/* ── FOOTER ─────────────────────────── */}
       <footer className="border-t border-line pt-14 pb-12 text-center">
         <div className={CONTAINER}>
-          <Wordmark className="text-punch" />
+          <Image
+            src={footerLogo}
+            alt="Whizoid Studio"
+            sizes="224px"
+            className="mx-auto h-auto w-44 sm:w-56"
+          />
           <p className="mt-3 text-body text-muted">
-            Meta ads for D2C brands. Stop guessing. Start scaling.
+            Meta ads for D2C brands.{" "}
+            {/* Own line on phones, same line from sm up. */}
+            <br className="sm:hidden" />
+            <span className="whitespace-nowrap">Stop guessing. Start scaling.</span>
           </p>
           <nav aria-label="Footer" className="mt-8">
             <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-micro text-muted">

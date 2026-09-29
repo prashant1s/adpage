@@ -57,6 +57,9 @@ export interface DepthCarouselProps {
   /* 'top': title/caption above the image (proof screenshots).
      'overlay': full-bleed image with the text over a bottom fade (photos). */
   captionPlacement?: 'top' | 'overlay';
+  /* Fan cards out on both sides of the front card instead of only one,
+     so it is obvious the carousel can be moved left and right. */
+  symmetric?: boolean;
   onChange?: (index: number, item: DepthCarouselItem) => void;
   className?: string;
 }
@@ -73,6 +76,7 @@ interface CarouselConfig {
   duration: number;
   ease: string;
   loop: boolean;
+  symmetric: boolean;
   cardWidth: number;
   cardHeight: number;
   autoplayDelay: number;
@@ -113,6 +117,7 @@ const DepthCarousel = ({
   showIndicators = true,
   label = 'Carousel',
   captionPlacement = 'top',
+  symmetric = false,
   onChange,
   className = ''
 }: DepthCarouselProps) => {
@@ -154,7 +159,8 @@ const DepthCarousel = ({
   const fitScale = useCallback(() => {
     const cfg = cfgRef.current;
     const spread = Math.abs(cfg.spread);
-    const needed = liteRef.current ? cfg.cardWidth + spread * 0.6 + 24 : cfg.cardWidth + spread * 2 + 120;
+    const peek = cfg.symmetric ? 1.2 : 0.6;
+    const needed = liteRef.current ? cfg.cardWidth + spread * peek + 24 : cfg.cardWidth + spread * 2 + 120;
     const byWidth = widthRef.current / needed;
     // Leave ~88px for the dots below the card so they never overlap it.
     const byHeight = heightRef.current > 0 ? (heightRef.current - 88) / cfg.cardHeight : 1;
@@ -177,6 +183,7 @@ const DepthCarousel = ({
       duration,
       ease,
       loop,
+      symmetric,
       cardWidth,
       cardHeight,
       autoplayDelay
@@ -200,24 +207,26 @@ const DepthCarousel = ({
         if (d > n / 2) d -= n;
       }
 
-      const back = Math.max(0, d);
+      // Symmetric: cards behind on both sides. Otherwise only on one side,
+      // and cards that have passed the front fade out.
+      const back = cfg.symmetric ? Math.abs(d) : Math.max(0, d);
       const az = Math.abs(d);
       const lite = liteRef.current;
       const maxVisible = lite ? Math.min(cfg.visibleCards, 2) : cfg.visibleCards;
       const shown = az <= maxVisible + 0.5;
 
-      const tz = -cfg.depth * d;
+      const tz = -cfg.depth * (cfg.symmetric ? az : d);
       const tx = dir * cfg.spread * d;
-      const ry = dir * cfg.tilt * clamp(d, 0, 1);
+      const ry = dir * cfg.tilt * clamp(d, cfg.symmetric ? -1 : 0, 1);
 
-      let opacity = d < 0 ? Math.max(0, 1 + d) : 1;
+      let opacity = d < 0 && !cfg.symmetric ? Math.max(0, 1 + d) : 1;
       if (!shown) opacity = 0;
 
       const blurPx =
         !lite && cfg.blur > 0 ? Math.min(cfg.blur, (back / Math.max(1, cfg.visibleCards)) * cfg.blur) : 0;
       // Stack order only changes when a card passes another one, instead of
       // on every frame (each z-index change forces the layers to re-sort).
-      const zi = 2000 - Math.round(d) * 20;
+      const zi = 2000 - Math.round(cfg.symmetric ? az : d) * 20;
 
       const cache = (styleCacheRef.current[i] ??= {});
       const set = (key: 'transform' | 'opacity' | 'filter' | 'visibility' | 'zIndex' | 'pointerEvents', value: string) => {

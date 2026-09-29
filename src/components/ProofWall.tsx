@@ -51,18 +51,19 @@ export default function ProofWall() {
           cardHeight={660}
           radius={18}
           depth={220}
-          spread={90}
+          spread={110}
           tilt={22}
           tiltDirection="right"
           perspective={1400}
-          visibleCards={4}
+          visibleCards={3}
+          symmetric
           falloff={0.2}
           blur={6}
           tint="#05060a"
           duration={1300}
           ease="power3.out"
           autoplay
-          autoplayDelay={5000}
+          autoplayDelay={1500}
           loop
           showControls
           showIndicators

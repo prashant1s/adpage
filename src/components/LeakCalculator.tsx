@@ -60,11 +60,7 @@ export default function LeakCalculator({
   const fill = ((spend - MIN_SPEND) / (MAX_SPEND - MIN_SPEND)) * 100;
 
   return (
-    <div
-      className={`relative rounded-2xl border border-line bg-raised ${
-        compact ? "p-5 sm:p-6" : "p-5 sm:p-7"
-      }`}
-    >
+    <div className="relative rounded-2xl border border-line bg-raised p-5 sm:p-6">
       {/* ── Spend slider ───────────────────────────────── */}
       {/* Compact always stacks: side-by-side, wider amounts (₹1,00,000+)
           wrapped under the label while ₹50,000 didn't, so the header jumped. */}

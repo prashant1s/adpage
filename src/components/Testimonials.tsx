@@ -8,15 +8,6 @@ import { CARD } from "@/lib/ui";
 /* How long each position holds before the carousel slides one card left. */
 const STEP_MS = 2400;
 
-/* Initials for the caption avatar — first letter of the first two words. */
-const initials = (name: string) =>
-  name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((word) => word[0])
-    .join("")
-    .toUpperCase();
-
 export default function Testimonials() {
   const trackRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(false);
@@ -133,13 +124,7 @@ export default function Testimonials() {
               <blockquote className="mt-1 line-clamp-6 flex-1 text-[0.9375rem] leading-relaxed text-muted text-pretty">
                 {item.quote}
               </blockquote>
-              <figcaption className="mt-5 flex items-center gap-3 border-t border-line pt-4">
-                <span
-                  aria-hidden
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent/15 text-micro font-bold text-accent-soft"
-                >
-                  {initials(item.name)}
-                </span>
+              <figcaption className="mt-5 border-t border-line pt-4">
                 <div className="min-w-0">
                   <p className="text-body font-semibold text-fg">{item.name}</p>
                   <p className="mt-0.5 text-micro text-subtle text-pretty">
