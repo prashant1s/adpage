@@ -192,12 +192,8 @@ export default function Home() {
               className="intro mt-6 max-w-[32ch] text-display font-bold text-balance"
               style={{ ["--delay" as string]: "0.1s" }}
             >
-              Spending Lakhs On Meta Ads And Still Stuck At{" "}
-              <span className="text-gradient">1.5x ROAS?</span>{" "}
-              <span className="underline decoration-3 underline-offset-[5px]">
-                We Fix The Leak
-              </span>{" "}
-              Before You Spend Another Rupee.
+              Spending Lakhs On Meta Ads. Still Stuck At{" "}
+              <span className="text-gradient">1.5x ROAS?</span>
             </h1>
 
             <p
