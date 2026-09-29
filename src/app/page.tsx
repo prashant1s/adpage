@@ -457,10 +457,11 @@ export default function Home() {
 
             <div className="reveal relative mt-12 h-130 overflow-x-clip sm:h-150 md:h-170">
               <DepthCarousel
-                label="Behind the scenes photos"
+                label="Behind the scenes photos and videos"
                 captionPlacement="overlay"
                 items={BTS_SHOTS.map((shot) => ({
                   image: shot.src,
+                  video: shot.video,
                   alt: shot.alt,
                   title: shot.title,
                   caption: shot.caption,

@@ -10,6 +10,8 @@
    - performance: darkening uses a cheap overlay instead of a brightness()
      filter, blur is desktop-only, hidden cards are taken out of rendering,
      and autoplay pauses while the carousel is off screen
+   - items can be videos: only the front one plays (muted), and autoplay
+     waits for it to finish before moving to the next card
    - colours follow the site's card / accent tokens */
 
 import {
@@ -25,7 +27,9 @@ import Image, { type StaticImageData } from 'next/image';
 import gsap from 'gsap';
 
 export type DepthCarouselItem = {
-  image: string | StaticImageData;
+  /* Either an image or a video (URL under /public) per item. */
+  image?: string | StaticImageData;
+  video?: string;
   alt?: string;
   title?: string;
   caption?: string;
@@ -127,6 +131,12 @@ const DepthCarousel = ({
   const rootRef = useRef<HTMLDivElement | null>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const overlayRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  /* Set when the browser refuses to play a video (e.g. iOS Low Power Mode),
+     so autoplay falls back to the normal delay instead of stalling. */
+  const playBlockedRef = useRef<boolean[]>([]);
+  const hoveredRef = useRef(false);
+  const focusedRef = useRef(false);
 
   const posRef = useRef(0);
   const focusRef = useRef(0);
@@ -329,6 +339,33 @@ const DepthCarousel = ({
 
   const navigateBy = useCallback((step: number) => setFocus(focusRef.current + step, true), [setFocus]);
 
+  /* Only the front video plays, and only while the carousel is on screen.
+     The others are paused and rewound so they start fresh when reached. */
+  const syncVideos = useCallback(() => {
+    const cur = focusRef.current;
+    videoRefs.current.forEach((v, i) => {
+      if (!v) return;
+      if (i === cur && inViewRef.current && !document.hidden) {
+        playBlockedRef.current[i] = false;
+        v.play().catch(() => {
+          playBlockedRef.current[i] = true;
+        });
+      } else {
+        v.pause();
+        if (i !== cur && v.currentTime) v.currentTime = 0;
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    syncVideos();
+  }, [active, syncVideos]);
+
+  useEffect(() => {
+    document.addEventListener('visibilitychange', syncVideos);
+    return () => document.removeEventListener('visibilitychange', syncVideos);
+  }, [syncVideos]);
+
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
@@ -344,6 +381,7 @@ const DepthCarousel = ({
 
     const io = new IntersectionObserver(([entry]) => {
       inViewRef.current = entry.isIntersecting;
+      syncVideos();
     });
     io.observe(root);
 
@@ -351,7 +389,7 @@ const DepthCarousel = ({
       media.removeEventListener('change', syncLite);
       io.disconnect();
     };
-  }, [layout, fitScale]);
+  }, [layout, fitScale, syncVideos]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -471,50 +509,48 @@ const DepthCarousel = ({
     [setFocus]
   );
 
+  /* Pause autoplay while the pointer or keyboard focus is on the carousel. */
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const onEnter = () => (hoveredRef.current = true);
+    const onLeave = () => (hoveredRef.current = false);
+    const onFocusIn = () => (focusedRef.current = true);
+    const onFocusOut = () => (focusedRef.current = false);
+    root.addEventListener('mouseenter', onEnter);
+    root.addEventListener('mouseleave', onLeave);
+    root.addEventListener('focusin', onFocusIn);
+    root.addEventListener('focusout', onFocusOut);
+    return () => {
+      root.removeEventListener('mouseenter', onEnter);
+      root.removeEventListener('mouseleave', onLeave);
+      root.removeEventListener('focusin', onFocusIn);
+      root.removeEventListener('focusout', onFocusOut);
+    };
+  }, []);
+
+  /* Autoplay. Restarts on every slide change, so the delay always counts
+     from when the current card arrived. Image cards stay for autoplayDelay;
+     video cards stay until the video has played to the end. */
   useEffect(() => {
     reducedRef.current = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!autoplay || reducedRef.current || count < 2) return;
-    const root = rootRef.current;
-    let hovered = false;
-    let focused = false;
-    const stop = () => {
+    const delay = Math.max(cfgRef.current.autoplayDelay, 600);
+    const since = performance.now();
+    autoTimerRef.current = setInterval(() => {
+      const idx = focusRef.current;
+      const video = videoRefs.current[idx];
+      const waited = performance.now() - since >= delay;
+      const done = video ? video.ended || !!video.error || (playBlockedRef.current[idx] && waited) : waited;
+      if (done && !hoveredRef.current && !focusedRef.current && !document.hidden && inViewRef.current) {
+        navigateBy(1);
+      }
+    }, 250);
+    return () => {
       if (autoTimerRef.current) clearInterval(autoTimerRef.current);
       autoTimerRef.current = null;
     };
-    const start = () => {
-      stop();
-      autoTimerRef.current = setInterval(
-        () => {
-          if (!hovered && !focused && !document.hidden && inViewRef.current) navigateBy(1);
-        },
-        Math.max(cfgRef.current.autoplayDelay, 600)
-      );
-    };
-    const onEnter = () => {
-      hovered = true;
-    };
-    const onLeave = () => {
-      hovered = false;
-    };
-    const onFocusIn = () => {
-      focused = true;
-    };
-    const onFocusOut = () => {
-      focused = false;
-    };
-    root?.addEventListener('mouseenter', onEnter);
-    root?.addEventListener('mouseleave', onLeave);
-    root?.addEventListener('focusin', onFocusIn);
-    root?.addEventListener('focusout', onFocusOut);
-    start();
-    return () => {
-      stop();
-      root?.removeEventListener('mouseenter', onEnter);
-      root?.removeEventListener('mouseleave', onLeave);
-      root?.removeEventListener('focusin', onFocusIn);
-      root?.removeEventListener('focusout', onFocusOut);
-    };
-  }, [autoplay, autoplayDelay, count, navigateBy]);
+  }, [autoplay, autoplayDelay, count, navigateBy, active]);
 
   useEffect(() => {
     layout(posRef.current);
@@ -562,16 +598,33 @@ const DepthCarousel = ({
                   : ''
               }`}
             >
-              <Image
-                src={item.image}
-                alt={item.alt || ''}
-                fill
-                sizes={`(max-width: 767px) ${Math.round(cardWidth * 0.85)}px, ${cardWidth}px`}
-                draggable={false}
-                className={`pointer-events-none select-none object-cover [-webkit-user-drag:none] ${
-                  captionPlacement === 'top' ? 'object-top' : 'object-center'
-                }`}
-              />
+              {item.video ? (
+                /* #t=0.001 makes iOS Safari show the first frame as a poster. */
+                <video
+                  ref={el => {
+                    videoRefs.current[i] = el;
+                  }}
+                  src={`${item.video}#t=0.001`}
+                  muted
+                  playsInline
+                  preload="metadata"
+                  aria-label={item.alt}
+                  className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover object-center"
+                />
+              ) : (
+                item.image && (
+                  <Image
+                    src={item.image}
+                    alt={item.alt || ''}
+                    fill
+                    sizes={`(max-width: 767px) ${Math.round(cardWidth * 0.85)}px, ${cardWidth}px`}
+                    draggable={false}
+                    className={`pointer-events-none select-none object-cover [-webkit-user-drag:none] ${
+                      captionPlacement === 'top' ? 'object-top' : 'object-center'
+                    }`}
+                  />
+                )
+              )}
               {/* Overlay captions: full-bleed photo, text on a bottom fade. */}
               {captionPlacement === 'overlay' && (item.title || item.caption) && (
                 <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/85 via-black/40 to-transparent px-5 pt-16 pb-5">
