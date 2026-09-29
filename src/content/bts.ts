@@ -20,10 +20,6 @@ export const BTS_SHOTS: {
   alt: string;
 }[] = [
   {
-    video: "/IMG_6834.mp4",
-    alt: "Behind-the-scenes video clip from one of our shoots.",
-  },
-  {
     src: onSet,
     title: "On set",
     caption: "Filming a founder interview",
@@ -36,7 +32,7 @@ export const BTS_SHOTS: {
     alt: "Two team members planning a product shoot at a table covered with products and equipment.",
   },
   {
-    video: "/IMG_6838.mp4",
+    video: "/IMG_6834.mp4",
     alt: "Behind-the-scenes video clip from one of our shoots.",
   },
   {
@@ -52,7 +48,7 @@ export const BTS_SHOTS: {
     alt: "Hands on laptops next to a mirrorless camera and a phone, reviewing footage.",
   },
   {
-    video: "/IMG_6852.mp4",
+    video: "/IMG_6838.mp4",
     alt: "Behind-the-scenes video clip from one of our shoots.",
   },
   {
@@ -60,5 +56,9 @@ export const BTS_SHOTS: {
     title: "In the edit",
     caption: "Cutting the next round of ads",
     alt: "A dark editing suite with a video timeline across two monitors and a laptop.",
+  },
+  {
+    video: "/IMG_6852.mp4",
+    alt: "Behind-the-scenes video clip from one of our shoots.",
   },
 ];
