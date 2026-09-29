@@ -55,7 +55,7 @@ export default function LeakCalculator({
   }, [spend, mode]);
 
   /* Shared by the leak callout and the CTA so they match. */
-  const ctaSize = "min-h-12 px-6 py-3 text-body";
+  const ctaSize = "min-h-12 px-4 py-3 text-body leading-snug sm:px-6";
 
   const fill = ((spend - MIN_SPEND) / (MAX_SPEND - MIN_SPEND)) * 100;
 
@@ -212,7 +212,11 @@ export default function LeakCalculator({
         href="#book"
         className={`mt-3 w-full ${BUTTON_PRIMARY} ${compact ? "hidden lg:flex" : "flex"} ${ctaSize}`}
       >
-        Get my real numbers checked
+        {/* Wrapped so the label centres (and balances) if it breaks on
+            narrow screens instead of hugging the left edge. */}
+        <span className="text-center text-balance">
+          Get my real numbers checked
+        </span>
         <span aria-hidden>→</span>
       </a>
 

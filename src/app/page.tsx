@@ -462,6 +462,7 @@ export default function Home() {
                 items={BTS_SHOTS.map((shot) => ({
                   image: shot.src,
                   video: shot.video,
+                  poster: shot.poster,
                   alt: shot.alt,
                   title: shot.title,
                   caption: shot.caption,

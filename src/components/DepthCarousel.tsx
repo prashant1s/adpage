@@ -30,6 +30,8 @@ export type DepthCarouselItem = {
   /* Either an image or a video (URL under /public) per item. */
   image?: string | StaticImageData;
   video?: string;
+  /* Still shown before the video loads (first frame of the clip). */
+  poster?: string;
   alt?: string;
   title?: string;
   caption?: string;
@@ -599,15 +601,19 @@ const DepthCarousel = ({
               }`}
             >
               {item.video ? (
-                /* #t=0.001 makes iOS Safari show the first frame as a poster. */
+                /* preload="none": nothing downloads until this card reaches the
+                   front and play() is called; the poster fills in until then. */
                 <video
                   ref={el => {
                     videoRefs.current[i] = el;
                   }}
-                  src={`${item.video}#t=0.001`}
+                  src={item.video}
+                  poster={item.poster}
                   muted
                   playsInline
-                  preload="metadata"
+                  disablePictureInPicture
+                  disableRemotePlayback
+                  preload="none"
                   aria-label={item.alt}
                   className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover object-center"
                 />

@@ -9,12 +9,15 @@ import studio from "../../public/img/IMG_6503.jpg";
 /**
  * Behind-the-scenes photos and clips for the BTS carousel. Captions describe
  * only what's visible in each photo — update them if you swap an image.
- * Videos (vertical 9:16, served from /public) play muted and the carousel
- * moves on once a clip has finished.
+ * Videos play muted and the carousel moves on once a clip has finished.
+ * Keep them light for phones: 720×1280, 30fps H.264, no audio, ~1 MB each
+ * (4K/60fps originals made the carousel stutter on mobile). Poster = first
+ * frame, so nothing downloads until the clip reaches the front.
  */
 export const BTS_SHOTS: {
   src?: StaticImageData;
   video?: string;
+  poster?: string;
   title?: string;
   caption?: string;
   alt: string;
@@ -32,7 +35,8 @@ export const BTS_SHOTS: {
     alt: "Two team members planning a product shoot at a table covered with products and equipment.",
   },
   {
-    video: "/IMG_6834.mp4",
+    video: "/video/bts-1.mp4",
+    poster: "/video/bts-1.jpg",
     alt: "Behind-the-scenes video clip from one of our shoots.",
   },
   {
@@ -48,7 +52,8 @@ export const BTS_SHOTS: {
     alt: "Hands on laptops next to a mirrorless camera and a phone, reviewing footage.",
   },
   {
-    video: "/IMG_6838.mp4",
+    video: "/video/bts-2.mp4",
+    poster: "/video/bts-2.jpg",
     alt: "Behind-the-scenes video clip from one of our shoots.",
   },
   {
@@ -58,7 +63,8 @@ export const BTS_SHOTS: {
     alt: "A dark editing suite with a video timeline across two monitors and a laptop.",
   },
   {
-    video: "/IMG_6852.mp4",
+    video: "/video/bts-3.mp4",
+    poster: "/video/bts-3.jpg",
     alt: "Behind-the-scenes video clip from one of our shoots.",
   },
 ];
