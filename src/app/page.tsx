@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import footerLogo from "../../public/footer-logo.avif";
 import heroAdsShot from "../../public/2.png";
@@ -25,7 +26,7 @@ import { BUTTON_LG, BUTTON_PRIMARY, CARD, LABEL } from "@/lib/ui";
    same gradient CTA. Content max width 1152px; text blocks 768px.
 ───────────────────────────────────────── */
 const CONTAINER = "mx-auto w-full max-w-6xl px-5 sm:px-8";
-const SECTION_Y = "py-20 sm:py-24 lg:py-28";
+const SECTION_Y = "py-16 sm:py-24 lg:py-28";
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`;
 
 /* ─────────────────────────────────────────
@@ -150,7 +151,9 @@ function Cta({
         href="#book"
         className={`w-full sm:w-auto ${BUTTON_PRIMARY} ${BUTTON_LG}`}
       >
-        {children}
+        {/* Balanced, so a label that wraps on small phones splits evenly
+            instead of leaving one word on its own line. */}
+        <span className="text-balance">{children}</span>
         <span aria-hidden>→</span>
       </a>
       {note && <p className="text-micro text-subtle">{note}</p>}
@@ -182,10 +185,12 @@ export default function Home() {
 
           <div className={`relative ${CONTAINER} flex flex-col items-center text-center`}>
             <p
-              className="intro btn-gradient rounded-full px-4 py-1.5 text-micro font-semibold text-white"
+              className="intro btn-gradient rounded-full px-3.5 py-1.5 text-[0.75rem] font-semibold text-balance text-white sm:px-4 sm:text-micro"
               style={{ ["--delay" as string]: "0.05s" }}
             >
-              D2C Brands Spending ₹1–3L/Month On Meta Ads
+              D2C Brands Spending{" "}
+              <span className="whitespace-nowrap">₹1–3L/Month</span> On Meta
+              Ads
             </p>
 
             <h1
@@ -452,7 +457,9 @@ export default function Home() {
               </p>
             </SectionIntro>
 
-            <div className="reveal relative mt-12 h-130 overflow-x-clip sm:h-150 md:h-170">
+            {/* Phones: height follows the width-scaled 9:16 card (plus
+                room for the dots), so narrow screens don't get a gap. */}
+            <div className="reveal relative mt-12 h-[min(calc(124vw+38px),520px)] overflow-x-clip sm:h-150 md:h-170">
               <DepthCarousel
                 label="Behind the scenes photos and videos"
                 captionPlacement="overlay"
@@ -620,7 +627,7 @@ export default function Home() {
               {CALL_AGENDA.map((item) => (
                 <span
                   key={item}
-                  className="rounded-full border border-line bg-raised px-4 py-2 text-micro text-muted"
+                  className="w-full rounded-xl border border-line bg-raised px-4 py-2 text-left text-micro text-muted sm:w-auto sm:rounded-full"
                 >
                   <span aria-hidden className="mr-1.5 text-accent-soft">
                     ✓
@@ -694,9 +701,7 @@ export default function Home() {
             <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-micro text-muted">
               {[
                 { href: "#results", label: "Results" },
-                { href: "#calculator", label: "Calculator" },
                 { href: "#how", label: "How It Works" },
-                { href: "#faq", label: "FAQ" },
                 { href: "#book", label: "Book A Call" },
               ].map((item) => (
                 <li key={item.href}>
@@ -715,6 +720,16 @@ export default function Home() {
                   WhatsApp
                 </a>
               </li>
+              {[
+                { href: "/terms-and-conditions", label: "Terms & Conditions" },
+                { href: "/privacy-policy", label: "Privacy Policy" },
+              ].map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} className="transition-colors hover:text-fg">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </nav>
           <p className="mt-10 border-t border-line pt-6 text-[0.6875rem] leading-relaxed text-subtle text-pretty">

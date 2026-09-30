@@ -37,8 +37,10 @@ export default function ProofWall() {
       </div>
 
       {/* Instagram Insights: phone screenshots in a 3D depth carousel.
-          Drag, swipe, use the arrows/dots, or arrow keys when focused. */}
-      <div className="reveal relative h-155 overflow-x-clip sm:h-175 md:h-190">
+          Drag, swipe, use the arrows/dots, or arrow keys when focused.
+          Phones: height follows the width-scaled card (plus room for the
+          dots), so narrow screens don't get a gap under it. */}
+      <div className="reveal relative h-[min(calc(133vw+36px),620px)] overflow-x-clip sm:h-175 md:h-190">
         <DepthCarousel
           label="Instagram Insights results"
           items={INSIGHT_SHOTS.map((shot) => ({

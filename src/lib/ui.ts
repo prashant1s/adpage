@@ -12,7 +12,7 @@ export const BUTTON_SECONDARY = `${BUTTON_BASE} border border-line bg-raised tex
 /* Sizes: md for inline CTAs, lg for the hero and the form. 44px+ tall
    either way, so both clear the touch-target minimum. */
 export const BUTTON_MD = "min-h-11 px-5 py-2.5 text-body";
-export const BUTTON_LG = "min-h-13 px-8 py-3.5 text-lead";
+export const BUTTON_LG = "min-h-13 px-6 py-3.5 text-lead sm:px-8";
 
 /* Letter-spaced blue kicker above section headings. */
 export const LABEL = "text-eyebrow font-semibold text-accent";

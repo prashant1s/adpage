@@ -60,7 +60,7 @@ export default function LeakCalculator({
   const fill = ((spend - MIN_SPEND) / (MAX_SPEND - MIN_SPEND)) * 100;
 
   return (
-    <div className="relative rounded-2xl border border-line bg-raised p-5 sm:p-6">
+    <div className="relative rounded-2xl border border-line bg-raised p-4 min-[360px]:p-5 sm:p-6">
       {/* ── Spend slider ───────────────────────────────── */}
       {/* Compact always stacks: side-by-side, wider amounts (₹1,00,000+)
           wrapped under the label while ₹50,000 didn't, so the header jumped. */}
@@ -138,21 +138,23 @@ export default function LeakCalculator({
       </div>
 
       {/* ── Revenue + ROAS ─────────────────────────────── */}
-      {/* Two cells split by a hairline instead of two separate boxes. */}
-      <dl className="mt-5 grid grid-cols-2 divide-x divide-line border-y border-line">
+      {/* Two cells split by a hairline instead of two separate boxes.
+          ROAS is always short ("1.45x"), so revenue gets the rest of the
+          width — ₹13,00,000 needs it on small phones. */}
+      <dl className="mt-5 grid grid-cols-[1fr_auto] divide-x divide-line border-y border-line">
         {[
           { label: "Revenue", value: inr(revenue) },
           { label: "ROAS", value: `${roas.toFixed(2)}x` },
         ].map((stat, index) => (
           <div
             key={stat.label}
-            className={`py-4 sm:py-5 ${index === 0 ? "pr-4" : "pl-4 sm:pl-6"}`}
+            className={`min-w-0 py-4 sm:py-5 ${index === 0 ? "pr-3 sm:pr-4" : "pl-3 sm:pl-6"}`}
           >
             <dt className="text-micro font-medium text-muted">
               {stat.label}
             </dt>
             <dd
-              className={`mt-2 ${compact ? "text-punch" : "text-stat"} font-bold tabular-nums text-accent-soft`}
+              className={`mt-2 ${compact ? "text-punch" : "text-[1.5rem] min-[360px]:text-stat"} font-bold whitespace-nowrap tabular-nums text-accent-soft`}
             >
               {stat.value}
             </dd>
