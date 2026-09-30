@@ -16,14 +16,20 @@ import StrategyCallForm from "@/components/StrategyCallForm";
 import Testimonials from "@/components/Testimonials";
 import { BTS_SHOTS } from "@/content/bts";
 import { PROOF_STATS } from "@/content/proof";
+import { hasCalendly } from "@/lib/calendly";
 import { WHATSAPP_NUMBER } from "@/lib/site";
-import { BUTTON_LG, BUTTON_PRIMARY, CARD, LABEL } from "@/lib/ui";
+import { BUTTON_LG, BUTTON_PRIMARY, CARD, CTA_LABEL, LABEL } from "@/lib/ui";
 
 /* ─────────────────────────────────────────
    LAYOUT RULES
    Centred, single-column rhythm: every section opens with a blue
    kicker + Title Case headline, then its content, then (usually) the
    same gradient CTA. Content max width 1152px; text blocks 768px.
+   Sections alternate ink / surface backgrounds.
+
+   ORDER: hero → problem (+ leak calculator) → how it works → results →
+   behind the scenes → testimonials → what you get → fit check → FAQ →
+   lead form (then Calendly) → final CTA.
 ───────────────────────────────────────── */
 const CONTAINER = "mx-auto w-full max-w-6xl px-5 sm:px-8";
 const SECTION_Y = "py-16 sm:py-24 lg:py-28";
@@ -82,6 +88,35 @@ const STEPS = [
   },
 ];
 
+/* Drafted from promises made elsewhere on the page — review before launch. */
+const DELIVERABLES = [
+  {
+    icon: "🔍",
+    title: "A full account audit in 7 days",
+    body: "Ads, tracking and landing page, checked end to end. You see exactly where money is leaking.",
+  },
+  {
+    icon: "🎬",
+    title: "New ads tested every week",
+    body: "Fresh hooks and angles, planned, shot and edited by our own team.",
+  },
+  {
+    icon: "⛔",
+    title: "Losing ads off within 72 hours",
+    body: "Ads that don't sell are switched off fast, so your budget only feeds what works.",
+  },
+  {
+    icon: "🎯",
+    title: "Tracking Meta can trust",
+    body: "Set up so Meta learns from your real sales and shows ads to the right people.",
+  },
+  {
+    icon: "📈",
+    title: "Careful scaling of winners",
+    body: "Budget goes up only on ads already selling, slowly enough that they don't break.",
+  },
+];
+
 const GUARANTEE_TERMS = [
   "We agree on one clear target with you on day one.",
   "Miss it inside 90 days and you don't pay our fee.",
@@ -105,6 +140,16 @@ const CALL_AGENDA = [
   "Look at your ad account with you, live",
   "Show you the 2–3 biggest places you're losing money",
   "Tell you what to fix first, even if you don't work with us",
+];
+
+/* Titles kept short so all three cards stay one line each, same height. */
+const NEXT_STEPS = [
+  { title: "Fill in 5 details", note: "Takes under a minute" },
+  {
+    title: "Pick a time",
+    note: hasCalendly ? "Any slot on Calendly" : "Whenever suits you",
+  },
+  { title: "Get your fix list", note: "Live, on a 30-min call" },
 ];
 
 /* ─────────────────────────────────────────
@@ -136,15 +181,8 @@ function SectionIntro({
   );
 }
 
-function Cta({
-  children = "Book My Free Strategy Call",
-  note,
-  className = "",
-}: {
-  children?: React.ReactNode;
-  note?: string;
-  className?: string;
-}) {
+/* The main CTA. Always the same label — see CTA_LABEL. */
+function Cta({ note, className = "" }: { note?: string; className?: string }) {
   return (
     <div className={`flex flex-col items-center gap-3 text-center ${className}`}>
       <a
@@ -153,11 +191,24 @@ function Cta({
       >
         {/* Balanced, so a label that wraps on small phones splits evenly
             instead of leaving one word on its own line. */}
-        <span className="text-balance">{children}</span>
+        <span className="text-balance">{CTA_LABEL}</span>
         <span aria-hidden>→</span>
       </a>
       {note && <p className="text-micro text-subtle">{note}</p>}
     </div>
+  );
+}
+
+function Tick({ tone = "accent" }: { tone?: "accent" | "loss" }) {
+  return (
+    <span
+      aria-hidden
+      className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[0.7rem] font-bold ${
+        tone === "accent" ? "bg-accent/20 text-accent-soft" : "bg-loss/15 text-loss"
+      }`}
+    >
+      {tone === "accent" ? "✓" : "✕"}
+    </span>
   );
 }
 
@@ -178,7 +229,7 @@ export default function Home() {
         {/* ── HERO ───────────────────────────── */}
         <section
           aria-labelledby="hero-heading"
-          className="relative overflow-hidden pt-10 pb-20 sm:pt-14 sm:pb-24"
+          className="relative overflow-hidden pt-10 pb-16 sm:pt-14 sm:pb-24"
         >
           <GridBackdrop />
           <div aria-hidden className="halo pointer-events-none absolute inset-0" />
@@ -213,7 +264,7 @@ export default function Home() {
             {/* Framed like the reference site's hero video: a real Ads
                 Manager screenshot as the hero visual. */}
             <figure
-              className="intro mt-12 w-full max-w-3xl rounded-3xl border border-line bg-surface p-2 shadow-[0_30px_90px_-30px_rgb(37_99_235/0.45)]"
+              className="intro mt-10 w-full max-w-3xl rounded-3xl border border-line bg-surface p-2 shadow-[0_30px_90px_-30px_rgb(37_99_235/0.45)] sm:mt-12"
               style={{ ["--delay" as string]: "0.2s" }}
             >
               <div className="overflow-hidden rounded-2xl bg-white">
@@ -234,14 +285,148 @@ export default function Home() {
               </figcaption>
             </figure>
 
-            <Cta
-              className="intro mt-10 w-full"
-              note="Free 30-min call · No pitch · Reply within 24 hours"
-            />
+            {/* Phones get the sticky CTA from the first screen, so the hero
+                shows only the reassurance line there, not a second button. */}
+            <div
+              className="intro mt-10 hidden w-full md:block"
+              style={{ ["--delay" as string]: "0.25s" }}
+            >
+              <Cta note="Free 30-min call · No pitch · Reply within 24 hours" />
+            </div>
+            <p className="intro mt-6 text-micro text-subtle md:hidden">
+              Free 30-min call · No pitch · Reply within 24 hours
+            </p>
           </div>
         </section>
 
-        {/* ── PROOF ──────────────────────────── */}
+        {/* ── PROBLEM ────────────────────────── */}
+        <section
+          aria-labelledby="problem-heading"
+          className={`border-t border-line bg-surface ${SECTION_Y}`}
+        >
+          <div className={CONTAINER}>
+            <SectionIntro
+              id="problem-heading"
+              kicker="Sound Familiar?"
+              title="Our Clients Are Usually In One Of These Situations Before Working With Us."
+            >
+              <p>
+                You&apos;ve got a product people love. You&apos;re spending
+                real money on Meta. But every month looks the same.
+              </p>
+            </SectionIntro>
+
+            <Reveal className="mx-auto mt-10 max-w-3xl">
+              <ul className="grid gap-3 sm:grid-cols-2">
+                {SYMPTOMS.map((symptom) => (
+                  <li
+                    key={symptom}
+                    className="flex items-start gap-3 rounded-xl border border-line bg-ink px-4 py-3.5 text-body text-fg/90"
+                  >
+                    <Tick tone="loss" />
+                    {symptom}
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+
+            <Reveal className="mx-auto mt-16 max-w-3xl text-center">
+              <p className="text-punch font-bold text-balance">
+                That&apos;s not a product problem. It&apos;s a system problem.{" "}
+                <span className="text-muted">
+                  Here&apos;s what&apos;s actually breaking down:
+                </span>
+              </p>
+            </Reveal>
+
+            <div className="mt-10 grid gap-4 sm:gap-5 md:grid-cols-2">
+              {REASONS.map((reason, index) => (
+                <Reveal key={reason.title} className={`${CARD} p-6 sm:p-7`}>
+                  <p className="text-eyebrow font-semibold text-accent">
+                    Leak {String(index + 1).padStart(2, "0")}
+                  </p>
+                  <h3 className="mt-2 text-h3 font-bold">{reason.title}</h3>
+                  <p className="mt-2 text-body text-muted text-pretty">
+                    {reason.body}
+                  </p>
+                </Reveal>
+              ))}
+              {/* Fills the empty sixth cell on md+ with the punchline. */}
+              <Reveal className="flex items-center rounded-2xl border border-accent/30 bg-accent/10 p-6 sm:p-7">
+                <p className="text-h3 font-bold text-balance">
+                  Putting more money into this only makes the loss{" "}
+                  <span className="text-gradient">bigger</span>.
+                </p>
+              </Reveal>
+            </div>
+
+            <Cta className="mt-14" />
+          </div>
+        </section>
+
+        {/* ── CALCULATOR ─────────────────────── */}
+        <section
+          id="calculator"
+          aria-labelledby="calculator-heading"
+          className={`relative overflow-hidden border-t border-line ${SECTION_Y}`}
+        >
+          <GridBackdrop />
+          <div className={`relative ${CONTAINER}`}>
+            <SectionIntro
+              id="calculator-heading"
+              kicker="The Leak"
+              title="How Much Are Your Ads Leaking Every Month?"
+            >
+              <p>
+                Set your monthly spend. We compare what a typical account your
+                size gets with what our system is built to reach.
+              </p>
+            </SectionIntro>
+
+            <Reveal className="mx-auto mt-12 max-w-md">
+              <LeakCalculator />
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ── HOW IT WORKS (the system) ──────── */}
+        <section
+          id="how"
+          aria-labelledby="how-heading"
+          className={`border-t border-line bg-surface ${SECTION_Y}`}
+        >
+          <div className={CONTAINER}>
+            <SectionIntro
+              id="how-heading"
+              kicker="How It Works"
+              title="One Broken Step Kills Everything, So We Fix All Three."
+            >
+              <p>
+                Most brands try more budget. It doesn&apos;t work. So they blame
+                Meta. The problem is almost never the platform. It&apos;s how the
+                account is run, week after week.
+              </p>
+            </SectionIntro>
+
+            <ol className="mt-14 grid gap-4 sm:gap-5 lg:grid-cols-3">
+              {STEPS.map((step) => (
+                <Reveal as="li" key={step.label} className={`${CARD} flex flex-col p-6 sm:p-7`}>
+                  <p className="text-eyebrow font-bold uppercase text-accent">
+                    {step.label}
+                  </p>
+                  <p className="mt-2 text-micro text-subtle">{step.when}</p>
+                  <p className="mt-4 text-body text-muted text-pretty">
+                    {step.body}
+                  </p>
+                </Reveal>
+              ))}
+            </ol>
+
+            <Cta className="mt-14" />
+          </div>
+        </section>
+
+        {/* ── RESULTS ────────────────────────── */}
         <section
           id="results"
           aria-labelledby="results-heading"
@@ -279,171 +464,11 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── PROBLEM ────────────────────────── */}
-        <section
-          aria-labelledby="problem-heading"
-          className={`border-t border-line bg-surface ${SECTION_Y}`}
-        >
-          <div className={CONTAINER}>
-            <SectionIntro
-              id="problem-heading"
-              kicker="Sound Familiar?"
-              title="Our Clients Are Usually In One Of These Situations Before Working With Us."
-            >
-              <p>
-                You&apos;ve got a product people love. You&apos;re spending
-                real money on Meta. But every month looks the same.
-              </p>
-            </SectionIntro>
-
-            <Reveal className="mx-auto mt-10 max-w-3xl">
-              <ul className="grid gap-3 sm:grid-cols-2">
-                {SYMPTOMS.map((symptom) => (
-                  <li
-                    key={symptom}
-                    className="flex items-start gap-3 rounded-xl border border-line bg-ink px-4 py-3.5 text-body text-fg/90"
-                  >
-                    <span
-                      aria-hidden
-                      className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-loss/15 text-[0.7rem] font-bold text-loss"
-                    >
-                      ✕
-                    </span>
-                    {symptom}
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-
-            <Reveal className="mx-auto mt-16 max-w-3xl text-center">
-              <p className="text-punch font-bold text-balance">
-                That&apos;s not a product problem. It&apos;s a system problem.{" "}
-                <span className="text-muted">
-                  Here&apos;s what&apos;s actually breaking down:
-                </span>
-              </p>
-            </Reveal>
-
-            <div className="mt-10 grid gap-4 sm:gap-5 md:grid-cols-2">
-              {REASONS.map((reason, index) => (
-                <Reveal key={reason.title} className={`${CARD} p-6 sm:p-7`}>
-                  <p className="text-eyebrow font-semibold text-accent">
-                    Leak {String(index + 1).padStart(2, "0")}
-                  </p>
-                  <h3 className="mt-2 text-h3 font-bold">{reason.title}</h3>
-                  <p className="mt-2 text-body text-muted text-pretty">
-                    {reason.body}
-                  </p>
-                </Reveal>
-              ))}
-              {/* Fills the empty sixth cell on md+ with the punchline. */}
-              <Reveal className="flex items-center rounded-2xl border border-accent/30 bg-accent/10 p-6 sm:p-7">
-                <p className="text-h3 font-bold text-balance">
-                  Putting more money into this only makes the loss{" "}
-                  <span className="text-gradient">bigger</span>.
-                </p>
-              </Reveal>
-            </div>
-
-            <Cta className="mt-14">Check Which Ones I Have</Cta>
-          </div>
-        </section>
-
-        {/* ── CALCULATOR ─────────────────────── */}
-        <section
-          id="calculator"
-          aria-labelledby="calculator-heading"
-          className={`relative overflow-hidden border-t border-line ${SECTION_Y}`}
-        >
-          <GridBackdrop />
-          <div className={`relative ${CONTAINER}`}>
-            <SectionIntro
-              id="calculator-heading"
-              kicker="The Leak"
-              title="How Much Are Your Ads Leaking Every Month?"
-            >
-              <p>
-                Set your monthly spend. We compare what a typical account your
-                size gets with what our system is built to reach.
-              </p>
-            </SectionIntro>
-
-            <Reveal className="mx-auto mt-12 max-w-md">
-              <LeakCalculator />
-            </Reveal>
-          </div>
-        </section>
-
-        {/* ── HOW IT WORKS ───────────────────── */}
-        <section
-          id="how"
-          aria-labelledby="how-heading"
-          className={`border-t border-line bg-surface ${SECTION_Y}`}
-        >
-          <div className={CONTAINER}>
-            <SectionIntro
-              id="how-heading"
-              kicker="How It Works"
-              title="One Broken Step Kills Everything, So We Fix All Three."
-            >
-              <p>
-                Most brands try more budget. It doesn&apos;t work. So they blame
-                Meta. The problem is almost never the platform. It&apos;s how the
-                account is run, week after week.
-              </p>
-            </SectionIntro>
-
-            <ol className="mt-14 grid gap-4 sm:gap-5 lg:grid-cols-3">
-              {STEPS.map((step) => (
-                <Reveal as="li" key={step.label} className={`${CARD} flex flex-col p-6 sm:p-7`}>
-                  <p className="text-eyebrow font-bold uppercase text-accent">
-                    {step.label}
-                  </p>
-                  <p className="mt-2 text-micro text-subtle">{step.when}</p>
-                  <p className="mt-4 text-body text-muted text-pretty">
-                    {step.body}
-                  </p>
-                </Reveal>
-              ))}
-            </ol>
-
-            {/* The weekly update, shown rather than described. */}
-            <Reveal className={`mt-5 grid items-center gap-8 ${CARD} p-6 sm:p-8 lg:grid-cols-2`}>
-              <div>
-                <p className="text-eyebrow font-bold uppercase text-accent">
-                  Every Week You Get
-                </p>
-                <h3 className="mt-3 text-punch font-bold text-balance">
-                  One Short WhatsApp Update. Not A 20-Page Report.
-                </h3>
-                <p className="mt-3 text-body text-muted text-pretty">
-                  What we tested, what worked, what&apos;s next. Readable in
-                  thirty seconds.
-                </p>
-              </div>
-              <figure>
-                <div className="ml-auto max-w-md rounded-2xl rounded-tr-sm bg-[#144d37] px-4 py-3 text-body leading-relaxed text-white">
-                  <p className="font-semibold">Weekly update 📊</p>
-                  <p className="mt-2">✅ Tested 4 new hooks</p>
-                  <p>🏆 Before/after angle is now the best performer</p>
-                  <p>⛔ Switched off 3 ads that weren&apos;t selling</p>
-                  <p>➡️ Next: +20% budget on the winner, 2 new videos</p>
-                </div>
-                <figcaption className="mt-2 text-right text-[0.75rem] text-subtle">
-                  Example message
-                </figcaption>
-              </figure>
-            </Reveal>
-
-            <Cta className="mt-14">Fix My Ads</Cta>
-          </div>
-        </section>
-
         {/* ── BEHIND THE SCENES ──────────────── */}
         <section
           id="bts"
           aria-labelledby="bts-heading"
-          className={`border-t border-line ${SECTION_Y}`}
+          className={`border-t border-line bg-surface ${SECTION_Y}`}
         >
           <div className={CONTAINER}>
             <SectionIntro
@@ -499,46 +524,10 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── GUARANTEE ──────────────────────── */}
-        <section
-          aria-labelledby="guarantee-heading"
-          className="border-t border-line py-14 sm:py-16"
-        >
-          <div className={CONTAINER}>
-            <Reveal className="relative mx-auto max-w-2xl overflow-hidden rounded-2xl border border-accent/30 bg-raised px-6 py-8 text-center sm:px-8 sm:py-10">
-              <GridBackdrop cell={36} />
-              <div aria-hidden className="halo pointer-events-none absolute inset-0" />
-              <div className="relative">
-                <p className={LABEL}>Our Guarantee</p>
-                <h2
-                  id="guarantee-heading"
-                  className="mt-3 text-h2 font-bold text-balance"
-                >
-                  No Results In 90 Days?{" "}
-                  <span className="text-gradient">You Don&apos;t Pay Us.</span>
-                </h2>
-                <ul className="mx-auto mt-6 max-w-md space-y-2 text-left">
-                  {GUARANTEE_TERMS.map((term) => (
-                    <li key={term} className="flex items-start gap-2.5 text-micro text-fg/90 sm:text-body">
-                      <span
-                        aria-hidden
-                        className="mt-0.5 flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-full bg-accent/20 text-[0.7rem] font-bold text-accent-soft"
-                      >
-                        ✓
-                      </span>
-                      {term}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </Reveal>
-          </div>
-        </section>
-
         {/* ── TESTIMONIALS ───────────────────── */}
         <section
           aria-labelledby="testimonials-heading"
-          className={`border-t border-line bg-surface ${SECTION_Y}`}
+          className={`border-t border-line ${SECTION_Y}`}
         >
           <div className={CONTAINER}>
             <SectionIntro
@@ -549,6 +538,85 @@ export default function Home() {
             <div className="mt-14">
               <Testimonials />
             </div>
+            <Cta className="mt-14" />
+          </div>
+        </section>
+
+        {/* ── WHAT YOU GET ───────────────────── */}
+        <section
+          id="what-you-get"
+          aria-labelledby="get-heading"
+          className={`border-t border-line bg-surface ${SECTION_Y}`}
+        >
+          <div className={CONTAINER}>
+            <SectionIntro
+              id="get-heading"
+              kicker="What You Actually Get"
+              title="Everything Your Ad Account Needs. Nothing It Doesn't."
+            />
+
+            <ul className="mt-12 grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+              {DELIVERABLES.map((item) => (
+                <Reveal as="li" key={item.title} className={`${CARD} p-6 sm:p-7`}>
+                  <span
+                    aria-hidden
+                    className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-[1.375rem]"
+                  >
+                    {item.icon}
+                  </span>
+                  <h3 className="mt-4 text-h3 font-bold">{item.title}</h3>
+                  <p className="mt-2 text-body text-muted text-pretty">
+                    {item.body}
+                  </p>
+                </Reveal>
+              ))}
+              {/* Sixth cell: the weekly report, shown rather than described. */}
+              <Reveal
+                as="li"
+                className="rounded-2xl border border-accent/30 bg-accent/5 p-6 sm:col-span-2 sm:p-7 lg:col-span-1"
+              >
+                <h3 className="text-h3 font-bold">
+                  One WhatsApp update a week. Not a 20-page report.
+                </h3>
+                <figure className="mt-4">
+                  <div className="rounded-2xl rounded-tr-sm bg-[#144d37] px-4 py-3 text-micro leading-relaxed text-white sm:text-body">
+                    <p className="font-semibold">Weekly update 📊</p>
+                    <p className="mt-1.5">✅ Tested 4 new hooks</p>
+                    <p>🏆 Before/after angle is now the best performer</p>
+                    <p>⛔ Switched off 3 ads that weren&apos;t selling</p>
+                    <p>➡️ Next: +20% budget on the winner, 2 new videos</p>
+                  </div>
+                  <figcaption className="mt-2 text-right text-[0.75rem] text-subtle">
+                    Example message
+                  </figcaption>
+                </figure>
+              </Reveal>
+            </ul>
+
+            {/* The guarantee, as the last thing they get. */}
+            <Reveal className="relative mx-auto mt-10 max-w-2xl overflow-hidden rounded-2xl border border-accent/30 bg-raised px-6 py-8 text-center sm:px-8 sm:py-10">
+              <GridBackdrop cell={36} />
+              <div aria-hidden className="halo pointer-events-none absolute inset-0" />
+              <div className="relative">
+                <p className={LABEL}>Our Guarantee</p>
+                <h3 className="mt-3 text-h2 font-bold text-balance">
+                  No Results In 90 Days?{" "}
+                  <span className="text-gradient">You Don&apos;t Pay Us.</span>
+                </h3>
+                <ul className="mx-auto mt-6 max-w-md space-y-2 text-left">
+                  {GUARANTEE_TERMS.map((term) => (
+                    <li
+                      key={term}
+                      className="flex items-start gap-2.5 text-micro text-fg/90 sm:text-body"
+                    >
+                      <Tick />
+                      {term}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
+
             <Cta className="mt-14" />
           </div>
         </section>
@@ -566,36 +634,36 @@ export default function Home() {
             />
 
             <div className="mx-auto mt-12 grid max-w-4xl gap-4 sm:gap-5 md:grid-cols-2">
-              <Reveal className="rounded-2xl border border-accent/30 bg-accent/5 p-6 sm:p-7">
-                <h3 className="text-h3 font-bold">This Is For You If</h3>
+              <Reveal className="rounded-2xl border border-accent/40 bg-accent/5 p-6 sm:p-7">
+                <h3 className="flex items-center gap-3 text-h3 font-bold">
+                  <span aria-hidden className="text-[1.75rem] leading-none">
+                    😍
+                  </span>
+                  This Is For You If
+                </h3>
                 <ul className="mt-5 space-y-4">
                   {FIT.yes.map((item) => (
                     <li key={item} className="flex items-start gap-3 text-body text-fg/90">
-                      <span
-                        aria-hidden
-                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/20 text-[0.7rem] font-bold text-accent-soft"
-                      >
-                        ✓
-                      </span>
+                      <Tick />
                       {item}
                     </li>
                   ))}
                 </ul>
               </Reveal>
 
-              <Reveal className={`${CARD} p-6 sm:p-7`}>
-                <h3 className="text-h3 font-bold">
-                  This Is <span className="text-loss">NOT</span> For You If
+              <Reveal className="rounded-2xl border border-loss/25 bg-loss-deep/40 p-6 sm:p-7">
+                <h3 className="flex items-center gap-3 text-h3 font-bold">
+                  <span aria-hidden className="text-[1.75rem] leading-none">
+                    😔
+                  </span>
+                  <span>
+                    This Is <span className="text-loss">NOT</span> For You If
+                  </span>
                 </h3>
                 <ul className="mt-5 space-y-4">
                   {FIT.no.map((item) => (
                     <li key={item} className="flex items-start gap-3 text-body text-muted">
-                      <span
-                        aria-hidden
-                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-loss/15 text-[0.7rem] font-bold text-loss"
-                      >
-                        ✕
-                      </span>
+                      <Tick tone="loss" />
                       {item}
                     </li>
                   ))}
@@ -605,51 +673,11 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── BOOK (form) ────────────────────── */}
-        <section
-          id="book"
-          aria-labelledby="book-heading"
-          className={`relative overflow-hidden border-t border-line bg-surface ${SECTION_Y}`}
-        >
-          <GridBackdrop />
-          <div aria-hidden className="halo pointer-events-none absolute inset-0" />
-          <div className={`relative ${CONTAINER}`}>
-            <SectionIntro
-              id="book-heading"
-              kicker="Free Strategy Call"
-              title={
-                <>
-                  Let&apos;s Find What&apos;s Broken{" "}
-                  <span className="text-gradient">Before You Spend Another Rupee.</span>
-                </>
-              }
-            />
-
-            <Reveal className="mx-auto mt-8 flex max-w-3xl flex-wrap justify-center gap-2">
-              {CALL_AGENDA.map((item) => (
-                <span
-                  key={item}
-                  className="w-full rounded-xl border border-line bg-raised px-4 py-2 text-left text-micro text-muted sm:w-auto sm:rounded-full"
-                >
-                  <span aria-hidden className="mr-1.5 text-accent-soft">
-                    ✓
-                  </span>
-                  {item}
-                </span>
-              ))}
-            </Reveal>
-
-            <Reveal className="mx-auto mt-10 max-w-2xl">
-              <StrategyCallForm />
-            </Reveal>
-          </div>
-        </section>
-
         {/* ── FAQ ────────────────────────────── */}
         <section
           id="faq"
           aria-labelledby="faq-heading"
-          className={`border-t border-line ${SECTION_Y}`}
+          className={`border-t border-line bg-surface ${SECTION_Y}`}
         >
           <div className={CONTAINER}>
             <SectionIntro
@@ -676,6 +704,114 @@ export default function Home() {
             </Reveal>
           </div>
         </section>
+
+        {/* ── BOOK (lead form → Calendly) ────── */}
+        <section
+          id="book"
+          aria-labelledby="book-heading"
+          className={`relative overflow-hidden border-t border-line ${SECTION_Y}`}
+        >
+          <GridBackdrop />
+          <div aria-hidden className="halo pointer-events-none absolute inset-0" />
+          <div className={`relative ${CONTAINER}`}>
+            <SectionIntro
+              id="book-heading"
+              kicker="Free Strategy Call"
+              title={
+                <>
+                  Let&apos;s Find What&apos;s Broken{" "}
+                  <span className="text-gradient">Before You Spend Another Rupee.</span>
+                </>
+              }
+            >
+              <p>
+                {hasCalendly
+                  ? "Tell us about your brand, then pick a time that suits you."
+                  : "Tell us about your brand. We reply on WhatsApp within 24 hours."}
+              </p>
+            </SectionIntro>
+
+            <Reveal className="mx-auto mt-8 flex max-w-3xl flex-wrap justify-center gap-2">
+              {CALL_AGENDA.map((item) => (
+                <span
+                  key={item}
+                  className="w-full rounded-xl border border-line bg-raised px-4 py-2 text-left text-micro text-muted sm:w-auto sm:rounded-full"
+                >
+                  <span aria-hidden className="mr-1.5 text-accent-soft">
+                    ✓
+                  </span>
+                  {item}
+                </span>
+              ))}
+            </Reveal>
+
+            <Reveal className="mx-auto mt-10 max-w-2xl">
+              <StrategyCallForm />
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ── FINAL CTA ──────────────────────── */}
+        <section
+          id="final-cta"
+          aria-labelledby="final-cta-heading"
+          className="relative overflow-hidden border-t border-line bg-surface py-16 sm:py-24"
+        >
+          <GridBackdrop />
+          <div aria-hidden className="halo pointer-events-none absolute inset-0" />
+          <div className={`relative ${CONTAINER}`}>
+            <Reveal className="mx-auto max-w-3xl rounded-3xl border border-accent/40 bg-raised/90 px-5 py-10 text-center shadow-[0_30px_90px_-30px_rgb(37_99_235/0.55)] sm:px-12 sm:py-14">
+              <p className={LABEL}>Your Next Step</p>
+              <h2
+                id="final-cta-heading"
+                className="mt-4 text-h2 font-bold text-balance"
+              >
+                Stop Guessing.{" "}
+                <span className="text-gradient">
+                  Book Your Free Strategy Call.
+                </span>
+              </h2>
+              <p className="mx-auto mt-5 max-w-xl text-lead text-muted text-pretty">
+                30 minutes, one call. We open your ad account with you and
+                show you the 2–3 fixes that will move your ROAS first, even if
+                you never work with us.
+              </p>
+
+              <ol className="mx-auto mt-8 grid max-w-2xl gap-3 text-left md:grid-cols-3 md:gap-4">
+                {NEXT_STEPS.map((step, index) => (
+                  <li
+                    key={step.title}
+                    className="flex items-center gap-3 rounded-xl border border-line bg-ink/60 px-4 py-3 md:flex-col md:items-start md:gap-2"
+                  >
+                    <span
+                      aria-hidden
+                      className="btn-gradient flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-micro font-bold text-white"
+                    >
+                      {index + 1}
+                    </span>
+                    <span>
+                      <span className="block text-body font-semibold text-fg">
+                        {step.title}
+                      </span>
+                      <span className="block text-micro text-subtle">{step.note}</span>
+                    </span>
+                  </li>
+                ))}
+              </ol>
+
+              <a
+                href="#book"
+                className={`cta-attention mt-10 w-full sm:w-auto sm:min-h-15 sm:px-10 sm:text-h3 ${BUTTON_PRIMARY} ${BUTTON_LG}`}
+              >
+                <span className="text-balance">{CTA_LABEL}</span>
+                <span aria-hidden>→</span>
+              </a>
+              <p className="mt-4 text-micro text-subtle">
+                Free · 30 minutes · No pitch · 90-day results guarantee
+              </p>
+            </Reveal>
+          </div>
+        </section>
       </main>
 
       {/* Every "#book" button on the page opens this instead of scrolling. */}
@@ -683,9 +819,9 @@ export default function Home() {
       <MagneticButtons />
 
       {/* ── FOOTER ─────────────────────────── */}
-      {/* Extra bottom padding on phones so the sticky CTA never covers
-          the disclaimer. */}
-      <footer className="border-t border-line pt-14 pb-32 text-center md:pb-12">
+      {/* Extra bottom padding so the sticky CTA never covers the
+          disclaimer. */}
+      <footer className="border-t border-line pt-14 pb-40 text-center md:pb-36">
         <div className={CONTAINER}>
           <Image
             src={footerLogo}
@@ -702,9 +838,10 @@ export default function Home() {
           <nav aria-label="Footer" className="mt-8">
             <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-micro text-muted">
               {[
-                { href: "#results", label: "Results" },
                 { href: "#how", label: "How It Works" },
-                { href: "#book", label: "Book A Call" },
+                { href: "#results", label: "Results" },
+                { href: "#faq", label: "FAQ" },
+                { href: "#book", label: CTA_LABEL },
               ].map((item) => (
                 <li key={item.href}>
                   <a href={item.href} className="transition-colors hover:text-fg">

@@ -99,7 +99,7 @@ export default function Image() {
               borderRadius: 14,
             }}
           >
-            Book my free strategy call →
+            Book Your Free Strategy Call →
           </div>
           <div style={{ display: "flex", color: "#737373" }}>
             Free 30-min call · No pitch

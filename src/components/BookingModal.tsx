@@ -6,7 +6,7 @@ import StrategyCallForm from "@/components/StrategyCallForm";
 
 /**
  * The booking form as a popup. Mounted once; it opens for EVERY link on
- * the page that points at `#book` (all the "Book My Free Strategy Call"
+ * the page that points at `#book` (all the "Book Your Free Strategy Call"
  * style buttons), so none of them need wiring individually. Without JS the
  * links still fall back to scrolling to the in-page form.
  *

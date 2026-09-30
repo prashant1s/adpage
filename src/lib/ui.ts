@@ -1,5 +1,8 @@
 /* Shared control styles so every CTA on the page matches. */
 
+/* The one main CTA label, used everywhere. Don't add variations. */
+export const CTA_LABEL = "Book Your Free Strategy Call";
+
 /* btn-float: hover lift, arrow nudge and press feedback (globals.css). */
 const BUTTON_BASE =
   "btn-float inline-flex items-center justify-center gap-2 rounded-lg font-semibold";
@@ -12,7 +15,7 @@ export const BUTTON_SECONDARY = `${BUTTON_BASE} border border-line bg-raised tex
 /* Sizes: md for inline CTAs, lg for the hero and the form. 44px+ tall
    either way, so both clear the touch-target minimum. */
 export const BUTTON_MD = "min-h-11 px-5 py-2.5 text-body";
-export const BUTTON_LG = "min-h-13 px-6 py-3.5 text-lead sm:px-8";
+export const BUTTON_LG = "min-h-13 px-4 py-3.5 text-body sm:px-8 sm:text-lead";
 
 /* Letter-spaced blue kicker above section headings. */
 export const LABEL = "text-eyebrow font-semibold text-accent";
