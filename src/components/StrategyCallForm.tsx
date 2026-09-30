@@ -5,21 +5,21 @@ import { useId, useRef, useState } from "react";
 import { hasCalendly, openCalendly } from "@/lib/calendly";
 import { WHATSAPP_NUMBER } from "@/lib/site";
 import {
-  BUTTON_LG,
   BUTTON_MD,
   BUTTON_PRIMARY,
   BUTTON_SECONDARY,
   CTA_LABEL,
 } from "@/lib/ui";
 
-const SPEND_BANDS = ["Under ₹1L", "₹1–2L", "₹2–3L", "₹3L+"];
+/* Starts at ₹1L on purpose: the form filters out accounts too small to help. */
+const SPEND_BANDS = ["₹1–2L", "₹2–3L", "₹3L+"];
 
 const FIELD_CLASS =
-  "w-full rounded-lg border bg-ink px-4 py-3 text-body text-fg placeholder:text-subtle/70 transition-colors focus:outline-none";
+  "w-full rounded-lg border bg-ink px-4 py-2.5 text-body text-fg placeholder:text-subtle/70 transition-colors focus:outline-none";
 const FIELD_OK = "border-line hover:border-line-strong focus:border-accent";
 const FIELD_BAD = "border-loss/70 focus:border-loss";
 
-const LABEL_CLASS = "mb-2 block text-micro font-medium text-muted";
+const LABEL_CLASS = "mb-1.5 block text-micro font-medium text-muted";
 
 /* ── Validation ───────────────────────────────────────────────────── */
 
@@ -234,9 +234,9 @@ export default function StrategyCallForm({
       ref={formRef}
       noValidate
       onSubmit={handleSubmit}
-      className={`${shell} ${plain ? "" : "p-5 sm:p-8"}`}
+      className={`${shell} ${plain ? "" : "p-5 sm:p-6"}`}
     >
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor={fieldId("name")} className={LABEL_CLASS}>
             Your name
@@ -289,7 +289,7 @@ export default function StrategyCallForm({
           {errorText("whatsapp")}
         </div>
 
-        <div className="sm:col-span-2">
+        <div>
           <label htmlFor={fieldId("email")} className={LABEL_CLASS}>
             Email
           </label>
@@ -314,7 +314,7 @@ export default function StrategyCallForm({
           {errorText("email")}
         </div>
 
-        <div className="sm:col-span-2">
+        <div>
           <label htmlFor={fieldId("website")} className={LABEL_CLASS}>
             Brand website
           </label>
@@ -344,11 +344,11 @@ export default function StrategyCallForm({
           aria-describedby={describedBy("spend")}
         >
           <legend className={LABEL_CLASS}>Monthly Meta ad spend</legend>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <div className="grid grid-cols-3 gap-2">
             {SPEND_BANDS.map((band) => (
               <label
                 key={band}
-                className={`flex min-h-11 cursor-pointer items-center justify-center rounded-lg border bg-ink px-2 py-2.5 text-center text-micro font-medium text-muted transition-colors hover:border-line-strong has-checked:border-accent has-checked:bg-accent/15 has-checked:text-fg has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-accent ${
+                className={`flex min-h-11 cursor-pointer items-center justify-center rounded-lg border bg-ink px-2 py-2 text-center text-micro font-medium text-muted transition-colors hover:border-line-strong has-checked:border-accent has-checked:bg-accent/15 has-checked:text-fg has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-accent ${
                   errors.spend ? "border-loss/70" : "border-line"
                 }`}
               >
@@ -369,7 +369,7 @@ export default function StrategyCallForm({
         </fieldset>
       </div>
 
-      <button type="submit" className={`mt-8 w-full ${BUTTON_PRIMARY} ${BUTTON_LG}`}>
+      <button type="submit" className={`mt-6 w-full ${BUTTON_PRIMARY} ${BUTTON_MD} font-semibold`}>
         <span className="text-balance">{CTA_LABEL}</span>
         <span aria-hidden>→</span>
       </button>

@@ -745,7 +745,7 @@ export default function Home() {
               ))}
             </Reveal>
 
-            <Reveal className="mx-auto mt-10 max-w-2xl">
+            <Reveal className="mx-auto mt-10 max-w-xl">
               <StrategyCallForm />
             </Reveal>
           </div>
