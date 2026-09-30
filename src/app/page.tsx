@@ -718,6 +718,20 @@ export default function Home() {
             © {new Date().getFullYear()} Whizoid Studio. Results vary by product,
             offer and market.
           </p>
+          <p className="mx-auto mt-4 max-w-3xl text-[0.6875rem] leading-relaxed text-subtle text-pretty">
+            This site is not a part of the Facebook™ website or Facebook™ Inc.
+            Additionally, this site is NOT endorsed by Facebook™ in any way.
+            FACEBOOK™ is a trademark of FACEBOOK™, Inc. As stipulated by law, we
+            cannot and do not make any guarantees about your ability to get
+            results or earn any money with our ideas, information, tools, or
+            strategies. We are here to help you by giving great content,
+            direction, and strategies that have worked for us and our clients,
+            and that we believe can help you move forward. All terms, privacy
+            policies, and disclaimers for this program and website can be
+            accessed via the links provided. We believe in transparency and
+            integrity, and we hold ourselves (and you) to a high standard of
+            honesty.
+          </p>
         </div>
       </footer>
 
