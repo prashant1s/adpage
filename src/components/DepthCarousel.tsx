@@ -158,6 +158,9 @@ const DepthCarousel = ({
   const liteRef = useRef(false);
   /* Autoplay only runs while the carousel is actually on screen. */
   const inViewRef = useRef(false);
+  /* Last time the page scrolled. Autoplay waits for the page to settle, so
+     a slide change never animates the whole 3D stack while scrolling. */
+  const lastScrollRef = useRef(0);
   const widthRef = useRef(0);
   const heightRef = useRef(0);
   /* Last value written per card per property. layout() runs every frame,
@@ -539,16 +542,21 @@ const DepthCarousel = ({
     if (!autoplay || reducedRef.current || count < 2) return;
     const delay = Math.max(cfgRef.current.autoplayDelay, 600);
     const since = performance.now();
+    const onScroll = () => (lastScrollRef.current = performance.now());
+    window.addEventListener('scroll', onScroll, { passive: true });
     autoTimerRef.current = setInterval(() => {
       const idx = focusRef.current;
       const video = videoRefs.current[idx];
-      const waited = performance.now() - since >= delay;
+      const now = performance.now();
+      const waited = now - since >= delay;
       const done = video ? video.ended || !!video.error || (playBlockedRef.current[idx] && waited) : waited;
-      if (done && !hoveredRef.current && !focusedRef.current && !document.hidden && inViewRef.current) {
+      const scrolling = now - lastScrollRef.current < 400;
+      if (done && !scrolling && !hoveredRef.current && !focusedRef.current && !document.hidden && inViewRef.current) {
         navigateBy(1);
       }
     }, 250);
     return () => {
+      window.removeEventListener('scroll', onScroll);
       if (autoTimerRef.current) clearInterval(autoTimerRef.current);
       autoTimerRef.current = null;
     };

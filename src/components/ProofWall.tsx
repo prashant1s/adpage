@@ -40,7 +40,7 @@ export default function ProofWall() {
           Drag, swipe, use the arrows/dots, or arrow keys when focused.
           Phones: height follows the width-scaled card (plus room for the
           dots), so narrow screens don't get a gap under it. */}
-      <div className="reveal relative h-[min(calc(133vw+36px),620px)] overflow-x-clip sm:h-175 md:h-190">
+      <div className="relative h-[min(calc(133vw+36px),620px)] overflow-x-clip sm:h-175 md:h-190">
         <DepthCarousel
           label="Instagram Insights results"
           items={INSIGHT_SHOTS.map((shot) => ({
@@ -60,7 +60,9 @@ export default function ProofWall() {
           visibleCards={3}
           symmetric
           falloff={0.2}
-          blur={6}
+          /* No blur: re-blurring every card on each frame of a slide
+             change made page scrolling stutter. The tint does the depth. */
+          blur={0}
           tint="#05060a"
           duration={1300}
           ease="power3.out"

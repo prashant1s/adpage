@@ -459,7 +459,7 @@ export default function Home() {
 
             {/* Phones: height follows the width-scaled 9:16 card (plus
                 room for the dots), so narrow screens don't get a gap. */}
-            <div className="reveal relative mt-12 h-[min(calc(124vw+38px),520px)] overflow-x-clip sm:h-150 md:h-170">
+            <div className="relative mt-12 h-[min(calc(124vw+38px),520px)] overflow-x-clip sm:h-150 md:h-170">
               <DepthCarousel
                 label="Behind the scenes photos and videos"
                 captionPlacement="overlay"
@@ -483,7 +483,9 @@ export default function Home() {
                 visibleCards={3}
                 symmetric
                 falloff={0.2}
-                blur={6}
+                /* No blur: re-blurring every card on each frame of a slide
+                   change made page scrolling stutter. The tint does the depth. */
+                blur={0}
                 tint="#05060a"
                 duration={1300}
                 ease="power3.out"
