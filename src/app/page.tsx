@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import footerLogo from "../../public/footer-logo.avif";
+import footerLogo from "../../public/footer-logo.webp";
 import heroAdsShot from "../../public/2.png";
 import BookingModal from "@/components/BookingModal";
 import DepthCarousel from "@/components/DepthCarousel";

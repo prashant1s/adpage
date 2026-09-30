@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import footerLogo from "../../public/footer-logo.avif";
+import footerLogo from "../../public/footer-logo.webp";
 import {
   LEGAL_EMAIL,
   LEGAL_WEBSITE,
