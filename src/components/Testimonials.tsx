@@ -8,6 +8,29 @@ import { CARD } from "@/lib/ui";
 /* How long each position holds before the carousel slides one card left. */
 const STEP_MS = 2400;
 
+/* Money, multipliers and percentages inside a quote, e.g. "₹1.5 lakh",
+   "10.6x", "42%". */
+const FIGURE = /(₹[\d,.]+(?:\s?lakh)?|\d+(?:\.\d+)?x\b|\d+%)/g;
+
+function highlightFigures(quote: string) {
+  return quote.split(FIGURE).map((part, i) =>
+    i % 2 === 1 ? (
+      <strong key={i} className="font-normal text-fg/90">
+        {part}
+      </strong>
+    ) : (
+      part
+    ),
+  );
+}
+
+const initials = (name: string) =>
+  name
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+    .slice(0, 2);
+
 export default function Testimonials() {
   const trackRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(false);
@@ -114,20 +137,38 @@ export default function Testimonials() {
             <figure
               key={`${item.id}-${index}`}
               aria-hidden={isClone || undefined}
-              /* Compact cards: two per view on tablets, three from lg up.
-                 Long quotes are clipped to six lines. */
-              className={`${CARD} flex w-[78%] max-w-full shrink-0 grow-0 basis-auto flex-col p-5 sm:p-6 md:w-[calc((100%-1rem)/2)] lg:w-[calc((100%-2rem)/3)]`}
+              /* Two per view on tablets, three from lg up. The headline
+                 result leads; the full quote follows with its numbers
+                 picked out so a skim still lands on the proof. */
+              className={`${CARD} flex w-[82%] max-w-full shrink-0 grow-0 basis-auto flex-col p-5 sm:p-6 md:w-[calc((100%-1rem)/2)] lg:w-[calc((100%-2rem)/3)]`}
             >
-              <span aria-hidden className="text-h3 leading-none text-accent/50">
-                &ldquo;
-              </span>
-              <blockquote className="mt-1 line-clamp-6 flex-1 text-[0.9375rem] leading-relaxed text-muted text-pretty">
-                {item.quote}
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-gradient text-h3 font-bold tabular-nums">
+                    {item.result.value}
+                  </p>
+                  <p className="mt-0.5 text-micro text-subtle">{item.result.label}</p>
+                </div>
+                <span
+                  aria-hidden
+                  className="-mt-2 font-serif text-[3rem] leading-none text-accent/40"
+                >
+                  &rdquo;
+                </span>
+              </div>
+              <blockquote className="mt-4 flex-1 border-t border-line pt-4 text-[0.9375rem] leading-relaxed text-muted text-pretty">
+                <p>{highlightFigures(item.quote)}</p>
               </blockquote>
-              <figcaption className="mt-5 border-t border-line pt-4">
+              <figcaption className="mt-5 flex items-center gap-3">
+                <span
+                  aria-hidden
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent/15 text-micro font-semibold text-accent-soft"
+                >
+                  {initials(item.name)}
+                </span>
                 <div className="min-w-0">
                   <p className="text-body font-semibold text-fg">{item.name}</p>
-                  <p className="mt-0.5 text-micro text-subtle text-pretty">
+                  <p className="text-micro text-subtle text-pretty">
                     {item.role} · {item.company}
                   </p>
                 </div>

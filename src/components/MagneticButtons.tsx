@@ -24,6 +24,13 @@ const clamp = (value: number, max: number) => Math.max(-max, Math.min(max, value
  * reduced-motion visitors never attach the listener. Renders nothing.
  */
 export default function MagneticButtons() {
+  // iOS Safari only applies :active (the tap glow) when a touch listener exists.
+  useEffect(() => {
+    const noop = () => {};
+    document.addEventListener("touchstart", noop, { passive: true });
+    return () => document.removeEventListener("touchstart", noop);
+  }, []);
+
   useEffect(() => {
     const canHover = window.matchMedia(
       "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",

@@ -44,7 +44,7 @@ export default function StickyCta() {
           style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
         >
           <a href="#book" className={`w-full ${BUTTON_PRIMARY} ${BUTTON_MD}`}>
-            Book a free strategy call
+            Book My Free Strategy Call
             <span aria-hidden>→</span>
           </a>
         </motion.div>

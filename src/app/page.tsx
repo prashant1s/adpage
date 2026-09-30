@@ -10,6 +10,7 @@ import LeakCalculator from "@/components/LeakCalculator";
 import MagneticButtons from "@/components/MagneticButtons";
 import ProofWall from "@/components/ProofWall";
 import Reveal from "@/components/Reveal";
+import StickyCta from "@/components/StickyCta";
 import StrategyCallForm from "@/components/StrategyCallForm";
 import Testimonials from "@/components/Testimonials";
 import { BTS_SHOTS } from "@/content/bts";
@@ -673,7 +674,9 @@ export default function Home() {
       <MagneticButtons />
 
       {/* ── FOOTER ─────────────────────────── */}
-      <footer className="border-t border-line pt-14 pb-12 text-center">
+      {/* Extra bottom padding on phones so the sticky CTA never covers
+          the disclaimer. */}
+      <footer className="border-t border-line pt-14 pb-32 text-center md:pb-12">
         <div className={CONTAINER}>
           <Image
             src={footerLogo}
@@ -714,11 +717,7 @@ export default function Home() {
               </li>
             </ul>
           </nav>
-          <p className="mt-10 border-t border-line pt-6 text-[0.75rem] text-subtle">
-            © {new Date().getFullYear()} Whizoid Studio. Results vary by product,
-            offer and market.
-          </p>
-          <p className="mx-auto mt-4 max-w-3xl text-[0.6875rem] leading-relaxed text-subtle text-pretty">
+          <p className="mt-10 border-t border-line pt-6 text-[0.6875rem] leading-relaxed text-subtle text-pretty">
             This site is not a part of the Facebook™ website or Facebook™ Inc.
             Additionally, this site is NOT endorsed by Facebook™ in any way.
             FACEBOOK™ is a trademark of FACEBOOK™, Inc. As stipulated by law, we
@@ -735,6 +734,7 @@ export default function Home() {
         </div>
       </footer>
 
+      <StickyCta />
     </>
   );
 }

@@ -211,6 +211,39 @@ button.btn-gradient::after {
   }
 }
 
+/* Touch screens have no hover, so the same effects play on their own:
+   the light sweep runs every few seconds, arrows nudge forward on a
+   loop, and a tap gets the hover glow. */
+@keyframes btn-shine {
+  0%        { transform: translateX(-120%); }
+  35%, 100% { transform: translateX(120%); }
+}
+
+@keyframes btn-nudge {
+  0%, 60%, 100% { transform: none; }
+  30%           { transform: translateX(4px); }
+}
+
+@media (hover: none) and (prefers-reduced-motion: no-preference) {
+  a.btn-gradient::after,
+  button.btn-gradient::after {
+    animation: btn-shine 3.5s ease-in-out 1s infinite;
+  }
+  .btn-float > span[aria-hidden]:last-child {
+    animation: btn-nudge 1.8s ease-in-out infinite;
+  }
+}
+
+@media (hover: none) {
+  .btn-gradient.btn-float:active {
+    filter: brightness(1.08);
+    box-shadow: 0 18px 44px -10px rgb(59 130 246 / 0.8);
+  }
+  .btn-float:not(.btn-gradient):active {
+    box-shadow: 0 12px 30px -12px rgb(0 0 0 / 0.8);
+  }
+}
+
 /* Soft blue halo behind a hero element. */
 .halo {
   background: radial-gradient(
