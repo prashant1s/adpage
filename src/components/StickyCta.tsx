@@ -46,8 +46,7 @@ export default function StickyCta() {
           className="fixed inset-x-0 bottom-0 z-40 md:pointer-events-none md:bottom-5 md:flex md:justify-center"
         >
           <div
-            className="border-t border-line bg-ink/95 px-4 pt-2.5 md:pointer-events-auto md:w-auto md:rounded-2xl md:border md:bg-raised/95 md:px-5 md:pt-3 md:shadow-[0_20px_50px_-15px_rgb(0_0_0/0.8)]"
-            style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+            className="border-t border-line bg-ink/95 px-4 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:pointer-events-auto md:w-auto md:rounded-xl md:border md:bg-raised/95 md:px-2 md:pt-1.5 md:pb-2 md:shadow-[0_20px_50px_-15px_rgb(0_0_0/0.8)]"
           >
             <p className="text-center text-micro font-medium whitespace-nowrap text-muted">
               What are you waiting for?{" "}
@@ -57,7 +56,7 @@ export default function StickyCta() {
             </p>
             <a
               href="#book"
-              className={`cta-attention mt-2 w-full md:px-8 ${BUTTON_PRIMARY} ${BUTTON_MD}`}
+              className={`cta-attention mt-1.5 w-full md:px-8 ${BUTTON_PRIMARY} ${BUTTON_MD}`}
             >
               {CTA_LABEL}
               <span aria-hidden>→</span>
