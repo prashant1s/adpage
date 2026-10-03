@@ -19,7 +19,16 @@ import { BTS_SHOTS } from "@/content/bts";
 import { PROOF_STATS } from "@/content/proof";
 import { hasCalendly } from "@/lib/calendly";
 import { WHATSAPP_NUMBER } from "@/lib/site";
-import { BUTTON_LG, BUTTON_MD, BUTTON_PRIMARY, CARD, CTA_LABEL, LABEL } from "@/lib/ui";
+import {
+  BUTTON_IN_CARD,
+  BUTTON_LG,
+  BUTTON_MD,
+  BUTTON_PRIMARY,
+  CARD,
+  CTA_LABEL,
+  CTA_LABEL_ONE_LINE,
+  LABEL,
+} from "@/lib/ui";
 
 /* ─────────────────────────────────────────
    LAYOUT RULES
@@ -809,9 +818,9 @@ export default function Home() {
 
               <a
                 href="#book"
-                className={`cta-attention mt-7 w-full sm:w-auto sm:px-8 ${BUTTON_PRIMARY} ${BUTTON_MD}`}
+                className={`cta-attention mt-7 w-full sm:w-auto sm:px-8 ${BUTTON_PRIMARY} ${BUTTON_MD} ${BUTTON_IN_CARD}`}
               >
-                <span className="text-balance">{CTA_LABEL}</span>
+                <span className={CTA_LABEL_ONE_LINE}>{CTA_LABEL}</span>
                 <span aria-hidden>→</span>
               </a>
               <p className="mt-3 text-[0.75rem] text-subtle sm:text-micro">

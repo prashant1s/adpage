@@ -5,10 +5,12 @@ import { useId, useState } from "react";
 import { hasCalendly, openCalendly } from "@/lib/calendly";
 import { WHATSAPP_NUMBER } from "@/lib/site";
 import {
+  BUTTON_IN_CARD,
   BUTTON_MD,
   BUTTON_PRIMARY,
   BUTTON_SECONDARY,
   CTA_LABEL,
+  CTA_LABEL_ONE_LINE,
 } from "@/lib/ui";
 
 /* Starts at ₹1L on purpose: the form filters out accounts too small to help. */
@@ -405,16 +407,11 @@ export default function StrategyCallForm({
         </div>
       </div>
 
-      {/* One line at every width: below sm the button sits inside the card's
-          padding, so the label scales down on the narrowest phones (≈14px at
-          320px, full size from ~360px) instead of wrapping. */}
       <button
         type="submit"
-        className={`mt-6 w-full ${BUTTON_PRIMARY} ${BUTTON_MD} font-semibold max-sm:gap-1.5 max-sm:px-3`}
+        className={`mt-6 w-full ${BUTTON_PRIMARY} ${BUTTON_MD} ${BUTTON_IN_CARD} font-semibold`}
       >
-        <span className="whitespace-nowrap max-sm:text-[min(1rem,7.2vw-9.2px)]">
-          {CTA_LABEL}
-        </span>
+        <span className={CTA_LABEL_ONE_LINE}>{CTA_LABEL}</span>
         <span aria-hidden>→</span>
       </button>
 

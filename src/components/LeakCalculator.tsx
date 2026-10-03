@@ -3,7 +3,7 @@
 import { useId, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { BUTTON_PRIMARY, CTA_LABEL } from "@/lib/ui";
+import { BUTTON_IN_CARD, BUTTON_PRIMARY, CTA_LABEL, CTA_LABEL_ONE_LINE } from "@/lib/ui";
 
 /* Spec from the content doc:
    slider ₹50,000 → ₹5,00,000, steps of ₹25,000, starts at ₹1,50,000
@@ -212,13 +212,9 @@ export default function LeakCalculator({
 
       <a
         href="#book"
-        className={`mt-3 w-full ${BUTTON_PRIMARY} ${compact ? "hidden lg:flex" : "flex"} ${ctaSize}`}
+        className={`mt-3 w-full ${BUTTON_PRIMARY} ${compact ? "hidden lg:flex" : "flex"} ${ctaSize} ${BUTTON_IN_CARD}`}
       >
-        {/* Wrapped so the label centres (and balances) if it breaks on
-            narrow screens instead of hugging the left edge. */}
-        <span className="text-center text-balance">
-          {CTA_LABEL}
-        </span>
+        <span className={CTA_LABEL_ONE_LINE}>{CTA_LABEL}</span>
         <span aria-hidden>→</span>
       </a>
 
