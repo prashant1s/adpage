@@ -4,6 +4,7 @@ import Link from "next/link";
 import footerLogo from "../../public/footer-logo.webp";
 import heroAdsShot from "../../public/2.png";
 import BookingModal from "@/components/BookingModal";
+import ClientLogos from "@/components/ClientLogos";
 import DepthCarousel from "@/components/DepthCarousel";
 import Faq from "@/components/Faq";
 import GridBackdrop from "@/components/GridBackdrop";
@@ -18,7 +19,7 @@ import { BTS_SHOTS } from "@/content/bts";
 import { PROOF_STATS } from "@/content/proof";
 import { hasCalendly } from "@/lib/calendly";
 import { WHATSAPP_NUMBER } from "@/lib/site";
-import { BUTTON_LG, BUTTON_PRIMARY, CARD, CTA_LABEL, LABEL } from "@/lib/ui";
+import { BUTTON_LG, BUTTON_MD, BUTTON_PRIMARY, CARD, CTA_LABEL, LABEL } from "@/lib/ui";
 
 /* ─────────────────────────────────────────
    LAYOUT RULES
@@ -27,13 +28,15 @@ import { BUTTON_LG, BUTTON_PRIMARY, CARD, CTA_LABEL, LABEL } from "@/lib/ui";
    same gradient CTA. Content max width 1152px; text blocks 768px.
    Sections alternate ink / surface backgrounds.
 
-   ORDER: hero → problem (+ leak calculator) → how it works → results →
+   ORDER: hero → client logos → problem (+ leak calculator) → how it works → results →
    behind the scenes → testimonials → what you get → fit check → FAQ →
    lead form (then Calendly) → final CTA.
 ───────────────────────────────────────── */
 const CONTAINER = "mx-auto w-full max-w-6xl px-5 sm:px-8";
 const SECTION_Y = "py-16 sm:py-24 lg:py-28";
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`;
+const FOOTER_LINK =
+  "inline-flex items-center gap-1.5 transition-colors hover:text-fg";
 
 /* ─────────────────────────────────────────
    CONTENT
@@ -220,7 +223,7 @@ export default function Home() {
     <>
       <a
         href="#main"
-        className={`sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 ${BUTTON_PRIMARY} min-h-11 px-5`}
+        className={`sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:overflow-hidden focus:px-5 ${BUTTON_PRIMARY} min-h-11`}
       >
         Skip to content
       </a>
@@ -298,6 +301,9 @@ export default function Home() {
             </p>
           </div>
         </section>
+
+        {/* ── CLIENT LOGOS ───────────────────── */}
+        <ClientLogos />
 
         {/* ── PROBLEM ────────────────────────── */}
         <section
@@ -383,7 +389,7 @@ export default function Home() {
               </p>
             </SectionIntro>
 
-            <Reveal className="mx-auto mt-12 max-w-md">
+            <Reveal className="mx-auto mt-12 max-w-100">
               <LeakCalculator />
             </Reveal>
           </div>
@@ -755,45 +761,47 @@ export default function Home() {
         <section
           id="final-cta"
           aria-labelledby="final-cta-heading"
-          className="relative overflow-hidden border-t border-line bg-surface py-16 sm:py-24"
+          className="relative overflow-hidden border-t border-line bg-surface py-12 sm:py-16"
         >
           <GridBackdrop />
           <div aria-hidden className="halo pointer-events-none absolute inset-0" />
           <div className={`relative ${CONTAINER}`}>
-            <Reveal className="mx-auto max-w-3xl rounded-3xl border border-accent/40 bg-raised/90 px-5 py-10 text-center shadow-[0_30px_90px_-30px_rgb(37_99_235/0.55)] sm:px-12 sm:py-14">
+            <Reveal className="mx-auto max-w-2xl rounded-2xl border border-accent/40 bg-raised/90 px-5 py-8 text-center shadow-[0_24px_70px_-30px_rgb(37_99_235/0.55)] sm:px-8 sm:py-10">
               <p className={LABEL}>Your Next Step</p>
               <h2
                 id="final-cta-heading"
-                className="mt-4 text-h2 font-bold text-balance"
+                className="mt-3 text-punch font-bold text-balance"
               >
                 Stop Guessing.{" "}
                 <span className="text-gradient">
                   Book Your Free Strategy Call.
                 </span>
               </h2>
-              <p className="mx-auto mt-5 max-w-xl text-lead text-muted text-pretty">
+              <p className="mx-auto mt-3 max-w-lg text-body text-muted text-pretty">
                 30 minutes, one call. We open your ad account with you and
                 show you the 2–3 fixes that will move your ROAS first, even if
                 you never work with us.
               </p>
 
-              <ol className="mx-auto mt-8 grid max-w-2xl gap-3 text-left md:grid-cols-3 md:gap-4">
+              <ol className="mx-auto mt-6 grid gap-2.5 text-left md:grid-cols-3 md:gap-3">
                 {NEXT_STEPS.map((step, index) => (
                   <li
                     key={step.title}
-                    className="flex items-center gap-3 rounded-xl border border-line bg-ink/60 px-4 py-3 md:flex-col md:items-start md:gap-2"
+                    className="flex items-center gap-3 rounded-xl border border-line bg-ink/60 px-3.5 py-2.5 md:flex-col md:items-start md:gap-1.5"
                   >
                     <span
                       aria-hidden
-                      className="btn-gradient flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-micro font-bold text-white"
+                      className="btn-gradient flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[0.75rem] font-bold text-white"
                     >
                       {index + 1}
                     </span>
                     <span>
-                      <span className="block text-body font-semibold text-fg">
+                      <span className="block text-micro font-semibold text-fg">
                         {step.title}
                       </span>
-                      <span className="block text-micro text-subtle">{step.note}</span>
+                      <span className="block text-[0.75rem] leading-snug text-subtle">
+                        {step.note}
+                      </span>
                     </span>
                   </li>
                 ))}
@@ -801,12 +809,12 @@ export default function Home() {
 
               <a
                 href="#book"
-                className={`cta-attention mt-10 w-full sm:w-auto sm:min-h-15 sm:px-10 sm:text-h3 ${BUTTON_PRIMARY} ${BUTTON_LG}`}
+                className={`cta-attention mt-7 w-full sm:w-auto sm:px-8 ${BUTTON_PRIMARY} ${BUTTON_MD}`}
               >
                 <span className="text-balance">{CTA_LABEL}</span>
                 <span aria-hidden>→</span>
               </a>
-              <p className="mt-4 text-micro text-subtle">
+              <p className="mt-3 text-[0.75rem] text-subtle sm:text-micro">
                 Free · 30 minutes · No pitch · 90-day results guarantee
               </p>
             </Reveal>
@@ -819,32 +827,40 @@ export default function Home() {
       <MagneticButtons />
 
       {/* ── FOOTER ─────────────────────────── */}
-      {/* Extra bottom padding so the sticky CTA never covers the
-          disclaimer. */}
-      <footer className="border-t border-line pt-14 pb-40 text-center md:pb-36">
-        <div className={CONTAINER}>
-          <Image
-            src={footerLogo}
-            alt="Whizoid Studio"
-            sizes="224px"
-            className="mx-auto h-auto w-44 sm:w-56"
-          />
-          <p className="mt-3 text-body text-muted">
-            Meta ads for D2C brands.{" "}
-            {/* Own line on phones, same line from sm up. */}
-            <br className="sm:hidden" />
-            <span className="whitespace-nowrap">Stop guessing. Start scaling.</span>
-          </p>
+      {/* id="footer" is in StickyCta's HIDE_OVER list, so the sticky bar
+          steps aside instead of covering the disclaimer. */}
+      <footer
+        id="footer"
+        className="relative overflow-hidden border-t border-line bg-ink"
+      >
+        <div aria-hidden className="footer-glow pointer-events-none absolute inset-0" />
+        <div aria-hidden className="footer-rule pointer-events-none absolute inset-x-0 top-0 h-px" />
+
+        <div
+          className={`relative ${CONTAINER} pt-14 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:pt-20`}
+        >
+          <div className="text-center">
+            <Image
+              src={footerLogo}
+              alt="Whizoid Studio"
+              sizes="208px"
+              className="mx-auto h-auto w-44 sm:w-52"
+            />
+            <p className="mt-4 text-body text-muted">
+              Meta ads for D2C brands.{" "}
+              <span className="whitespace-nowrap">Stop guessing. Start scaling.</span>
+            </p>
+          </div>
+
           <nav aria-label="Footer" className="mt-8">
-            <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-micro text-muted">
+            <ul className="flex flex-wrap justify-center gap-x-7 gap-y-3 text-body text-muted">
               {[
                 { href: "#how", label: "How It Works" },
                 { href: "#results", label: "Results" },
                 { href: "#faq", label: "FAQ" },
-                { href: "#book", label: CTA_LABEL },
               ].map((item) => (
                 <li key={item.href}>
-                  <a href={item.href} className="transition-colors hover:text-fg">
+                  <a href={item.href} className={FOOTER_LINK}>
                     {item.label}
                   </a>
                 </li>
@@ -854,9 +870,10 @@ export default function Home() {
                   href={WHATSAPP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="transition-colors hover:text-fg"
+                  className={FOOTER_LINK}
                 >
                   WhatsApp
+                  <span aria-hidden className="text-micro">↗</span>
                 </a>
               </li>
               {[
@@ -864,27 +881,54 @@ export default function Home() {
                 { href: "/privacy-policy", label: "Privacy Policy" },
               ].map((item) => (
                 <li key={item.href}>
-                  <Link href={item.href} className="transition-colors hover:text-fg">
+                  <Link href={item.href} className={FOOTER_LINK}>
                     {item.label}
                   </Link>
                 </li>
               ))}
             </ul>
           </nav>
-          <p className="mt-10 border-t border-line pt-6 text-[0.6875rem] leading-relaxed text-subtle text-pretty">
-            This site is not a part of the Facebook™ website or Facebook™ Inc.
-            Additionally, this site is NOT endorsed by Facebook™ in any way.
-            FACEBOOK™ is a trademark of FACEBOOK™, Inc. As stipulated by law, we
-            cannot and do not make any guarantees about your ability to get
-            results or earn any money with our ideas, information, tools, or
-            strategies. We are here to help you by giving great content,
-            direction, and strategies that have worked for us and our clients,
-            and that we believe can help you move forward. All terms, privacy
-            policies, and disclaimers for this program and website can be
-            accessed via the links provided. We believe in transparency and
-            integrity, and we hold ourselves (and you) to a high standard of
-            honesty.
-          </p>
+
+          <div className="mt-12 rounded-2xl border border-line bg-surface/70 p-5 sm:p-7">
+            <p className="flex items-center gap-2 text-micro font-semibold text-muted">
+              <span
+                aria-hidden
+                className="flex h-5 w-5 items-center justify-center rounded-full border border-line-strong text-[0.6875rem] text-subtle"
+              >
+                i
+              </span>
+              Disclaimer
+            </p>
+            <p className="mt-3 text-[0.75rem] leading-relaxed text-subtle text-pretty sm:text-micro sm:leading-relaxed">
+              This site is not a part of the Facebook™ website or Facebook™ Inc.
+              Additionally, this site is NOT endorsed by Facebook™ in any way.
+              FACEBOOK™ is a trademark of FACEBOOK™, Inc. As stipulated by law, we
+              cannot and do not make any guarantees about your ability to get
+              results or earn any money with our ideas, information, tools, or
+              strategies. We are here to help you by giving great content,
+              direction, and strategies that have worked for us and our clients,
+              and that we believe can help you move forward. All terms, privacy
+              policies, and disclaimers for this program and website can be
+              accessed via the links provided. We believe in transparency and
+              integrity, and we hold ourselves (and you) to a high standard of
+              honesty.
+            </p>
+          </div>
+
+          <div className="mt-8 flex flex-col-reverse items-center gap-4 border-t border-line pt-6 text-micro text-subtle sm:flex-row sm:justify-between">
+            <p>
+              © {new Date().getFullYear()} Whizoid Studio. All rights reserved.
+            </p>
+            <a href="#top" className={`group ${FOOTER_LINK}`}>
+              Back to top
+              <span
+                aria-hidden
+                className="inline-block transition-transform group-hover:-translate-y-0.5"
+              >
+                ↑
+              </span>
+            </a>
+          </div>
         </div>
       </footer>
 

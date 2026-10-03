@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useId, useState } from "react";
 
 import { hasCalendly, openCalendly } from "@/lib/calendly";
 import { WHATSAPP_NUMBER } from "@/lib/site";
@@ -23,17 +23,28 @@ const LABEL_CLASS = "mb-1.5 block text-micro font-medium text-muted";
 
 /* ── Validation ───────────────────────────────────────────────────── */
 
+/* Key order is the on-screen order: the first invalid field gets focus. */
 type Values = {
   name: string;
-  whatsapp: string;
   email: string;
-  website: string;
+  whatsapp: string;
+  company: string;
   spend: string;
+  details: string;
 };
 type Field = keyof Values;
 type Errors = Partial<Record<Field, string>>;
 
-const EMPTY: Values = { name: "", whatsapp: "", email: "", website: "", spend: "" };
+const EMPTY: Values = {
+  name: "",
+  email: "",
+  whatsapp: "",
+  company: "",
+  spend: "",
+  details: "",
+};
+
+const DETAILS_MAX = 500;
 
 /* Letters (any script), spaces, dots, apostrophes and hyphens. */
 const NAME_RE = /^[\p{L}][\p{L} .'-]*$/u;
@@ -41,10 +52,6 @@ const NAME_RE = /^[\p{L}][\p{L} .'-]*$/u;
 const PHONE_RE = /^[6-9]\d{9}$/;
 const EMAIL_RE =
   /^[A-Za-z0-9](?:[A-Za-z0-9._%+-]*[A-Za-z0-9_%+-])?@(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z]{2,}$/;
-/* A domain with a real-looking TLD, optional protocol and path. Covers
-   "brand.in", "https://www.brand.com/shop" and "instagram.com/brand". */
-const WEBSITE_RE =
-  /^(?:https?:\/\/)?(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z]{2,}(?:[/?#]\S*)?$/;
 
 function validate(field: Field, raw: string): string | undefined {
   const value = raw.trim();
@@ -69,13 +76,16 @@ function validate(field: Field, raw: string): string | undefined {
       if (!EMAIL_RE.test(value) || value.includes(".."))
         return "Enter a valid email, e.g. priya@yourbrand.com.";
       return;
-    case "website":
-      if (!value) return "Please enter your brand's website.";
-      if (/\s/.test(value) || !WEBSITE_RE.test(value))
-        return "Enter a valid link, e.g. yourbrand.com.";
+    case "company":
+      if (!value) return "Please enter your company name.";
+      if (value.length < 2 || !/[\p{L}\p{N}]/u.test(value))
+        return "Enter your company or brand name.";
       return;
     case "spend":
-      if (!SPEND_BANDS.includes(value)) return "Pick your monthly ad spend.";
+      if (!SPEND_BANDS.includes(value)) return "Pick your monthly Meta ad spend.";
+      return;
+    case "details":
+      // Optional; the textarea's maxLength already caps its length.
       return;
   }
 }
@@ -100,14 +110,16 @@ function normalisePhone(raw: string) {
 
 /** Formats the lead as the opening WhatsApp message the founder will send. */
 function buildChatUrl(values: Values) {
+  const details = values.details.trim();
   const message = [
     "Hi Whizoid, I'd like to book a free strategy call.",
     "",
     `Name: ${values.name.trim()}`,
-    `WhatsApp: +91 ${values.whatsapp}`,
     `Email: ${values.email.trim()}`,
-    `Brand website: ${values.website.trim()}`,
-    `Monthly ad spend: ${values.spend}`,
+    `WhatsApp: +91 ${values.whatsapp}`,
+    `Company: ${values.company.trim()}`,
+    `Monthly Meta ad spend: ${values.spend}`,
+    ...(details ? ["", `Before the call: ${details}`] : []),
   ].join("\n");
 
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
@@ -124,7 +136,6 @@ export default function StrategyCallForm({
   const [values, setValues] = useState<Values>(EMPTY);
   const [errors, setErrors] = useState<Errors>({});
   const [sent, setSent] = useState<Values | null>(null);
-  const formRef = useRef<HTMLFormElement>(null);
   /* The form renders twice (page section + popup), so field ids must be
      unique per instance for labels to stay linked to their inputs. */
   const uid = useId();
@@ -155,11 +166,7 @@ export default function StrategyCallForm({
     setErrors(found);
     const firstBad = (Object.keys(found) as Field[])[0];
     if (firstBad) {
-      const target =
-        firstBad === "spend"
-          ? formRef.current?.querySelector<HTMLInputElement>('input[name="spend"]')
-          : document.getElementById(fieldId(firstBad));
-      target?.focus();
+      document.getElementById(fieldId(firstBad))?.focus();
       return;
     }
 
@@ -231,7 +238,6 @@ export default function StrategyCallForm({
 
   return (
     <form
-      ref={formRef}
       noValidate
       onSubmit={handleSubmit}
       className={`${shell} ${plain ? "" : "p-5 sm:p-6"}`}
@@ -257,6 +263,31 @@ export default function StrategyCallForm({
             className={fieldClass("name")}
           />
           {errorText("name")}
+        </div>
+
+        <div>
+          <label htmlFor={fieldId("email")} className={LABEL_CLASS}>
+            Email
+          </label>
+          <input
+            id={fieldId("email")}
+            name="email"
+            required
+            type="email"
+            inputMode="email"
+            autoComplete="email"
+            autoCapitalize="none"
+            spellCheck={false}
+            maxLength={120}
+            placeholder="priya@yourbrand.com"
+            value={values.email}
+            onChange={(event) => update("email", event.target.value)}
+            onBlur={() => check("email")}
+            aria-invalid={!!errors.email}
+            aria-describedby={describedBy("email")}
+            className={fieldClass("email")}
+          />
+          {errorText("email")}
         </div>
 
         <div>
@@ -290,83 +321,88 @@ export default function StrategyCallForm({
         </div>
 
         <div>
-          <label htmlFor={fieldId("email")} className={LABEL_CLASS}>
-            Email
+          <label htmlFor={fieldId("company")} className={LABEL_CLASS}>
+            Company name
           </label>
           <input
-            id={fieldId("email")}
-            name="email"
+            id={fieldId("company")}
+            name="company"
             required
-            type="email"
-            inputMode="email"
-            autoComplete="email"
-            autoCapitalize="none"
-            spellCheck={false}
-            maxLength={120}
-            placeholder="priya@yourbrand.com"
-            value={values.email}
-            onChange={(event) => update("email", event.target.value)}
-            onBlur={() => check("email")}
-            aria-invalid={!!errors.email}
-            aria-describedby={describedBy("email")}
-            className={fieldClass("email")}
+            maxLength={100}
+            autoComplete="organization"
+            autoCapitalize="words"
+            placeholder="Your brand or company"
+            value={values.company}
+            onChange={(event) => update("company", event.target.value)}
+            onBlur={() => check("company")}
+            aria-invalid={!!errors.company}
+            aria-describedby={describedBy("company")}
+            className={fieldClass("company")}
           />
-          {errorText("email")}
+          {errorText("company")}
         </div>
 
-        <div>
-          <label htmlFor={fieldId("website")} className={LABEL_CLASS}>
-            Brand website
+        <div className="sm:col-span-2">
+          <label htmlFor={fieldId("spend")} className={LABEL_CLASS}>
+            Monthly spend on Meta ads
           </label>
-          <input
-            id={fieldId("website")}
-            name="website"
-            required
-            inputMode="url"
-            autoComplete="url"
-            autoCapitalize="none"
-            spellCheck={false}
-            maxLength={200}
-            placeholder="yourbrand.com"
-            value={values.website}
-            onChange={(event) => update("website", event.target.value)}
-            onBlur={() => check("website")}
-            aria-invalid={!!errors.website}
-            aria-describedby={describedBy("website")}
-            className={fieldClass("website")}
-          />
-          {errorText("website")}
-        </div>
-
-        <fieldset
-          className="sm:col-span-2"
-          aria-invalid={!!errors.spend}
-          aria-describedby={describedBy("spend")}
-        >
-          <legend className={LABEL_CLASS}>Monthly Meta ad spend</legend>
-          <div className="grid grid-cols-3 gap-2">
-            {SPEND_BANDS.map((band) => (
-              <label
-                key={band}
-                className={`flex min-h-11 cursor-pointer items-center justify-center rounded-lg border bg-ink px-2 py-2 text-center text-micro font-medium text-muted transition-colors hover:border-line-strong has-checked:border-accent has-checked:bg-accent/15 has-checked:text-fg has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-accent ${
-                  errors.spend ? "border-loss/70" : "border-line"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="spend"
-                  value={band}
-                  required
-                  checked={values.spend === band}
-                  onChange={() => update("spend", band)}
-                  className="sr-only"
-                />
-                {band}
-              </label>
-            ))}
+          <div className="relative">
+            <select
+              id={fieldId("spend")}
+              name="spend"
+              required
+              value={values.spend}
+              onChange={(event) => update("spend", event.target.value)}
+              onBlur={() => check("spend")}
+              aria-invalid={!!errors.spend}
+              aria-describedby={describedBy("spend")}
+              className={`${fieldClass("spend")} cursor-pointer appearance-none pr-11 ${
+                values.spend ? "" : "text-subtle/70"
+              }`}
+            >
+              <option value="" disabled>
+                Select your monthly ad spend
+              </option>
+              {SPEND_BANDS.map((band) => (
+                <option key={band} value={band} className="text-fg">
+                  {band} / month
+                </option>
+              ))}
+            </select>
+            {/* Native arrow is hidden (appearance-none) so it matches the
+                inputs in every browser; this chevron stands in for it. */}
+            <svg
+              aria-hidden
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              className="pointer-events-none absolute inset-y-0 right-4 my-auto h-5 w-5 text-muted"
+            >
+              <path
+                fillRule="evenodd"
+                d="M5.22 7.72a.75.75 0 0 1 1.06 0L10 11.44l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 8.78a.75.75 0 0 1 0-1.06Z"
+                clipRule="evenodd"
+              />
+            </svg>
           </div>
           {errorText("spend")}
-        </fieldset>
+        </div>
+
+        <div className="sm:col-span-2">
+          <label htmlFor={fieldId("details")} className={LABEL_CLASS}>
+            Anything you&apos;d like us to know before the call?{" "}
+            <span className="font-normal text-subtle">(optional)</span>
+          </label>
+          <textarea
+            id={fieldId("details")}
+            name="details"
+            rows={3}
+            maxLength={DETAILS_MAX}
+            placeholder="What you sell, what's working, what isn't, or anything you want us to look at."
+            value={values.details}
+            onChange={(event) => update("details", event.target.value)}
+            className={`${fieldClass("details")} min-h-24 resize-y`}
+          />
+        </div>
       </div>
 
       <button type="submit" className={`mt-6 w-full ${BUTTON_PRIMARY} ${BUTTON_MD} font-semibold`}>

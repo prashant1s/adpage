@@ -60,7 +60,7 @@ export default function LeakCalculator({
   const fill = ((spend - MIN_SPEND) / (MAX_SPEND - MIN_SPEND)) * 100;
 
   return (
-    <div className="relative rounded-2xl border border-line bg-raised p-4 min-[360px]:p-5 sm:p-6">
+    <div className="relative rounded-2xl border border-line bg-raised p-4 min-[360px]:p-5">
       {/* ── Spend slider ───────────────────────────────── */}
       {/* Compact always stacks: side-by-side, wider amounts (₹1,00,000+)
           wrapped under the label while ₹50,000 didn't, so the header jumped. */}
@@ -79,7 +79,7 @@ export default function LeakCalculator({
         </label>
         <output
           htmlFor={spendId}
-          className={`${compact ? "text-punch" : "text-stat"} font-semibold text-fg tabular-nums`}
+          className={`${compact ? "text-punch" : "text-readout"} font-semibold text-fg tabular-nums`}
         >
           {inr(spend)}
         </output>
@@ -154,7 +154,7 @@ export default function LeakCalculator({
               {stat.label}
             </dt>
             <dd
-              className={`mt-2 ${compact ? "text-punch" : "text-[1.5rem] min-[360px]:text-stat"} font-bold whitespace-nowrap tabular-nums text-accent-soft`}
+              className={`mt-2 ${compact ? "text-punch" : "text-readout"} font-bold whitespace-nowrap tabular-nums text-accent-soft`}
             >
               {stat.value}
             </dd>

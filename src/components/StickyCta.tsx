@@ -5,10 +5,10 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import { BUTTON_MD, BUTTON_PRIMARY, CTA_LABEL } from "@/lib/ui";
 
-/* Sections that already have the form or a big CTA of their own. The bar
-   steps aside while any of them is on screen so it never doubles up or
-   covers the form. */
-const HIDE_OVER = ["book", "final-cta"];
+/* Sections that already have the form or a big CTA of their own, plus the
+   footer. The bar steps aside while any of them is on screen so it never
+   doubles up or covers the form or the disclaimer. */
+const HIDE_OVER = ["book", "final-cta", "footer"];
 
 /* Bottom CTA, visible from the moment the page loads. Full-width bar on
    phones, a floating card on larger screens. */
