@@ -405,8 +405,16 @@ export default function StrategyCallForm({
         </div>
       </div>
 
-      <button type="submit" className={`mt-6 w-full ${BUTTON_PRIMARY} ${BUTTON_MD} font-semibold`}>
-        <span className="text-balance">{CTA_LABEL}</span>
+      {/* One line at every width: below sm the button sits inside the card's
+          padding, so the label scales down on the narrowest phones (≈14px at
+          320px, full size from ~360px) instead of wrapping. */}
+      <button
+        type="submit"
+        className={`mt-6 w-full ${BUTTON_PRIMARY} ${BUTTON_MD} font-semibold max-sm:gap-1.5 max-sm:px-3`}
+      >
+        <span className="whitespace-nowrap max-sm:text-[min(1rem,7.2vw-9.2px)]">
+          {CTA_LABEL}
+        </span>
         <span aria-hidden>→</span>
       </button>
 
