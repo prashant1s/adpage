@@ -908,7 +908,7 @@ export default function Home() {
               </span>
               Disclaimer
             </p>
-            <p className="mt-3 text-[0.75rem] leading-relaxed text-subtle text-pretty sm:text-micro sm:leading-relaxed">
+            <p className="mt-3 text-[0.75rem] leading-relaxed text-subtle text-pretty sm:text-[0.8125rem]">
               This site is not a part of the Facebook™ website or Facebook™ Inc.
               Additionally, this site is NOT endorsed by Facebook™ in any way.
               FACEBOOK™ is a trademark of FACEBOOK™, Inc. As stipulated by law, we
