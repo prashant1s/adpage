@@ -107,9 +107,9 @@ export const INSIGHT_SHOTS: ProofShot[] = [
 
 /* Headline numbers for the stat row — all read straight off the shots above. */
 export const PROOF_STATS = [
-  { value: "₹1.48L", label: "Ad spend managed" },
-  { value: "72.9L", label: "Impressions" },
-  { value: "50.3L", label: "Accounts reached" },
-  { value: "4.38Cr", label: "Views in 90 days" },
+  { value: "₹1.48L+", label: "Ad spend managed" },
+  { value: "72.9L+", label: "Impressions" },
+  { value: "50.3L+", label: "Accounts reached" },
+  { value: "4.38Cr+", label: "Views in 90 days" },
   { value: "74%", label: "Views from ads" },
 ];
