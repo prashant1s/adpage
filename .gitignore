@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# raw camera footage (convert to web MP4 first, see src/content/bts.ts)
+*.mov
+*.MOV
