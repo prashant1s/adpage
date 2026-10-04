@@ -42,7 +42,7 @@ import {
    lead form (then Calendly) → final CTA.
 ───────────────────────────────────────── */
 const CONTAINER = "mx-auto w-full max-w-6xl px-5 sm:px-8";
-const SECTION_Y = "py-16 sm:py-24 lg:py-28";
+const SECTION_Y = "py-12 sm:py-16 lg:py-20";
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`;
 const FOOTER_LINK =
   "inline-flex items-center gap-1.5 transition-colors hover:text-fg";
@@ -171,17 +171,27 @@ function SectionIntro({
   id,
   kicker,
   title,
+  wide = false,
   children,
 }: {
   id: string;
   kicker: string;
   title: React.ReactNode;
+  /** Wider block and a smaller title (24px → 34px) for long headlines. */
+  wide?: boolean;
   children?: React.ReactNode;
 }) {
   return (
-    <Reveal className="mx-auto max-w-3xl text-center">
+    <Reveal className={`mx-auto ${wide ? "max-w-5xl" : "max-w-3xl"} text-center`}>
       <p className={LABEL}>{kicker}</p>
-      <h2 id={id} className="mt-4 text-h2 font-bold text-balance">
+      <h2
+        id={id}
+        className={`mt-4 font-bold text-balance ${
+          wide
+            ? "text-[clamp(1.5rem,1.241rem+1.105vw,2.125rem)] leading-[1.2] tracking-[-0.02em]"
+            : "text-h2"
+        }`}
+      >
         {title}
       </h2>
       {children && (
@@ -324,6 +334,7 @@ export default function Home() {
               id="problem-heading"
               kicker="Sound Familiar?"
               title="Our Clients Are Usually In One Of These Situations Before Working With Us."
+              wide
             >
               <p>
                 You&apos;ve got a product people love. You&apos;re spending
