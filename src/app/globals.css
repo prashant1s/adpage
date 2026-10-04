@@ -117,6 +117,11 @@ section[id] {
   scroll-margin-top: 2rem;
 }
 
+/* Legal pages have a sticky 64px header: keep anchor jumps clear of it. */
+html:has(.legal-header) {
+  scroll-padding-top: 4rem;
+}
+
 /* Highlighted words in headlines: blue gradient text. */
 .text-gradient {
   background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);

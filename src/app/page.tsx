@@ -898,7 +898,7 @@ export default function Home() {
             </ul>
           </nav>
 
-          <div className="mt-12 rounded-2xl border border-line bg-surface/70 p-5 sm:p-7">
+          <div className="mt-12 rounded-2xl border border-line bg-surface/70 p-4 sm:px-5 sm:py-4">
             <p className="flex items-center gap-2 text-micro font-semibold text-muted">
               <span
                 aria-hidden
