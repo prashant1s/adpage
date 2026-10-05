@@ -572,16 +572,16 @@ export default function Home() {
               title="Everything Your Ad Account Needs. Nothing It Doesn't."
             />
 
-            <ul className="mt-12 grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+            <ul className="mt-10 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
               {DELIVERABLES.map((item) => (
-                <Reveal as="li" key={item.title} className={`${CARD} p-6 sm:p-7`}>
+                <Reveal as="li" key={item.title} className={`${CARD} p-4 sm:p-5`}>
                   <span
                     aria-hidden
-                    className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 text-[1.375rem]"
+                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent/10 text-[1.125rem]"
                   >
                     {item.icon}
                   </span>
-                  <h3 className="mt-4 text-h3 font-bold">{item.title}</h3>
+                  <h3 className="mt-3 text-h3 font-bold">{item.title}</h3>
                   <p className="mt-2 text-body text-muted text-pretty">
                     {item.body}
                   </p>
@@ -590,13 +590,13 @@ export default function Home() {
               {/* Sixth cell: the weekly report, shown rather than described. */}
               <Reveal
                 as="li"
-                className="rounded-2xl border border-accent/30 bg-accent/5 p-6 sm:col-span-2 sm:p-7 lg:col-span-1"
+                className="rounded-2xl border border-accent/30 bg-accent/5 p-4 sm:col-span-2 sm:p-5 lg:col-span-1"
               >
                 <h3 className="text-h3 font-bold">
                   One WhatsApp update a week. Not a 20-page report.
                 </h3>
-                <figure className="mt-4">
-                  <div className="rounded-2xl rounded-tr-sm bg-[#144d37] px-4 py-3 text-micro leading-relaxed text-white sm:text-body">
+                <figure className="mt-3">
+                  <div className="rounded-2xl rounded-tr-sm bg-[#144d37] px-3.5 py-2.5 text-micro leading-relaxed text-white sm:text-body">
                     <p className="font-semibold">Weekly update 📊</p>
                     <p className="mt-1.5">✅ Tested 4 new hooks</p>
                     <p>🏆 Before/after angle is now the best performer</p>
