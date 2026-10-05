@@ -331,12 +331,14 @@ export default function Home() {
               </p>
             </SectionIntro>
 
-            <Reveal className="mx-auto mt-10 max-w-3xl">
-              <ul className="grid gap-3 sm:grid-cols-2">
+            {/* Symptoms and leaks share one grid: same width, columns, gap,
+                card and padding, so the section reads as one system. */}
+            <Reveal className="mx-auto mt-10 max-w-4xl">
+              <ul className="grid gap-3 sm:grid-cols-2 sm:gap-4">
                 {SYMPTOMS.map((symptom) => (
                   <li
                     key={symptom}
-                    className="flex items-start gap-3 rounded-xl border border-line bg-ink px-4 py-3.5 text-body text-fg/90"
+                    className={`${CARD} flex items-start gap-3 p-4 text-body text-fg/90 sm:p-5`}
                   >
                     <Tick tone="loss" />
                     {symptom}
@@ -345,7 +347,7 @@ export default function Home() {
               </ul>
             </Reveal>
 
-            <Reveal className="mx-auto mt-16 max-w-3xl text-center">
+            <Reveal className="mx-auto mt-14 max-w-3xl text-center">
               <p className="text-punch font-bold text-balance">
                 That&apos;s not a product problem. It&apos;s a system problem.{" "}
                 <span className="text-muted">
@@ -354,7 +356,7 @@ export default function Home() {
               </p>
             </Reveal>
 
-            <div className="mt-10 grid gap-3 sm:gap-4 md:grid-cols-2">
+            <div className="mx-auto mt-8 grid max-w-4xl gap-3 sm:grid-cols-2 sm:gap-4">
               {REASONS.map((reason, index) => (
                 <Reveal key={reason.title} className={`${CARD} p-4 sm:p-5`}>
                   <p className="text-eyebrow font-semibold text-accent">

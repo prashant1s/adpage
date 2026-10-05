@@ -24,13 +24,6 @@ function highlightFigures(quote: string) {
   );
 }
 
-const initials = (name: string) =>
-  name
-    .split(" ")
-    .map((word) => word[0])
-    .join("")
-    .slice(0, 2);
-
 export default function Testimonials() {
   const trackRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(false);
@@ -144,19 +137,11 @@ export default function Testimonials() {
               <blockquote className="flex-1 text-[0.9375rem] leading-relaxed text-muted text-pretty">
                 <p>{highlightFigures(item.quote)}</p>
               </blockquote>
-              <figcaption className="mt-5 flex items-center gap-3">
-                <span
-                  aria-hidden
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent/15 text-micro font-semibold text-accent-soft"
-                >
-                  {initials(item.name)}
-                </span>
-                <div className="min-w-0">
-                  <p className="text-body font-semibold text-fg">{item.name}</p>
-                  <p className="text-micro text-subtle text-pretty">
-                    {item.role} · {item.company}
-                  </p>
-                </div>
+              <figcaption className="mt-5">
+                <p className="text-body font-semibold text-fg">{item.name}</p>
+                <p className="text-micro text-subtle text-pretty">
+                  {item.role} · {item.company}
+                </p>
               </figcaption>
             </figure>
           );
