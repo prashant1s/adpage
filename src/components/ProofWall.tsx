@@ -31,24 +31,21 @@ export default function ProofWall() {
       {/* Sales campaign tables: one card, each screenshot in its own white
           box with a gap between, so they read as two shots rather than one
           long table. Never wider than their native 930px so the numbers stay
-          sharp; phones scroll each table sideways instead of shrinking the
-          text past readable. */}
-      <figure className={`reveal ${CARD} mx-auto max-w-243 space-y-3 p-4 sm:space-y-4 sm:p-5`}>
-        {SALES_TABLE_SHOTS.map((shot, index) => (
+          sharp; on phones the whole table scales down to fit the screen (with
+          tighter card padding to give it every pixel of width). */}
+      <figure className={`reveal ${CARD} mx-auto max-w-243 space-y-2 p-2 sm:space-y-4 sm:p-5`}>
+        {SALES_TABLE_SHOTS.map((shot) => (
           <div
             key={shot.alt}
-            role="region"
-            aria-label={`Sales campaigns, table ${index + 1}`}
-            tabIndex={0}
-            className="no-scrollbar overflow-x-auto rounded-xl border border-line bg-white"
+            className="overflow-hidden rounded-lg border border-line bg-white sm:rounded-xl"
           >
             <Image
               src={shot.src}
               alt={shot.alt}
               quality={85}
               placeholder="blur"
-              sizes="(min-width: 1024px) 930px, 640px"
-              className="block h-auto w-full min-w-160"
+              sizes="(min-width: 1024px) 930px, 100vw"
+              className="block h-auto w-full"
             />
           </div>
         ))}

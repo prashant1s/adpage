@@ -684,9 +684,14 @@ export default function Home() {
               <div aria-hidden className="halo pointer-events-none absolute inset-0" />
               <div className="relative">
                 <p className={LABEL}>Our Guarantee</p>
-                <h2 id="guarantee-heading" className="mt-3 text-h2 font-bold text-balance">
-                  No Results In 90 Days?{" "}
-                  <span className="text-gradient">You Don&apos;t Pay Us.</span>
+                <h2
+                  id="guarantee-heading"
+                  className="mt-3 text-h2 font-bold text-balance max-sm:text-[min(var(--text-h2),6.6vw)]"
+                >
+                  <span className="max-sm:block max-sm:whitespace-nowrap">
+                    No Results In 90 Days?
+                  </span>{" "}
+                  <span className="text-gradient max-sm:block">You Don&apos;t Pay Us.</span>
                 </h2>
                 <ul className="mx-auto mt-6 max-w-md space-y-2 text-left">
                   {GUARANTEE_TERMS.map((term) => (
