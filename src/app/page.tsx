@@ -47,6 +47,11 @@ import {
 const CONTAINER = "mx-auto w-full max-w-6xl px-5 sm:px-8";
 const SECTION_Y = "py-12 sm:py-16 lg:py-20";
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`;
+/* Keeps a ticked point on one line from sm up. Needs an @container parent.
+   The longest point is ~23.5em and the tick + gap is 2rem, so the size caps
+   at whatever fits the container. */
+const ONE_LINE =
+  "sm:whitespace-nowrap sm:text-[min(var(--text-body),calc((100cqw-2rem)/24))]";
 
 /* ─────────────────────────────────────────
    CONTENT
@@ -331,17 +336,18 @@ export default function Home() {
               </p>
             </SectionIntro>
 
-            {/* Symptoms and leaks share one grid: same width, columns, gap,
-                card and padding, so the section reads as one system. */}
-            <Reveal className="mx-auto mt-10 max-w-4xl">
-              <ul className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+            {/* Symptoms and leaks share one grid: same width, gap, card and
+                padding, so the section reads as one system. Symptoms go two
+                columns only at lg, where each one still fits on one line. */}
+            <Reveal className="mx-auto mt-10 max-w-5xl">
+              <ul className="grid gap-3 sm:gap-4 lg:grid-cols-2">
                 {SYMPTOMS.map((symptom) => (
                   <li
                     key={symptom}
-                    className={`${CARD} flex items-start gap-3 p-4 text-body text-fg/90 sm:p-5`}
+                    className={`${CARD} @container flex items-start gap-3 p-4 text-body text-fg/90 sm:p-5`}
                   >
                     <Tick tone="loss" />
-                    {symptom}
+                    <span className={ONE_LINE}>{symptom}</span>
                   </li>
                 ))}
               </ul>
@@ -356,7 +362,7 @@ export default function Home() {
               </p>
             </Reveal>
 
-            <div className="mx-auto mt-8 grid max-w-4xl gap-3 sm:grid-cols-2 sm:gap-4">
+            <div className="mx-auto mt-8 grid max-w-5xl gap-3 sm:grid-cols-2 sm:gap-4">
               {REASONS.map((reason, index) => (
                 <Reveal key={reason.title} className={`${CARD} p-4 sm:p-5`}>
                   <p className="text-eyebrow font-semibold text-accent">
@@ -630,7 +636,10 @@ export default function Home() {
                 title="Is This For You?"
               />
 
-              <div className="mx-auto mt-12 grid max-w-4xl gap-4 sm:gap-5 md:grid-cols-2">
+              {/* Each point stays on one line from sm up: two columns only at
+                  lg (where the cards are wide enough), and the text shrinks
+                  with the card if it would still overflow. Phones wrap. */}
+              <div className="mx-auto mt-12 grid max-w-5xl gap-4 sm:gap-5 lg:grid-cols-2">
                 <Reveal className="rounded-2xl border border-accent/40 bg-accent/5 p-6 sm:p-7">
                   <h3 className="flex items-center gap-3 text-h3 font-bold">
                     <span aria-hidden className="text-[1.75rem] leading-none">
@@ -638,9 +647,9 @@ export default function Home() {
                     </span>
                     This Is For You If
                   </h3>
-                  <ul className="mt-5 space-y-4">
+                  <ul className="@container mt-5 space-y-4">
                     {FIT.yes.map((item) => (
-                      <li key={item} className="flex items-start gap-3 text-body text-fg/90">
+                      <li key={item} className={`flex items-start gap-3 text-body text-fg/90 ${ONE_LINE}`}>
                         <Tick />
                         {item}
                       </li>
@@ -657,9 +666,9 @@ export default function Home() {
                       This Is <span className="text-loss">NOT</span> For You If
                     </span>
                   </h3>
-                  <ul className="mt-5 space-y-4">
+                  <ul className="@container mt-5 space-y-4">
                     {FIT.no.map((item) => (
-                      <li key={item} className="flex items-start gap-3 text-body text-muted">
+                      <li key={item} className={`flex items-start gap-3 text-body text-muted ${ONE_LINE}`}>
                         <Tick tone="loss" />
                         {item}
                       </li>
@@ -682,7 +691,7 @@ export default function Home() {
             <Reveal className="relative mx-auto max-w-2xl overflow-hidden rounded-2xl border border-accent/30 bg-raised px-6 py-8 text-center sm:px-8 sm:py-10">
               <GridBackdrop cell={36} />
               <div aria-hidden className="halo pointer-events-none absolute inset-0" />
-              <div className="relative">
+              <div className="@container relative">
                 <p className={LABEL}>Our Guarantee</p>
                 <h2
                   id="guarantee-heading"
@@ -693,11 +702,13 @@ export default function Home() {
                   </span>{" "}
                   <span className="text-gradient max-sm:block">You Don&apos;t Pay Us.</span>
                 </h2>
-                <ul className="mx-auto mt-6 max-w-md space-y-2 text-left">
+                {/* One line per term from sm up, centred as a block; the text
+                    shrinks with the card if it would overflow. Phones wrap. */}
+                <ul className="mx-auto mt-6 w-fit max-w-md space-y-2 text-left sm:max-w-none">
                   {GUARANTEE_TERMS.map((term) => (
                     <li
                       key={term}
-                      className="flex items-start gap-2.5 text-micro text-fg/90 sm:text-body"
+                      className="flex items-start gap-2.5 text-micro text-fg/90 sm:text-[min(var(--text-body),calc((100cqw-1.875rem)/30))] sm:leading-[1.65] sm:whitespace-nowrap"
                     >
                       <Tick />
                       {term}

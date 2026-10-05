@@ -31,9 +31,13 @@ export default function ProofWall() {
       {/* Sales campaign tables: one card, each screenshot in its own white
           box with a gap between, so they read as two shots rather than one
           long table. Never wider than their native 930px so the numbers stay
-          sharp; on phones the whole table scales down to fit the screen (with
-          tighter card padding to give it every pixel of width). */}
-      <figure className={`reveal ${CARD} mx-auto max-w-243 space-y-2 p-2 sm:space-y-4 sm:p-5`}>
+          sharp; on phones the whole table scales down to fit the screen, so
+          the card runs edge to edge (out past the container's px-5, no side
+          borders or rounding) with just a little padding, to give the table
+          nearly every pixel of width. */}
+      <figure
+        className={`reveal ${CARD} mx-auto max-w-243 space-y-2 p-2 max-sm:-mx-5 max-sm:rounded-none max-sm:border-x-0 sm:space-y-4 sm:p-5`}
+      >
         {SALES_TABLE_SHOTS.map((shot) => (
           <div
             key={shot.alt}
