@@ -299,12 +299,6 @@ export default function Home() {
                   className="h-auto w-full"
                 />
               </div>
-              <figcaption className="px-3 pt-3 pb-1 text-micro text-muted">
-                <span className="font-semibold text-accent-soft">
-                  $7,665 spent → 5.1 lakh impressions
-                </span>{" "}
-                · Meta Ads Manager
-              </figcaption>
             </figure>
 
             {/* Phones get the sticky CTA from the first screen, so the hero
@@ -885,17 +879,6 @@ export default function Home() {
                   </a>
                 </li>
               ))}
-              <li>
-                <a
-                  href={WHATSAPP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={FOOTER_LINK}
-                >
-                  WhatsApp
-                  <span aria-hidden className="text-micro">↗</span>
-                </a>
-              </li>
               {[
                 { href: "/terms-and-conditions", label: "Terms & Conditions" },
                 { href: "/privacy-policy", label: "Privacy Policy" },
