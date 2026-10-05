@@ -1,19 +1,8 @@
 import Image from "next/image";
 
 import DepthCarousel from "@/components/DepthCarousel";
-import { AD_ACCOUNT_SHOTS, INSIGHT_SHOTS, type ProofShot } from "@/content/proof";
+import { AD_ACCOUNT_SHOTS, INSIGHT_SHOTS } from "@/content/proof";
 import { CARD } from "@/lib/ui";
-
-function ShotHeader({ shot }: { shot: ProofShot }) {
-  return (
-    <div className="px-2 text-center">
-      <h3 className="text-h3 font-bold text-accent-soft text-balance">
-        {shot.headline}
-      </h3>
-      <p className="mt-1 text-micro text-muted">{shot.caption}</p>
-    </div>
-  );
-}
 
 export default function ProofWall() {
   return (
@@ -21,9 +10,8 @@ export default function ProofWall() {
       {/* Ad account tables: two wide cards. */}
       <div className="grid gap-5 sm:gap-6 md:grid-cols-2">
         {AD_ACCOUNT_SHOTS.map((shot) => (
-          <figure key={shot.headline} className={`reveal ${CARD} p-4 sm:p-5`}>
-            <ShotHeader shot={shot} />
-            <div className="mt-4 overflow-hidden rounded-xl border border-line bg-white">
+          <figure key={shot.alt} className={`reveal ${CARD} p-4 sm:p-5`}>
+            <div className="overflow-hidden rounded-xl border border-line bg-white">
               <Image
                 src={shot.src}
                 alt={shot.alt}
@@ -46,8 +34,6 @@ export default function ProofWall() {
           items={INSIGHT_SHOTS.map((shot) => ({
             image: shot.src,
             alt: shot.alt,
-            title: shot.headline,
-            caption: shot.caption,
           }))}
           cardWidth={340}
           cardHeight={660}
