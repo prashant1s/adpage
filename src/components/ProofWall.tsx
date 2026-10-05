@@ -1,7 +1,11 @@
 import Image from "next/image";
 
 import DepthCarousel from "@/components/DepthCarousel";
-import { AD_ACCOUNT_SHOTS, INSIGHT_SHOTS } from "@/content/proof";
+import {
+  AD_ACCOUNT_SHOTS,
+  INSIGHT_SHOTS,
+  SALES_TABLE_SHOTS,
+} from "@/content/proof";
 import { CARD } from "@/lib/ui";
 
 export default function ProofWall() {
@@ -23,6 +27,32 @@ export default function ProofWall() {
           </figure>
         ))}
       </div>
+
+      {/* Sales campaign tables: one card, each screenshot in its own white
+          box with a gap between, so they read as two shots rather than one
+          long table. Never wider than their native 930px so the numbers stay
+          sharp; phones scroll each table sideways instead of shrinking the
+          text past readable. */}
+      <figure className={`reveal ${CARD} mx-auto max-w-243 space-y-3 p-4 sm:space-y-4 sm:p-5`}>
+        {SALES_TABLE_SHOTS.map((shot, index) => (
+          <div
+            key={shot.alt}
+            role="region"
+            aria-label={`Sales campaigns, table ${index + 1}`}
+            tabIndex={0}
+            className="no-scrollbar overflow-x-auto rounded-xl border border-line bg-white"
+          >
+            <Image
+              src={shot.src}
+              alt={shot.alt}
+              quality={85}
+              placeholder="blur"
+              sizes="(min-width: 1024px) 930px, 640px"
+              className="block h-auto w-full min-w-160"
+            />
+          </div>
+        ))}
+      </figure>
 
       {/* Instagram Insights: phone screenshots in a 3D depth carousel.
           Drag, swipe, use the arrows/dots, or arrow keys when focused.

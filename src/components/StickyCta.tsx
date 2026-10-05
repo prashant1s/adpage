@@ -57,7 +57,7 @@ export default function StickyCta() {
             </p>
             <Link
               href={CTA_HREF}
-              className={`cta-attention mt-1.5 w-full md:px-8 ${BUTTON_PRIMARY} ${BUTTON_MD}`}
+              className={`mt-1.5 w-full md:px-8 ${BUTTON_PRIMARY} ${BUTTON_MD}`}
             >
               {CTA_LABEL}
               <span aria-hidden>→</span>

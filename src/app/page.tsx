@@ -10,13 +10,14 @@ import LeakCalculator from "@/components/LeakCalculator";
 import MagneticButtons from "@/components/MagneticButtons";
 import ProofWall from "@/components/ProofWall";
 import Reveal from "@/components/Reveal";
+import ScreenshotCarousel from "@/components/ScreenshotCarousel";
 import SiteFooter from "@/components/SiteFooter";
 import StickyCta from "@/components/StickyCta";
 import StrategyCallForm from "@/components/StrategyCallForm";
 import Testimonials from "@/components/Testimonials";
 import { BTS_SHOTS } from "@/content/bts";
 import { CALL_AGENDA } from "@/content/call";
-import { PROOF_STATS } from "@/content/proof";
+import { AD_SET_SHOTS, PROOF_STATS } from "@/content/proof";
 import { hasCalendly } from "@/lib/calendly";
 import { WHATSAPP_NUMBER } from "@/lib/site";
 import {
@@ -39,7 +40,8 @@ import {
    Sections alternate ink / surface backgrounds.
 
    ORDER: hero → client logos → problem (+ leak calculator) → how it works → results →
-   behind the scenes → testimonials → what you get → fit check → FAQ →
+   behind the scenes → testimonials → what you get (+ ad set results,
+   fit check) → guarantee → FAQ →
    lead form (then Calendly) → final CTA.
 ───────────────────────────────────────── */
 const CONTAINER = "mx-auto w-full max-w-6xl px-5 sm:px-8";
@@ -251,7 +253,7 @@ export default function Home() {
 
           <div className={`relative ${CONTAINER} flex flex-col items-center text-center`}>
             <p
-              className="intro btn-gradient rounded-full px-3.5 py-1.5 text-[0.75rem] font-semibold text-balance text-white sm:px-4 sm:text-micro"
+              className="intro btn-gradient gradient-flow rounded-full px-3.5 py-1.5 text-[0.75rem] font-semibold text-balance text-white sm:px-4 sm:text-micro"
               style={{ ["--delay" as string]: "0.05s" }}
             >
               D2C Brands Spending{" "}
@@ -606,16 +608,78 @@ export default function Home() {
               </Reveal>
             </ul>
 
-            {/* The guarantee, as the last thing they get. */}
-            <Reveal className="relative mx-auto mt-10 max-w-2xl overflow-hidden rounded-2xl border border-accent/30 bg-raised px-6 py-8 text-center sm:px-8 sm:py-10">
+            {/* Real ad set results from the Meta Ads app: what the work above
+                looks like inside an account. */}
+            <Reveal className="mt-10">
+              <ScreenshotCarousel items={AD_SET_SHOTS} label="Ad set results" />
+            </Reveal>
+
+            {/* Fit check: who this is (and isn't) for, right before the CTA. */}
+            <section aria-labelledby="fit-heading" className="mt-16 sm:mt-20">
+              <SectionIntro
+                id="fit-heading"
+                kicker="Fit Check"
+                title="Is This For You?"
+              />
+
+              <div className="mx-auto mt-12 grid max-w-4xl gap-4 sm:gap-5 md:grid-cols-2">
+                <Reveal className="rounded-2xl border border-accent/40 bg-accent/5 p-6 sm:p-7">
+                  <h3 className="flex items-center gap-3 text-h3 font-bold">
+                    <span aria-hidden className="text-[1.75rem] leading-none">
+                      😍
+                    </span>
+                    This Is For You If
+                  </h3>
+                  <ul className="mt-5 space-y-4">
+                    {FIT.yes.map((item) => (
+                      <li key={item} className="flex items-start gap-3 text-body text-fg/90">
+                        <Tick />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </Reveal>
+
+                <Reveal className="rounded-2xl border border-loss/25 bg-loss-deep/40 p-6 sm:p-7">
+                  <h3 className="flex items-center gap-3 text-h3 font-bold">
+                    <span aria-hidden className="text-[1.75rem] leading-none">
+                      😔
+                    </span>
+                    <span>
+                      This Is <span className="text-loss">NOT</span> For You If
+                    </span>
+                  </h3>
+                  <ul className="mt-5 space-y-4">
+                    {FIT.no.map((item) => (
+                      <li key={item} className="flex items-start gap-3 text-body text-muted">
+                        <Tick tone="loss" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </Reveal>
+              </div>
+            </section>
+
+            <Cta className="mt-14" />
+          </div>
+        </section>
+
+        {/* ── GUARANTEE ──────────────────────── */}
+        <section
+          aria-labelledby="guarantee-heading"
+          className={`border-t border-line ${SECTION_Y}`}
+        >
+          <div className={CONTAINER}>
+            <Reveal className="relative mx-auto max-w-2xl overflow-hidden rounded-2xl border border-accent/30 bg-raised px-6 py-8 text-center sm:px-8 sm:py-10">
               <GridBackdrop cell={36} />
               <div aria-hidden className="halo pointer-events-none absolute inset-0" />
               <div className="relative">
                 <p className={LABEL}>Our Guarantee</p>
-                <h3 className="mt-3 text-h2 font-bold text-balance">
+                <h2 id="guarantee-heading" className="mt-3 text-h2 font-bold text-balance">
                   No Results In 90 Days?{" "}
                   <span className="text-gradient">You Don&apos;t Pay Us.</span>
-                </h3>
+                </h2>
                 <ul className="mx-auto mt-6 max-w-md space-y-2 text-left">
                   {GUARANTEE_TERMS.map((term) => (
                     <li
@@ -629,60 +693,6 @@ export default function Home() {
                 </ul>
               </div>
             </Reveal>
-
-            <Cta className="mt-14" />
-          </div>
-        </section>
-
-        {/* ── FIT ────────────────────────────── */}
-        <section
-          aria-labelledby="fit-heading"
-          className={`border-t border-line ${SECTION_Y}`}
-        >
-          <div className={CONTAINER}>
-            <SectionIntro
-              id="fit-heading"
-              kicker="Fit Check"
-              title="Is This For You?"
-            />
-
-            <div className="mx-auto mt-12 grid max-w-4xl gap-4 sm:gap-5 md:grid-cols-2">
-              <Reveal className="rounded-2xl border border-accent/40 bg-accent/5 p-6 sm:p-7">
-                <h3 className="flex items-center gap-3 text-h3 font-bold">
-                  <span aria-hidden className="text-[1.75rem] leading-none">
-                    😍
-                  </span>
-                  This Is For You If
-                </h3>
-                <ul className="mt-5 space-y-4">
-                  {FIT.yes.map((item) => (
-                    <li key={item} className="flex items-start gap-3 text-body text-fg/90">
-                      <Tick />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </Reveal>
-
-              <Reveal className="rounded-2xl border border-loss/25 bg-loss-deep/40 p-6 sm:p-7">
-                <h3 className="flex items-center gap-3 text-h3 font-bold">
-                  <span aria-hidden className="text-[1.75rem] leading-none">
-                    😔
-                  </span>
-                  <span>
-                    This Is <span className="text-loss">NOT</span> For You If
-                  </span>
-                </h3>
-                <ul className="mt-5 space-y-4">
-                  {FIT.no.map((item) => (
-                    <li key={item} className="flex items-start gap-3 text-body text-muted">
-                      <Tick tone="loss" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </Reveal>
-            </div>
           </div>
         </section>
 
@@ -816,7 +826,7 @@ export default function Home() {
 
               <Link
                 href={CTA_HREF}
-                className={`cta-attention mt-7 w-full sm:w-auto sm:px-8 ${BUTTON_PRIMARY} ${BUTTON_MD} ${BUTTON_IN_CARD}`}
+                className={`mt-7 w-full sm:w-auto sm:px-8 ${BUTTON_PRIMARY} ${BUTTON_MD} ${BUTTON_IN_CARD}`}
               >
                 <span className={CTA_LABEL_ONE_LINE}>{CTA_LABEL}</span>
                 <span aria-hidden>→</span>

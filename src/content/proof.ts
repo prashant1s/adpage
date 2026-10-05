@@ -12,6 +12,13 @@ import ig7 from "../../public/Image (7).jpg";
 import ig8 from "../../public/Image (8).jpg";
 import ig9 from "../../public/Image (9).jpg";
 import ig10 from "../../public/Image (10).jpg";
+import salesTable1 from "../../public/Image (6).jpg";
+import salesTable2 from "../../public/Image (11).jpg";
+import adSets2 from "../../public/Image (12).jpg";
+import adSets3 from "../../public/Image (13).jpg";
+import adSet1 from "../../public/Image (14).jpg";
+import adSet2 from "../../public/Image (15).jpg";
+import adSets4 from "../../public/Image (16).jpg";
 
 /**
  * Screenshots for the proof wall, shown without captions. Each alt states
@@ -32,6 +39,44 @@ export const AD_ACCOUNT_SHOTS: ProofShot[] = [
   {
     src: adsUsd,
     alt: "Meta Ads Manager table showing $7,665.42 total spent, 511,612 impressions and 179,733 accounts reached.",
+  },
+];
+
+/* Meta Ads Manager campaign tables — purchases and purchase ROAS. Same
+   columns, so they're stacked in one card and read as one table. */
+export const SALES_TABLE_SHOTS: ProofShot[] = [
+  {
+    src: salesTable1,
+    alt: "Meta Ads Manager sales campaigns: ₹4,178.57 spent for 8 website purchases at 2.76 ROAS, ₹12,124.09 for 17 at 2.67 ROAS, and ₹67,400.23 for 143 at 3.23 ROAS (₹217,702.74 in purchase value).",
+  },
+  {
+    src: salesTable2,
+    alt: "Meta Ads Manager sales campaigns: ₹15,533.89 spent for 16 website purchases at 3.54 ROAS, ₹8,350.77 for 15 at 3.12 ROAS, and ₹12,126.02 for 24 at 2.80 ROAS.",
+  },
+];
+
+/* Meta Ads app ad set cards — purchases and cost per purchase, shown in a
+   sideways carousel. Wide shots (one ad set) alternate with tall ones (two). */
+export const AD_SET_SHOTS: ProofShot[] = [
+  {
+    src: adSet1,
+    alt: "Meta Ads ad set: 39 website purchases at ₹186.52 each, ₹7,274.30 spent.",
+  },
+  {
+    src: adSets3,
+    alt: "Two Meta Ads ad sets: 36 website purchases at ₹159.64 each (₹5,747.05 spent) and 5 at ₹326.45 each (₹1,632.25 spent).",
+  },
+  {
+    src: adSet2,
+    alt: "Meta Ads ad set: 22 website purchases at ₹312.36 each, ₹6,872.02 spent.",
+  },
+  {
+    src: adSets4,
+    alt: "Two Meta Ads ad sets: 30 results at ₹204.85 each (₹6.15K spent) and 31 results at ₹255.55 each (₹7.92K spent).",
+  },
+  {
+    src: adSets2,
+    alt: "Two Meta Ads ad sets: 23 website purchases at ₹246.10 each (₹5,660.40 spent) and 1 at ₹754.11 (₹754.11 spent).",
   },
 ];
 

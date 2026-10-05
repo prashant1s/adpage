@@ -10,8 +10,9 @@ export const CTA_HREF = "/book";
 const BUTTON_BASE =
   "btn-float inline-flex items-center justify-center gap-2 rounded-lg font-semibold";
 
-/* Blue gradient with glow — the one "click me" style on the page. */
-export const BUTTON_PRIMARY = `${BUTTON_BASE} btn-gradient text-white`;
+/* Blue gradient with glow — the one "click me" style on the page. The
+   gradient flows on a loop and the button wiggles every 2s (globals.css). */
+export const BUTTON_PRIMARY = `${BUTTON_BASE} btn-gradient gradient-flow cta-attention text-white`;
 
 export const BUTTON_SECONDARY = `${BUTTON_BASE} border border-line bg-raised text-fg hover:border-line-strong`;
 
