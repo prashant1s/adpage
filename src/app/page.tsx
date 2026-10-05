@@ -354,21 +354,21 @@ export default function Home() {
               </p>
             </Reveal>
 
-            <div className="mt-10 grid gap-4 sm:gap-5 md:grid-cols-2">
+            <div className="mt-10 grid gap-3 sm:gap-4 md:grid-cols-2">
               {REASONS.map((reason, index) => (
-                <Reveal key={reason.title} className={`${CARD} p-6 sm:p-7`}>
+                <Reveal key={reason.title} className={`${CARD} p-4 sm:p-5`}>
                   <p className="text-eyebrow font-semibold text-accent">
                     Leak {String(index + 1).padStart(2, "0")}
                   </p>
-                  <h3 className="mt-2 text-h3 font-bold">{reason.title}</h3>
-                  <p className="mt-2 text-body text-muted text-pretty">
+                  <h3 className="mt-1.5 text-body font-bold">{reason.title}</h3>
+                  <p className="mt-1 text-micro text-muted text-pretty">
                     {reason.body}
                   </p>
                 </Reveal>
               ))}
               {/* Fills the empty sixth cell on md+ with the punchline. */}
-              <Reveal className="flex items-center rounded-2xl border border-accent/30 bg-accent/10 p-6 sm:p-7">
-                <p className="text-h3 font-bold text-balance">
+              <Reveal className="flex items-center rounded-2xl border border-accent/30 bg-accent/10 p-4 sm:p-5">
+                <p className="text-lead font-bold text-balance">
                   Putting more money into this only makes the loss{" "}
                   <span className="text-gradient">bigger</span>.
                 </p>
