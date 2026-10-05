@@ -8,14 +8,11 @@ export type Testimonial = {
   role: string;
   company: string;
   quote: string;
-  /* Headline result pulled from the quote's own numbers, shown above it. */
-  result: { value: string; label: string };
 };
 
 export const TESTIMONIALS: Testimonial[] = [
   {
     id: "test-1",
-    result: { value: "₹4.2L → ₹16L", label: "monthly revenue in 90 days" },
     name: "Rahul Mehta",
     role: "Founder",
     company: "Nutrition Brand",
@@ -24,7 +21,6 @@ export const TESTIMONIALS: Testimonial[] = [
   },
   {
     id: "test-2",
-    result: { value: "₹3L → ₹12L", label: "monthly sales, CAC down 42%" },
     name: "Priya Sharma",
     role: "Founder",
     company: "D2C Skincare Brand",
@@ -33,7 +29,6 @@ export const TESTIMONIALS: Testimonial[] = [
   },
   {
     id: "test-3",
-    result: { value: "1.9x → 7.5x", label: "ROAS in 4 months" },
     name: "Ankit Verma",
     role: "Founder",
     company: "Fashion Label",
@@ -42,7 +37,6 @@ export const TESTIMONIALS: Testimonial[] = [
   },
   {
     id: "test-4",
-    result: { value: "₹2.4L → ₹10L+", label: "monthly revenue" },
     name: "Neha Agarwal",
     role: "Founder",
     company: "Home Decor Brand",
@@ -51,7 +45,6 @@ export const TESTIMONIALS: Testimonial[] = [
   },
   {
     id: "test-5",
-    result: { value: "₹6L → ₹25L", label: "monthly sales" },
     name: "Karan Gupta",
     role: "Founder",
     company: "Health Supplements Brand",
@@ -60,7 +53,6 @@ export const TESTIMONIALS: Testimonial[] = [
   },
   {
     id: "test-6",
-    result: { value: "4.7x", label: "revenue growth in 5 months" },
     name: "Ritika Jain",
     role: "Founder",
     company: "Beauty Brand",
@@ -69,7 +61,6 @@ export const TESTIMONIALS: Testimonial[] = [
   },
   {
     id: "test-7",
-    result: { value: "₹7L → ₹28L+", label: "monthly sales" },
     name: "Sneha Kapoor",
     role: "Founder",
     company: "Women's Fashion Brand",
@@ -78,7 +69,6 @@ export const TESTIMONIALS: Testimonial[] = [
   },
   {
     id: "test-8",
-    result: { value: "₹620 → ₹290", label: "customer acquisition cost" },
     name: "Amit Bansal",
     role: "Founder",
     company: "Gourmet Food Brand",
@@ -87,7 +77,6 @@ export const TESTIMONIALS: Testimonial[] = [
   },
   {
     id: "test-9",
-    result: { value: "2.2x → 9.1x", label: "ROAS" },
     name: "Shivani Rao",
     role: "Founder",
     company: "Pet Care Brand",
@@ -96,7 +85,6 @@ export const TESTIMONIALS: Testimonial[] = [
   },
   {
     id: "test-10",
-    result: { value: "₹8L → ₹35L", label: "monthly revenue" },
     name: "Vikram Singh",
     role: "Founder",
     company: "FMCG Brand",

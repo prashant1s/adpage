@@ -3,6 +3,9 @@
 /* The one main CTA label, used everywhere. Don't add variations. */
 export const CTA_LABEL = "Book Your Free Strategy Call";
 
+/* Where every CTA goes: the booking form on its own page (app/book). */
+export const CTA_HREF = "/book";
+
 /* btn-float: hover lift, arrow nudge and press feedback (globals.css). */
 const BUTTON_BASE =
   "btn-float inline-flex items-center justify-center gap-2 rounded-lg font-semibold";

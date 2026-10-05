@@ -129,21 +129,16 @@ function buildChatUrl(values: Values) {
 
 /* ── Form ─────────────────────────────────────────────────────────── */
 
-export default function StrategyCallForm({
-  plain = false,
-}: {
-  /** Drop the card border/background, for use inside the booking popup. */
-  plain?: boolean;
-}) {
+export default function StrategyCallForm() {
   const [values, setValues] = useState<Values>(EMPTY);
   const [errors, setErrors] = useState<Errors>({});
   const [sent, setSent] = useState<Values | null>(null);
-  /* The form renders twice (page section + popup), so field ids must be
-     unique per instance for labels to stay linked to their inputs. */
+  /* Field ids are unique per instance, so labels stay linked to their
+     inputs even if the form is ever rendered twice on one page. */
   const uid = useId();
   const fieldId = (name: Field) => `${uid}-${name}`;
   const errorId = (name: Field) => `${uid}-${name}-error`;
-  const shell = plain ? "" : "rounded-2xl border border-line bg-raised";
+  const shell = "rounded-2xl border border-line bg-raised";
 
   const update = (field: Field, value: string) => {
     setValues((current) => ({ ...current, [field]: value }));
@@ -179,9 +174,7 @@ export default function StrategyCallForm({
     const opened = window.open(url, "_blank", "noopener,noreferrer");
     setSent(values);
 
-    // 2. Then the booking. Calendly's popup can't sit above the booking
-    //    <dialog> (top layer), so close that first.
-    event.currentTarget.closest("dialog")?.close();
+    // 2. Then the booking.
     if (hasCalendly) void bookCall(values);
     else if (!opened) window.location.href = url;
   }
@@ -189,7 +182,7 @@ export default function StrategyCallForm({
   if (sent) {
     const chatUrl = buildChatUrl(sent);
     return (
-      <div role="status" className={`${shell} ${plain ? "" : "p-6 sm:p-10"}`}>
+      <div role="status" className={`${shell} p-6 sm:p-10`}>
         <p className="text-eyebrow font-semibold uppercase text-accent">
           {hasCalendly ? "Step 2 of 2" : "Request ready"}
         </p>
@@ -242,7 +235,7 @@ export default function StrategyCallForm({
     <form
       noValidate
       onSubmit={handleSubmit}
-      className={`${shell} ${plain ? "" : "p-5 sm:p-6"}`}
+      className={`${shell} p-5 sm:p-6`}
     >
       <div className="grid gap-4 sm:grid-cols-2">
         <div>

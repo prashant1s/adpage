@@ -1,9 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import footerLogo from "../../public/footer-logo.webp";
 import heroAdsShot from "../../public/2.png";
-import BookingModal from "@/components/BookingModal";
 import ClientLogos from "@/components/ClientLogos";
 import DepthCarousel from "@/components/DepthCarousel";
 import Faq from "@/components/Faq";
@@ -12,10 +10,12 @@ import LeakCalculator from "@/components/LeakCalculator";
 import MagneticButtons from "@/components/MagneticButtons";
 import ProofWall from "@/components/ProofWall";
 import Reveal from "@/components/Reveal";
+import SiteFooter from "@/components/SiteFooter";
 import StickyCta from "@/components/StickyCta";
 import StrategyCallForm from "@/components/StrategyCallForm";
 import Testimonials from "@/components/Testimonials";
 import { BTS_SHOTS } from "@/content/bts";
+import { CALL_AGENDA } from "@/content/call";
 import { PROOF_STATS } from "@/content/proof";
 import { hasCalendly } from "@/lib/calendly";
 import { WHATSAPP_NUMBER } from "@/lib/site";
@@ -25,6 +25,7 @@ import {
   BUTTON_MD,
   BUTTON_PRIMARY,
   CARD,
+  CTA_HREF,
   CTA_LABEL,
   CTA_LABEL_ONE_LINE,
   LABEL,
@@ -44,8 +45,6 @@ import {
 const CONTAINER = "mx-auto w-full max-w-6xl px-5 sm:px-8";
 const SECTION_Y = "py-12 sm:py-16 lg:py-20";
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`;
-const FOOTER_LINK =
-  "inline-flex items-center gap-1.5 transition-colors hover:text-fg";
 
 /* ─────────────────────────────────────────
    CONTENT
@@ -148,12 +147,6 @@ const FIT = {
   ],
 };
 
-const CALL_AGENDA = [
-  "Look at your ad account with you, live",
-  "Show you the 2–3 biggest places you're losing money",
-  "Tell you what to fix first, even if you don't work with us",
-];
-
 /* Titles kept short so all three cards stay one line each, same height. */
 const NEXT_STEPS = [
   { title: "Fill in 5 details", note: "Takes under a minute" },
@@ -207,15 +200,15 @@ function SectionIntro({
 function Cta({ note, className = "" }: { note?: string; className?: string }) {
   return (
     <div className={`flex flex-col items-center gap-3 text-center ${className}`}>
-      <a
-        href="#book"
+      <Link
+        href={CTA_HREF}
         className={`w-full sm:w-auto ${BUTTON_PRIMARY} ${BUTTON_LG}`}
       >
         {/* Balanced, so a label that wraps on small phones splits evenly
             instead of leaving one word on its own line. */}
         <span className="text-balance">{CTA_LABEL}</span>
         <span aria-hidden>→</span>
-      </a>
+      </Link>
       {note && <p className="text-micro text-subtle">{note}</p>}
     </div>
   );
@@ -821,13 +814,13 @@ export default function Home() {
                 ))}
               </ol>
 
-              <a
-                href="#book"
+              <Link
+                href={CTA_HREF}
                 className={`cta-attention mt-7 w-full sm:w-auto sm:px-8 ${BUTTON_PRIMARY} ${BUTTON_MD} ${BUTTON_IN_CARD}`}
               >
                 <span className={CTA_LABEL_ONE_LINE}>{CTA_LABEL}</span>
                 <span aria-hidden>→</span>
-              </a>
+              </Link>
               <p className="mt-3 text-[0.75rem] text-subtle sm:text-micro">
                 Free · 30 minutes · No pitch · 90-day results guarantee
               </p>
@@ -836,104 +829,9 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Every "#book" button on the page opens this instead of scrolling. */}
-      <BookingModal />
       <MagneticButtons />
 
-      {/* ── FOOTER ─────────────────────────── */}
-      {/* id="footer" is in StickyCta's HIDE_OVER list, so the sticky bar
-          steps aside instead of covering the disclaimer. */}
-      <footer
-        id="footer"
-        className="relative overflow-hidden border-t border-line bg-ink"
-      >
-        <div aria-hidden className="footer-glow pointer-events-none absolute inset-0" />
-        <div aria-hidden className="footer-rule pointer-events-none absolute inset-x-0 top-0 h-px" />
-
-        <div
-          className={`relative ${CONTAINER} pt-14 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:pt-20`}
-        >
-          <div className="text-center">
-            <Image
-              src={footerLogo}
-              alt="Whizoid Studio"
-              sizes="208px"
-              className="mx-auto h-auto w-44 sm:w-52"
-            />
-            <p className="mt-4 text-body text-muted">
-              Meta ads for D2C brands.{" "}
-              <span className="whitespace-nowrap">Stop guessing. Start scaling.</span>
-            </p>
-          </div>
-
-          <nav aria-label="Footer" className="mt-8">
-            <ul className="flex flex-wrap justify-center gap-x-7 gap-y-3 text-body text-muted">
-              {[
-                { href: "#how", label: "How It Works" },
-                { href: "#results", label: "Results" },
-                { href: "#faq", label: "FAQ" },
-              ].map((item) => (
-                <li key={item.href}>
-                  <a href={item.href} className={FOOTER_LINK}>
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-              {[
-                { href: "/terms-and-conditions", label: "Terms & Conditions" },
-                { href: "/privacy-policy", label: "Privacy Policy" },
-              ].map((item) => (
-                <li key={item.href}>
-                  <Link href={item.href} className={FOOTER_LINK}>
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <div className="mt-12 rounded-2xl border border-line bg-surface/70 p-4 sm:px-5 sm:py-4">
-            <p className="flex items-center gap-2 text-micro font-semibold text-muted">
-              <span
-                aria-hidden
-                className="flex h-5 w-5 items-center justify-center rounded-full border border-line-strong text-[0.6875rem] text-subtle"
-              >
-                i
-              </span>
-              Disclaimer
-            </p>
-            <p className="mt-3 text-[0.75rem] leading-relaxed text-subtle text-pretty sm:text-[0.8125rem]">
-              This site is not a part of the Facebook™ website or Facebook™ Inc.
-              Additionally, this site is NOT endorsed by Facebook™ in any way.
-              FACEBOOK™ is a trademark of FACEBOOK™, Inc. As stipulated by law, we
-              cannot and do not make any guarantees about your ability to get
-              results or earn any money with our ideas, information, tools, or
-              strategies. We are here to help you by giving great content,
-              direction, and strategies that have worked for us and our clients,
-              and that we believe can help you move forward. All terms, privacy
-              policies, and disclaimers for this program and website can be
-              accessed via the links provided. We believe in transparency and
-              integrity, and we hold ourselves (and you) to a high standard of
-              honesty.
-            </p>
-          </div>
-
-          <div className="mt-8 flex flex-col-reverse items-center gap-4 border-t border-line pt-6 text-micro text-subtle sm:flex-row sm:justify-between">
-            <p>
-              © {new Date().getFullYear()} Whizoid Studio. All rights reserved.
-            </p>
-            <a href="#top" className={`group ${FOOTER_LINK}`}>
-              Back to top
-              <span
-                aria-hidden
-                className="inline-block transition-transform group-hover:-translate-y-0.5"
-              >
-                ↑
-              </span>
-            </a>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
 
       <StickyCta />
     </>

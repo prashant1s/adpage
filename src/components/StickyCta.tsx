@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { BUTTON_MD, BUTTON_PRIMARY, CTA_LABEL } from "@/lib/ui";
+import { BUTTON_MD, BUTTON_PRIMARY, CTA_HREF, CTA_LABEL } from "@/lib/ui";
 
 /* Sections that already have the form or a big CTA of their own, plus the
    footer. The bar steps aside while any of them is on screen so it never
@@ -54,13 +55,13 @@ export default function StickyCta() {
                 👇
               </span>
             </p>
-            <a
-              href="#book"
+            <Link
+              href={CTA_HREF}
               className={`cta-attention mt-1.5 w-full md:px-8 ${BUTTON_PRIMARY} ${BUTTON_MD}`}
             >
               {CTA_LABEL}
               <span aria-hidden>→</span>
-            </a>
+            </Link>
           </div>
         </motion.div>
       )}

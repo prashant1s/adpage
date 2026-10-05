@@ -137,26 +137,11 @@ export default function Testimonials() {
             <figure
               key={`${item.id}-${index}`}
               aria-hidden={isClone || undefined}
-              /* Two per view on tablets, three from lg up. The headline
-                 result leads; the full quote follows with its numbers
-                 picked out so a skim still lands on the proof. */
+              /* Two per view on tablets, three from lg up. The quote's
+                 numbers are picked out so a skim still lands on the proof. */
               className={`${CARD} flex w-[82%] max-w-full shrink-0 grow-0 basis-auto flex-col p-5 sm:p-6 md:w-[calc((100%-1rem)/2)] lg:w-[calc((100%-2rem)/3)]`}
             >
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="text-gradient text-h3 font-bold tabular-nums">
-                    {item.result.value}
-                  </p>
-                  <p className="mt-0.5 text-micro text-subtle">{item.result.label}</p>
-                </div>
-                <span
-                  aria-hidden
-                  className="-mt-2 font-serif text-[3rem] leading-none text-accent/40"
-                >
-                  &rdquo;
-                </span>
-              </div>
-              <blockquote className="mt-4 flex-1 border-t border-line pt-4 text-[0.9375rem] leading-relaxed text-muted text-pretty">
+              <blockquote className="flex-1 text-[0.9375rem] leading-relaxed text-muted text-pretty">
                 <p>{highlightFigures(item.quote)}</p>
               </blockquote>
               <figcaption className="mt-5 flex items-center gap-3">

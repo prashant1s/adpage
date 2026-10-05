@@ -10,6 +10,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 1,
     },
+    {
+      url: `${SITE_URL}/book`,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
     ...["/terms-and-conditions", "/privacy-policy"].map((path) => ({
       url: `${SITE_URL}${path}`,
       changeFrequency: "yearly" as const,

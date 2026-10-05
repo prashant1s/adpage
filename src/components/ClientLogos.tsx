@@ -32,8 +32,8 @@ function LogoList({ hidden = false }: { hidden?: boolean }) {
 }
 
 /* "Trusted by leading brands": a band right under the hero with client
-   logos scrolling past. Pauses on hover; with reduced motion
-   it stands still and scrolls sideways by hand instead (globals.css). */
+   logos scrolling past, even on hover. With reduced motion it stands
+   still and scrolls sideways by hand instead (globals.css). */
 export default function ClientLogos() {
   return (
     <section
