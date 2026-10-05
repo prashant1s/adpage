@@ -460,19 +460,23 @@ export default function Home() {
               <ProofWall />
             </div>
 
-            {/* Stat row, read straight off the screenshots above. */}
-            <ul className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-5">
+            {/* Stat row, read straight off the screenshots above. Same 12px
+                padding on every side, and on desktop the row is only as wide
+                as five boxes hugging their content, so the side padding
+                matches the top/bottom instead of stretching. Equal gaps both
+                ways, and the same 56px above as the CTA has below. */}
+            <ul className="mx-auto mt-14 grid grid-cols-2 gap-3 sm:gap-4 lg:max-w-3xl lg:grid-cols-5">
               {PROOF_STATS.map((stat, index) => (
                 <li
                   key={stat.label}
-                  className={`reveal ${CARD} px-4 py-5 text-center ${
+                  className={`reveal ${CARD} p-3 text-center ${
                     index === PROOF_STATS.length - 1 ? "col-span-2 lg:col-span-1" : ""
                   }`}
                 >
                   <p className="text-stat font-bold text-accent-soft tabular-nums">
                     {stat.value}
                   </p>
-                  <p className="mt-1 text-micro text-muted">{stat.label}</p>
+                  <p className="mt-0.5 text-xs whitespace-nowrap text-muted">{stat.label}</p>
                 </li>
               ))}
             </ul>
@@ -529,10 +533,12 @@ export default function Home() {
                    change made page scrolling stutter. The tint does the depth. */
                 blur={0}
                 tint="#05060a"
-                duration={1300}
+                /* 1.3s with a long ease-out tail felt sluggish. */
+                duration={800}
                 ease="power3.out"
                 autoplay
-                autoplayDelay={1500}
+                /* Counts from when a slide starts moving: 0.8s move + ~1.5s rest. */
+                autoplayDelay={2300}
                 loop
                 showControls
                 showIndicators

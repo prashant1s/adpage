@@ -12,7 +12,10 @@
      and autoplay pauses while the carousel is off screen
    - items can be videos: only the front one plays (muted), and autoplay
      waits for it to finish before moving to the next card
-   - colours follow the site's card / accent tokens */
+   - colours follow the site's card / accent tokens
+   - transitions stay on the compositor: the depth overlay has its own layer,
+     controls have no backdrop blur, and videos start only once the cards
+     have settled */
 
 import {
   useCallback,
@@ -167,6 +170,9 @@ const DepthCarousel = ({
      so it only touches the DOM when a value actually changes. */
   const styleCacheRef = useRef<Record<string, string>[]>([]);
   const rafRef = useRef(0);
+  /* Runs once the cards stop moving (end of a tween). Starting/rewinding
+     videos waits for it so decoding never competes with the transition. */
+  const settleRef = useRef<() => void>(() => {});
 
   /* Scale cards to fit the container. On phones the card gets most of the
      width (a small peek of the next one); on desktop room is left for the
@@ -316,6 +322,7 @@ const DepthCarousel = ({
           const n = cfg.count;
           if (n > 0) posRef.current = ((posRef.current % n) + n) % n;
           layout(posRef.current);
+          settleRef.current();
         }
       });
     },
@@ -362,9 +369,17 @@ const DepthCarousel = ({
     });
   }, []);
 
+  /* On a slide change only pause the old video (cheap). Playing the new
+     one and rewinding the rest happens when the tween settles. */
   useEffect(() => {
-    syncVideos();
-  }, [active, syncVideos]);
+    videoRefs.current.forEach((v, i) => {
+      if (v && i !== focusRef.current) v.pause();
+    });
+  }, [active]);
+
+  useEffect(() => {
+    settleRef.current = syncVideos;
+  }, [syncVideos]);
 
   useEffect(() => {
     document.addEventListener('visibilitychange', syncVideos);
@@ -647,8 +662,11 @@ const DepthCarousel = ({
                 </div>
               )}
             </div>
+            {/* Own compositor layer (will-change): its opacity changes on
+                every frame of a transition, and without a layer of its own
+                that repainted the whole card, photo and all, each frame. */}
             <span
-              className="pointer-events-none absolute inset-0 opacity-0"
+              className="pointer-events-none absolute inset-0 opacity-0 will-change-[opacity]"
               ref={el => {
                 overlayRefs.current[i] = el;
               }}
@@ -678,11 +696,13 @@ const DepthCarousel = ({
         {cards}
       </div>
 
+      {/* Controls sit over the moving cards, so no backdrop-filter: it
+          re-blurs everything behind it on every frame of a transition. */}
       {showControls && count > 1 && (
         <>
           <button
             type="button"
-            className="absolute top-1/2 left-2 z-3000 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-[rgba(18,20,26,0.85)] text-white md:backdrop-blur-md transition-[background,border-color,transform] duration-200 hover:border-accent hover:bg-[rgba(28,31,40,0.9)] active:scale-95 sm:left-4"
+            className="absolute top-1/2 left-2 z-3000 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-[rgba(18,20,26,0.92)] text-white transition-[background,border-color,transform] duration-200 hover:border-accent hover:bg-[rgba(28,31,40,0.9)] active:scale-95 sm:left-4"
             aria-label="Previous slide"
             onClick={() => navigateBy(-1)}
           >
@@ -692,7 +712,7 @@ const DepthCarousel = ({
           </button>
           <button
             type="button"
-            className="absolute top-1/2 right-2 z-3000 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-[rgba(18,20,26,0.85)] text-white md:backdrop-blur-md transition-[background,border-color,transform] duration-200 hover:border-accent hover:bg-[rgba(28,31,40,0.9)] active:scale-95 sm:right-4"
+            className="absolute top-1/2 right-2 z-3000 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-[rgba(18,20,26,0.92)] text-white transition-[background,border-color,transform] duration-200 hover:border-accent hover:bg-[rgba(28,31,40,0.9)] active:scale-95 sm:right-4"
             aria-label="Next slide"
             onClick={() => navigateBy(1)}
           >
@@ -705,7 +725,7 @@ const DepthCarousel = ({
 
       {showIndicators && count > 1 && (
         <div
-          className="absolute bottom-0 left-1/2 z-3000 flex -translate-x-1/2 gap-2 rounded-full bg-[rgba(14,16,22,0.8)] px-3 py-2 md:backdrop-blur-sm"
+          className="absolute bottom-0 left-1/2 z-3000 flex -translate-x-1/2 gap-2 rounded-full bg-[rgba(14,16,22,0.9)] px-3 py-2"
           role="tablist"
           aria-label="Slides"
         >

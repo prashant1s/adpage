@@ -80,10 +80,12 @@ export default function ProofWall() {
              change made page scrolling stutter. The tint does the depth. */
           blur={0}
           tint="#05060a"
-          duration={1300}
+          /* 1.3s with a long ease-out tail felt sluggish. */
+          duration={800}
           ease="power3.out"
           autoplay
-          autoplayDelay={1500}
+          /* Counts from when a slide starts moving: 0.8s move + ~1.5s rest. */
+          autoplayDelay={2300}
           loop
           showControls
           showIndicators
