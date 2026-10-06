@@ -52,6 +52,10 @@ export const FAQS: { q: string; a: string }[] = [
     a: "D2C brands that already sell online and spend ₹1–3L a month on Meta ads. If you’re just starting and have no sales yet, it’s too early for us. We also take on a maximum of 5 new brands a month, so every account gets hands-on attention. Once this month’s slots are gone, the next opening is next month.",
   },
   {
+    q: "Why only 5 new brands a month?",
+    a: "Most agencies keep signing clients until each account gets a few minutes a week. We don’t. Every brand gets new ads tested weekly, losing ads switched off within 72 hours and a WhatsApp update every week, and that takes real hands-on time. So we cap it at 5 new brands a month. Once this month’s spots are gone, the next opening is next month.",
+  },
+  {
     q: "What if I don’t see results in 90 days?",
     a: "You don’t pay our fee. We agree on one clear target with you on day one, and if we miss it inside 90 days, our fee is waived. Ad spend goes straight to Meta, so that part isn’t covered.",
   },
