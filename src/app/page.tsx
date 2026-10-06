@@ -19,7 +19,6 @@ import { BTS_SHOTS } from "@/content/bts";
 import { CALL_AGENDA } from "@/content/call";
 import { AD_SET_SHOTS, PROOF_STATS } from "@/content/proof";
 import { hasCalendly } from "@/lib/calendly";
-import { WHATSAPP_NUMBER } from "@/lib/site";
 import {
   BUTTON_IN_CARD,
   BUTTON_LG,
@@ -46,7 +45,6 @@ import {
 ───────────────────────────────────────── */
 const CONTAINER = "mx-auto w-full max-w-6xl px-5 sm:px-8";
 const SECTION_Y = "py-12 sm:py-16 lg:py-20";
-const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`;
 /* Keeps a ticked point on one line from sm up. Needs an @container parent.
    The longest point is ~23.5em and the tick + gap is 2rem, so the size caps
    at whatever fits the container. */
@@ -731,21 +729,7 @@ export default function Home() {
               id="faq-heading"
               kicker="Questions"
               title="Before You Book."
-            >
-              <p>
-                Something else on your mind?
-                <br />
-                <a
-                  href={WHATSAPP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-semibold whitespace-nowrap text-accent-soft underline underline-offset-4"
-                >
-                  Ask us on WhatsApp
-                </a>
-                .
-              </p>
-            </SectionIntro>
+            />
             <Reveal className="mx-auto mt-10 max-w-2xl">
               <Faq />
             </Reveal>
