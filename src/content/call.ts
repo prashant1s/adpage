@@ -3,7 +3,7 @@
  * both the home page and /book.
  */
 export const CALL_AGENDA = [
-  "Look at your ad account with you, live",
-  "Show you the 2–3 biggest places you're losing money",
-  "Tell you what to fix first, even if you don't work with us",
+  "Audit your ad account with you, live",
+  "Find the 2–3 biggest places you're losing money",
+  "Map out a better strategy and how we'd work together",
 ];

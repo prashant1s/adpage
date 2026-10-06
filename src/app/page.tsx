@@ -39,9 +39,9 @@ import {
    same gradient CTA. Content max width 1152px; text blocks 768px.
    Sections alternate ink / surface backgrounds.
 
-   ORDER: hero → client logos → problem (+ leak calculator) → how it works → results →
-   behind the scenes → testimonials → what you get (+ ad set results,
-   fit check) → guarantee → FAQ →
+   ORDER: hero → client logos → problem (+ leak calculator, ad set results) →
+   how it works → results → behind the scenes → testimonials → what you get
+   (+ fit check) → guarantee → FAQ →
    lead form (then Calendly) → final CTA.
 ───────────────────────────────────────── */
 const CONTAINER = "mx-auto w-full max-w-6xl px-5 sm:px-8";
@@ -409,6 +409,12 @@ export default function Home() {
             <Reveal className="mx-auto mt-12 max-w-100">
               <LeakCalculator />
             </Reveal>
+
+            {/* Real ad set results from the Meta Ads app: what an account
+                looks like once the leak is fixed. */}
+            <Reveal className="mt-12">
+              <ScreenshotCarousel items={AD_SET_SHOTS} label="Ad set results" />
+            </Reveal>
           </div>
         </section>
 
@@ -621,12 +627,6 @@ export default function Home() {
                 </figure>
               </Reveal>
             </ul>
-
-            {/* Real ad set results from the Meta Ads app: what the work above
-                looks like inside an account. */}
-            <Reveal className="mt-10">
-              <ScreenshotCarousel items={AD_SET_SHOTS} label="Ad set results" />
-            </Reveal>
 
             {/* Fit check: who this is (and isn't) for, right before the CTA. */}
             <section aria-labelledby="fit-heading" className="mt-16 sm:mt-20">
