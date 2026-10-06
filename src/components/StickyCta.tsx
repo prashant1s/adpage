@@ -50,7 +50,8 @@ export default function StickyCta() {
             className="border-t border-line bg-ink/95 px-4 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:pointer-events-auto md:w-auto md:rounded-xl md:border md:bg-raised/95 md:px-2 md:pt-1.5 md:pb-2 md:shadow-[0_20px_50px_-15px_rgb(0_0_0/0.8)]"
           >
             <p className="text-center text-micro font-medium whitespace-nowrap text-muted">
-              What are you waiting for?{" "}
+              {/* Same limit as the "Who do you work with?" FAQ. */}
+              Only 5 spots a month. Grab yours{" "}
               <span aria-hidden className="inline-block animate-bounce [animation-duration:1.6s]">
                 👇
               </span>
