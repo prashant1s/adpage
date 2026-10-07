@@ -2,7 +2,6 @@ import type { StaticImageData } from "next/image";
 
 import adsInr from "../../public/1.png";
 import adsUsd from "../../public/2.png";
-import ig0 from "../../public/Image.jpg";
 import ig1 from "../../public/Image (1).jpg";
 import ig2 from "../../public/Image (2).jpg";
 import ig3 from "../../public/Image (3).jpg";
@@ -113,10 +112,6 @@ export const INSIGHT_SHOTS: ProofShot[] = [
   {
     src: ig8,
     alt: "Instagram Insights: 68,138 followers, up 17.0% over 90 days.",
-  },
-  {
-    src: ig0,
-    alt: "Instagram Insights: 191,799 followers.",
   },
   {
     src: ig1,
