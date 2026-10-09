@@ -291,14 +291,12 @@ export default function Home() {
 
             {/* Framed like the reference site's hero video: two real Ads
                 Manager screenshots as the hero visual, each in its own white
-                box so they read as two shots. The tables are dense, so from
-                sm up the frame breaks out past the container (centred by the
-                flex parent, clipped by the section) to as much as 1400px,
-                keeping the numbers close to their captured size. Phones: it
-                runs edge to edge with no side borders or rounding, like the
-                proof wall's tables, to give them every pixel of width. */}
+                box so they read as two shots. From sm up the frame fills the
+                container (1088px at most). Phones: it runs edge to edge with
+                no side borders or rounding, like the proof wall's tables, to
+                give the dense tables every pixel of width. */}
             <figure
-              className="intro mt-10 w-screen space-y-2 rounded-3xl border border-line bg-surface p-2 shadow-[0_30px_90px_-30px_rgb(37_99_235/0.45)] max-sm:rounded-none max-sm:border-x-0 sm:mt-12 sm:w-[min(calc(100vw-4rem),87.5rem)] sm:space-y-3 sm:p-3"
+              className="intro mt-10 w-screen space-y-2 rounded-3xl border border-line bg-surface p-2 shadow-[0_30px_90px_-30px_rgb(37_99_235/0.45)] max-sm:rounded-none max-sm:border-x-0 sm:mt-12 sm:w-full sm:space-y-3 sm:p-3"
               style={{ ["--delay" as string]: "0.2s" }}
             >
               {HERO_SHOTS.map((shot, i) => (
@@ -312,7 +310,7 @@ export default function Home() {
                     quality={85}
                     placeholder="blur"
                     preload={i === 0}
-                    sizes="(min-width: 1464px) 1400px, 100vw"
+                    sizes="(min-width: 1152px) 1062px, 100vw"
                     className="block h-auto w-full"
                   />
                 </div>
