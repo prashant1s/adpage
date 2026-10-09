@@ -1,18 +1,12 @@
 import { CALENDLY_URL } from "@/lib/site";
 
-/* Calendly's popup widget, loaded on demand the first time it's needed so
-   the page itself never pays for it. */
-
-type CalendlyPrefill = {
-  name?: string;
-  email?: string;
-  customAnswers?: Record<string, string>;
-};
+/* Calendly's widget script, loaded on demand the first time the booking
+   calendar nears the screen, so the rest of the page never pays for it. */
 
 declare global {
   interface Window {
     Calendly?: {
-      initPopupWidget: (options: { url: string; prefill?: CalendlyPrefill }) => void;
+      initInlineWidget: (options: { url: string; parentElement: HTMLElement }) => void;
     };
   }
 }
@@ -20,9 +14,16 @@ declare global {
 const SCRIPT_SRC = "https://assets.calendly.com/assets/external/widget.js";
 const STYLE_HREF = "https://assets.calendly.com/assets/external/widget.css";
 
+/** The booking page as embedded: Calendly's cookie banner hidden. */
+export const CALENDLY_EMBED_URL = (() => {
+  const url = new URL(CALENDLY_URL);
+  url.searchParams.set("hide_gdpr_banner", "1");
+  return url.toString();
+})();
+
 let loading: Promise<void> | null = null;
 
-function loadCalendly() {
+export function loadCalendly() {
   if (window.Calendly) return Promise.resolve();
   loading ??= new Promise<void>((resolve, reject) => {
     const style = document.createElement("link");
@@ -41,19 +42,4 @@ function loadCalendly() {
     document.head.appendChild(script);
   });
   return loading;
-}
-
-export const hasCalendly = CALENDLY_URL.length > 0;
-
-/** Opens the booking popup, pre-filled with what the visitor already typed.
- *  Resolves false if Calendly isn't configured or couldn't load. */
-export async function openCalendly(prefill: CalendlyPrefill) {
-  if (!hasCalendly) return false;
-  try {
-    await loadCalendly();
-    window.Calendly?.initPopupWidget({ url: CALENDLY_URL, prefill });
-    return true;
-  } catch {
-    return false;
-  }
 }

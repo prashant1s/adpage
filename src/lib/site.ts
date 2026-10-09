@@ -23,16 +23,9 @@ export const SITE_DESCRIPTION =
 export const SITE_LOCALE = "en_IN";
 
 /**
- * Business WhatsApp number that strategy-call requests are sent to.
- * wa.me needs full international format, digits only — no "+", spaces or
- * dashes. 91 is the India country code prefixed to 89621 77924.
+ * Calendly event that strategy calls are booked on, embedded inline on the
+ * home page and /book. NEXT_PUBLIC_CALENDLY_URL overrides it.
  */
-export const WHATSAPP_NUMBER = "918962177924";
-
-/**
- * Calendly event link shown in a popup after the booking form is sent, e.g.
- * "https://calendly.com/whizoid/strategy-call". Set NEXT_PUBLIC_CALENDLY_URL
- * (or replace the empty fallback). While empty, the form skips the popup and
- * just confirms the WhatsApp message.
- */
-export const CALENDLY_URL = (process.env.NEXT_PUBLIC_CALENDLY_URL ?? "").trim();
+export const CALENDLY_URL =
+  process.env.NEXT_PUBLIC_CALENDLY_URL?.trim() ||
+  "https://calendly.com/udit-whizoidstudio/new-meeting";

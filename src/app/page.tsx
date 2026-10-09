@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import heroAdsShot from "../../public/2.png";
+import heroAdsShot from "../../public/img/Heroimg.png";
+import CalendlyEmbed from "@/components/CalendlyEmbed";
 import ClientLogos from "@/components/ClientLogos";
 import DepthCarousel from "@/components/DepthCarousel";
 import Faq from "@/components/Faq";
@@ -13,12 +14,10 @@ import Reveal from "@/components/Reveal";
 import ScreenshotCarousel from "@/components/ScreenshotCarousel";
 import SiteFooter from "@/components/SiteFooter";
 import StickyCta from "@/components/StickyCta";
-import StrategyCallForm from "@/components/StrategyCallForm";
 import Testimonials from "@/components/Testimonials";
 import { BTS_SHOTS } from "@/content/bts";
 import { CALL_AGENDA } from "@/content/call";
 import { AD_SET_SHOTS, PROOF_STATS } from "@/content/proof";
-import { hasCalendly } from "@/lib/calendly";
 import {
   BUTTON_IN_CARD,
   BUTTON_LG,
@@ -154,11 +153,8 @@ const FIT = {
 
 /* Titles kept short so all three cards stay one line each, same height. */
 const NEXT_STEPS = [
-  { title: "Fill in 5 details", note: "Takes under a minute" },
-  {
-    title: "Pick a time",
-    note: hasCalendly ? "Any slot on Calendly" : "Whenever suits you",
-  },
+  { title: "Pick a time", note: "Any slot that suits you" },
+  { title: "Add your details", note: "Takes under a minute" },
   { title: "Get your fix list", note: "Live, on a 30-min call" },
 ];
 
@@ -284,16 +280,17 @@ export default function Home() {
             {/* Framed like the reference site's hero video: a real Ads
                 Manager screenshot as the hero visual. */}
             <figure
-              className="intro mt-10 w-full max-w-3xl rounded-3xl border border-line bg-surface p-2 shadow-[0_30px_90px_-30px_rgb(37_99_235/0.45)] sm:mt-12"
+              className="intro mt-10 w-full rounded-3xl border border-line bg-surface p-2 shadow-[0_30px_90px_-30px_rgb(37_99_235/0.45)] sm:mt-12"
               style={{ ["--delay" as string]: "0.2s" }}
             >
               <div className="overflow-hidden rounded-2xl bg-white">
                 <Image
                   src={heroAdsShot}
-                  alt="Meta Ads Manager table showing $7,665.42 total spent, 511,612 impressions and 179,733 accounts reached."
+                  alt="Meta Ads Manager showing ad sets averaging 6.13 purchase ROAS on Rs61,126 spent, and campaigns delivering 146 website purchases at ₹238.66 per purchase."
+                  quality={85}
                   placeholder="blur"
                   preload
-                  sizes="(min-width: 768px) 768px, 100vw"
+                  sizes="(min-width: 1152px) 1088px, 100vw"
                   className="h-auto w-full"
                 />
               </div>
@@ -305,10 +302,10 @@ export default function Home() {
               className="intro mt-10 hidden w-full md:block"
               style={{ ["--delay" as string]: "0.25s" }}
             >
-              <Cta note="Free 30-min call · No pitch · Reply within 24 hours" />
+              <Cta note="Free 30-min call · No pitch · Pick your own time" />
             </div>
             <p className="intro mt-6 text-micro text-subtle md:hidden">
-              Free 30-min call · No pitch · Reply within 24 hours
+              Free 30-min call · No pitch · Pick your own time
             </p>
           </div>
         </section>
@@ -404,7 +401,7 @@ export default function Home() {
               </p>
             </SectionIntro>
 
-            <Reveal className="mx-auto mt-12 max-w-100">
+            <Reveal className="mx-auto mt-12 max-w-118">
               <LeakCalculator />
             </Reveal>
 
@@ -736,7 +733,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── BOOK (lead form → Calendly) ────── */}
+        {/* ── BOOK (Calendly) ────────────────── */}
         <section
           id="book"
           aria-labelledby="book-heading"
@@ -755,11 +752,7 @@ export default function Home() {
                 </>
               }
             >
-              <p>
-                {hasCalendly
-                  ? "Tell us about your brand, then pick a time that suits you."
-                  : "Tell us about your brand. We reply on WhatsApp within 24 hours."}
-              </p>
+              <p>Pick a time that suits you. It takes under a minute.</p>
             </SectionIntro>
 
             <Reveal className="mx-auto mt-8 flex max-w-3xl flex-wrap justify-center gap-2">
@@ -776,8 +769,8 @@ export default function Home() {
               ))}
             </Reveal>
 
-            <Reveal className="mx-auto mt-10 max-w-xl">
-              <StrategyCallForm />
+            <Reveal className="mx-auto mt-10 max-w-5xl">
+              <CalendlyEmbed />
             </Reveal>
           </div>
         </section>

@@ -3,11 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 import footerLogo from "../../../public/footer-logo.webp";
+import CalendlyEmbed from "@/components/CalendlyEmbed";
 import GridBackdrop from "@/components/GridBackdrop";
 import SiteFooter from "@/components/SiteFooter";
-import StrategyCallForm from "@/components/StrategyCallForm";
 import { CALL_AGENDA } from "@/content/call";
-import { hasCalendly } from "@/lib/calendly";
 import { BUTTON_SECONDARY, CTA_LABEL, LABEL } from "@/lib/ui";
 
 const CONTAINER = "mx-auto w-full max-w-6xl px-5 sm:px-8";
@@ -20,7 +19,7 @@ export const metadata: Metadata = {
 };
 
 /* Where every "Book Your Free Strategy Call" button on the site lands
-   (CTA_HREF): the booking form on its own page. */
+   (CTA_HREF): the Calendly booking calendar on its own page. */
 export default function BookPage() {
   return (
     <div className="flex min-h-dvh flex-col">
@@ -54,9 +53,7 @@ export default function BookPage() {
               <span className="text-gradient">Before You Spend Another Rupee.</span>
             </h1>
             <p className="mt-5 text-lead text-muted text-pretty">
-              {hasCalendly
-                ? "Tell us about your brand, then pick a time that suits you."
-                : "Tell us about your brand. We reply on WhatsApp within 24 hours."}
+              Pick a time that suits you. It takes under a minute.
             </p>
           </div>
 
@@ -74,8 +71,8 @@ export default function BookPage() {
             ))}
           </ul>
 
-          <div className="mx-auto mt-10 max-w-xl">
-            <StrategyCallForm />
+          <div className="mx-auto mt-10 max-w-5xl">
+            <CalendlyEmbed />
           </div>
         </div>
       </main>

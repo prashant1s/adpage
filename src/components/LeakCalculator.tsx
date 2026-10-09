@@ -1,97 +1,89 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
-import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
+import { useId, useState } from "react";
 
-import {
-  BUTTON_IN_CARD,
-  BUTTON_PRIMARY,
-  CTA_HREF,
-  CTA_LABEL,
-  CTA_LABEL_ONE_LINE,
-} from "@/lib/ui";
+import { CARD } from "@/lib/ui";
 
-/* Spec from the content doc:
-   slider ₹50,000 → ₹5,00,000, steps of ₹25,000, starts at ₹1,50,000
-   t = (spend − 50,000) ÷ 4,50,000
-   now ROAS     = 1.55 − (0.45 × t)
-   Whizoid ROAS = 2.85 − (0.25 × t)
-   leak = spend × (Whizoid ROAS − now ROAS)                                  */
+/* Spec from the content doc. t runs 0 → 1 across the slider.
+     slider      ₹50,000 → ₹5,00,000 in ₹25,000 steps, starts at ₹1,00,000
+     system off  ROAS 1.55 − 0.45t · 2 creatives  · frequency 2.4 + 4.2t
+     system on   ROAS 2.85 − 0.25t · 14 creatives · frequency 1.7 + 0.5t
+     leak = spend × (on ROAS − off ROAS)                                     */
 const MIN_SPEND = 50_000;
 const MAX_SPEND = 500_000;
 const SPEND_STEP = 25_000;
-const START_SPEND = 150_000;
+const START_SPEND = 100_000;
 
 const inr = (value: number) => `₹${Math.round(value).toLocaleString("en-IN")}`;
 
-type Mode = "now" | "whizoid";
+function simulate(spend: number, systemOn: boolean) {
+  const t = (spend - MIN_SPEND) / (MAX_SPEND - MIN_SPEND);
+  return systemOn
+    ? { roas: 2.85 - 0.25 * t, creatives: 14, frequency: 1.7 + 0.5 * t }
+    : { roas: 1.55 - 0.45 * t, creatives: 2, frequency: 2.4 + 4.2 * t };
+}
 
-const MODES: { id: Mode; label: string }[] = [
-  { id: "now", label: "Your ads now" },
-  { id: "whizoid", label: "With Whizoid" },
-];
+/* Both versions of a message sit in the same grid cell and the inactive one
+   is only hidden, so the box keeps the taller one's height and nothing below
+   jumps when the system is switched. Keep the two about the same length. */
+function Swap({
+  on,
+  off,
+  showOn,
+}: {
+  on: React.ReactNode;
+  off: React.ReactNode;
+  showOn: boolean;
+}) {
+  return (
+    <>
+      <span className={`[grid-area:1/1] ${showOn ? "invisible" : ""}`}>{off}</span>
+      <span className={`[grid-area:1/1] ${showOn ? "" : "invisible"}`}>{on}</span>
+    </>
+  );
+}
 
-type LeakCalculatorProps = {
-  /* Tighter layout for the hero column: smaller readouts, and the CTA only
-     shows on desktop (on mobile the hero's own CTA sits right above). */
-  compact?: boolean;
-};
-
-export default function LeakCalculator({
-  compact = false,
-}: LeakCalculatorProps) {
-  /* The calculator renders twice on the page (hero + its own section), so
-     ids and the toggle's layoutId must be unique per instance. */
+/* Leak calculator: drag the spend, then switch the system on to see the
+   same account run properly. */
+export default function LeakCalculator() {
   const uid = useId();
   const spendId = `${uid}-spend`;
+  const verdictId = `${uid}-verdict`;
   const [spend, setSpend] = useState(START_SPEND);
-  const [mode, setMode] = useState<Mode>("now");
+  const [systemOn, setSystemOn] = useState(false);
 
-  const { roas, revenue, leak } = useMemo(() => {
-    const t = (spend - MIN_SPEND) / (MAX_SPEND - MIN_SPEND);
-    const roasNow = 1.55 - 0.45 * t;
-    const roasWhizoid = 2.85 - 0.25 * t;
-    const active = mode === "now" ? roasNow : roasWhizoid;
-
-    return {
-      roas: active,
-      revenue: spend * active,
-      leak: spend * (roasWhizoid - roasNow),
-    };
-  }, [spend, mode]);
-
-  /* Shared by the leak callout and the CTA so they match. */
-  const ctaSize = "min-h-12 px-4 py-3 text-body leading-snug sm:px-6";
-
+  const { roas, creatives, frequency } = simulate(spend, systemOn);
+  const leak = spend * (simulate(spend, true).roas - simulate(spend, false).roas);
   const fill = ((spend - MIN_SPEND) / (MAX_SPEND - MIN_SPEND)) * 100;
 
-  return (
-    <div className="relative rounded-2xl border border-line bg-raised p-4 min-[360px]:p-5">
-      {/* ── Spend slider ───────────────────────────────── */}
-      {/* Compact always stacks: side-by-side, wider amounts (₹1,00,000+)
-          wrapped under the label while ₹50,000 didn't, so the header jumped. */}
-      <div
-        className={`flex flex-col gap-2 ${
-          compact
-            ? ""
-            : "sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:gap-4"
-        }`}
-      >
-        <label
-          htmlFor={spendId}
-          className="text-micro font-medium text-muted"
-        >
-          Monthly ad spend
-        </label>
-        <output
-          htmlFor={spendId}
-          className={`${compact ? "text-punch" : "text-readout"} font-semibold text-fg tabular-nums`}
-        >
-          {inr(spend)}
-        </output>
-      </div>
+  /* Red while the account leaks (the site's loss colour), accent blue once
+     the system is on. */
+  const tone = systemOn ? "text-accent-soft" : "text-loss";
+  const readouts = [
+    { label: "Revenue from ads", value: inr(spend * roas), tone: "text-fg" },
+    { label: "Return on ad spend", value: `${roas.toFixed(2)}x`, tone },
+    { label: "New creatives tested this month", value: String(creatives), tone },
+    { label: "Frequency on your top ad set", value: frequency.toFixed(1), tone },
+    /* The section asks how much is leaking, so the answer shows before the
+       system is switched on. */
+    {
+      label: systemOn ? "Recovered every month" : "Leaking every month",
+      value: `${systemOn ? "+" : ""}${inr(leak)}`,
+      tone,
+    },
+  ];
 
+  return (
+    <div className={`${CARD} p-4 sm:p-5`}>
+      {/* ── Spend slider ───────────────────────────────── */}
+      {/* No visible label: the section intro already says to set the spend,
+          so the slider is named for screen readers only. */}
+      <output
+        htmlFor={spendId}
+        className="block text-[2.1rem] leading-none font-extrabold tracking-[-0.01em] text-fg tabular-nums"
+      >
+        {inr(spend)}
+      </output>
       <input
         id={spendId}
         type="range"
@@ -100,134 +92,70 @@ export default function LeakCalculator({
         step={SPEND_STEP}
         value={spend}
         onChange={(event) => setSpend(Number(event.target.value))}
+        aria-label="Monthly ad spend"
+        aria-valuetext={inr(spend)}
+        aria-describedby={verdictId}
         style={{ ["--fill" as string]: `${fill}%` }}
-        className="leak-range mt-2 sm:mt-3"
-        aria-label="Your monthly ad spend"
+        className="leak-range"
       />
-
-      <div className="flex justify-between text-micro text-subtle tabular-nums">
-        <span>{inr(MIN_SPEND)}</span>
-        <span>{inr(MAX_SPEND)}</span>
+      <div className="-mt-2.5 flex justify-between font-mono text-[0.72rem] text-subtle">
+        <span>₹50k</span>
+        <span>₹5L</span>
       </div>
 
-      {/* ── Mode toggle ────────────────────────────────── */}
-      <div
-        role="tablist"
-        aria-label="Compare scenarios"
-        className={`${compact ? "mt-5" : "mt-6"} grid grid-cols-2 gap-1 rounded-xl border border-line bg-ink p-1`}
-      >
-        {MODES.map((option) => {
-          const selected = option.id === mode;
-          return (
-            <button
-              key={option.id}
-              type="button"
-              role="tab"
-              aria-selected={selected}
-              onClick={() => setMode(option.id)}
-              className="relative min-h-11 rounded-lg px-3 py-2.5 text-micro font-semibold transition-colors sm:px-4 sm:text-body"
-            >
-              {selected && (
-                <motion.span
-                  layoutId={`${uid}-calc-mode`}
-                  transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                  className="absolute inset-0 rounded-lg border border-accent/40 bg-accent/15"
-                />
-              )}
-              <span
-                className={`relative ${selected ? "text-accent-soft" : "text-subtle hover:text-muted"}`}
-              >
-                {option.label}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* ── Revenue + ROAS ─────────────────────────────── */}
-      {/* Two cells split by a hairline instead of two separate boxes.
-          ROAS is always short ("1.45x"), so revenue gets the rest of the
-          width — ₹13,00,000 needs it on small phones. */}
-      <dl className="mt-5 grid grid-cols-[1fr_auto] divide-x divide-line border-y border-line">
-        {[
-          { label: "Revenue", value: inr(revenue) },
-          { label: "ROAS", value: `${roas.toFixed(2)}x` },
-        ].map((stat, index) => (
+      {/* ── Readouts ───────────────────────────────────── */}
+      <dl aria-live="polite" className="mt-3 border-t border-line">
+        {readouts.map((readout) => (
           <div
-            key={stat.label}
-            className={`min-w-0 py-4 sm:py-5 ${index === 0 ? "pr-3 sm:pr-4" : "pl-3 sm:pl-6"}`}
+            key={readout.label}
+            className="flex items-center justify-between gap-3.5 border-b border-line py-2.5"
           >
-            <dt className="text-micro font-medium text-muted">
-              {stat.label}
-            </dt>
+            <dt className="text-[0.94rem] text-muted">{readout.label}</dt>
             <dd
-              className={`mt-2 ${compact ? "text-punch" : "text-readout"} font-bold whitespace-nowrap tabular-nums text-accent-soft`}
+              className={`font-mono text-[1.06rem] font-medium whitespace-nowrap tabular-nums transition-colors ${readout.tone}`}
             >
-              {stat.value}
+              {readout.value}
             </dd>
           </div>
         ))}
       </dl>
 
-      {/* ── Leak callout ───────────────────────────────── */}
-      {/* Sized like the CTA below; fixed min-height so swapping messages
-          doesn't shift it. */}
-      <div className={`${compact ? "mt-5 min-h-12" : "mt-6 min-h-14"}`}>
-        <AnimatePresence mode="wait" initial={false}>
-          {mode === "now" ? (
-            <motion.button
-              key="now"
-              type="button"
-              onClick={() => setMode("whizoid")}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.2 }}
-              className={`group flex w-full items-center justify-center gap-2 rounded-lg border border-loss/30 bg-loss-deep text-center font-semibold text-loss transition-colors hover:border-loss/60 ${ctaSize}`}
-            >
-              See what you&apos;re missing
-              <span
-                aria-hidden
-                className="transition-transform group-hover:translate-x-0.5"
-              >
-                →
-              </span>
-            </motion.button>
-          ) : (
-            <motion.p
-              key="whizoid"
-              aria-live="polite"
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.2 }}
-              className={`flex w-full items-center justify-center rounded-lg border border-loss/30 bg-loss-deep text-center font-medium text-fg ${ctaSize}`}
-            >
-              {/* One text child, so it flows as a single line instead of
-                  wrapping as separate flex items. */}
-              <span>
-                You&apos;re missing{" "}
-                <span className="whitespace-nowrap font-bold tabular-nums text-loss">
-                  {inr(leak)}
-                </span>{" "}
-                every month
-              </span>
-            </motion.p>
-          )}
-        </AnimatePresence>
-      </div>
-
-      <Link
-        href={CTA_HREF}
-        className={`mt-3 w-full ${BUTTON_PRIMARY} ${compact ? "hidden lg:flex" : "flex"} ${ctaSize} ${BUTTON_IN_CARD}`}
+      {/* ── Verdict ────────────────────────────────────── */}
+      <p
+        id={verdictId}
+        aria-live="polite"
+        className={`mt-4 grid items-center rounded-r-lg border-l-4 px-3.5 py-3 text-[0.97rem] leading-relaxed transition-colors ${
+          systemOn ? "border-accent bg-accent/10" : "border-loss bg-loss-deep"
+        }`}
       >
-        <span className={CTA_LABEL_ONE_LINE}>{CTA_LABEL}</span>
-        <span aria-hidden>→</span>
-      </Link>
-
-      <p className="mt-4 text-center text-micro text-subtle">
-        Sample numbers. Your call shows your real ones.
+        <Swap
+          showOn={systemOn}
+          off="Spend keeps climbing. Return keeps sliding. The same people are seeing the same ad more often, and the account has nothing new to serve them."
+          on="Fourteen fresh creatives a month give Meta something new to test. Frequency stays low, new buyers keep coming, and the budget has somewhere to go."
+        />
       </p>
+
+      {/* ── System switch ──────────────────────────────── */}
+      <div className="mt-4 flex flex-wrap items-center gap-x-3.5 gap-y-2">
+        <button
+          type="button"
+          onClick={() => setSystemOn((on) => !on)}
+          className={`min-h-11 rounded-lg border px-4.5 py-2.5 text-[0.95rem] font-semibold transition-colors ${
+            systemOn
+              ? "border-accent/40 bg-accent/15 text-accent-soft"
+              : "border-line-strong bg-ink text-fg hover:border-accent/60"
+          }`}
+        >
+          {systemOn ? "Turn the system off" : "Turn the system on"}
+        </button>
+        <p className="grid text-[0.85rem] text-subtle">
+          <Swap
+            showOn={systemOn}
+            off="Testing, tracking and post-click, all running weekly"
+            on="This is what a weekly operating rhythm does to the same account."
+          />
+        </p>
+      </div>
     </div>
   );
 }

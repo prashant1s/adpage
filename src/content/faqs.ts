@@ -25,7 +25,7 @@ export const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "Is the call really free?",
-    a: "Yes. 30 minutes, no pitch, no strings. Booking takes under a minute: fill in 5 details and pick a time.",
+    a: "Yes. 30 minutes, no pitch, no strings. Booking takes under a minute: pick a time that suits you on the calendar.",
   },
   {
     q: "Should I just increase my budget?",

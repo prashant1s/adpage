@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { IBM_Plex_Mono, Inter } from "next/font/google";
 import "./globals.css";
 
 import { FAQS } from "@/content/faqs";
@@ -16,6 +16,16 @@ const inter = Inter({
   subsets: ["latin", "latin-ext"],
   variable: "--font-inter",
   display: "swap",
+});
+
+/* Leak calculator readouts only — below the fold, so not preloaded ahead
+   of the hero. */
+const plexMono = IBM_Plex_Mono({
+  weight: ["400", "500"],
+  subsets: ["latin"],
+  variable: "--font-plex-mono",
+  display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -139,7 +149,7 @@ export default function RootLayout({
   return (
     <html
       lang="en-IN"
-      className={inter.variable}
+      className={`${inter.variable} ${plexMono.variable}`}
       data-scroll-behavior="smooth"
     >
       <body className="bg-ink font-sans text-fg antialiased">
