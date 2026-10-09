@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import heroAdsShot from "../../public/img/Heroimg.png";
+import heroCampaigns from "../../public/img/hero-new1.png";
+import heroAdSets from "../../public/img/hero-new2.png";
 import CalendlyEmbed from "@/components/CalendlyEmbed";
 import ClientLogos from "@/components/ClientLogos";
 import DepthCarousel from "@/components/DepthCarousel";
@@ -53,6 +54,17 @@ const ONE_LINE =
 /* ─────────────────────────────────────────
    CONTENT
 ───────────────────────────────────────── */
+const HERO_SHOTS = [
+  {
+    src: heroCampaigns,
+    alt: "Meta Ads Manager campaigns: 146 website purchases from ₹34,844 spent, at ₹238.66 per purchase.",
+  },
+  {
+    src: heroAdSets,
+    alt: "Meta Ads Manager ad sets: 133 website purchases worth Rs374,955 from Rs61,127 spent, a 6.13 average purchase ROAS.",
+  },
+];
+
 const SYMPTOMS = [
   "Every new campaign feels like a guess.",
   "Your cost per order goes up every month.",
@@ -277,23 +289,34 @@ export default function Home() {
               problem. The way your ads are being run is.
             </p>
 
-            {/* Framed like the reference site's hero video: a real Ads
-                Manager screenshot as the hero visual. */}
+            {/* Framed like the reference site's hero video: two real Ads
+                Manager screenshots as the hero visual, each in its own white
+                box so they read as two shots. The tables are dense, so from
+                sm up the frame breaks out past the container (centred by the
+                flex parent, clipped by the section) to as much as 1400px,
+                keeping the numbers close to their captured size. Phones: it
+                runs edge to edge with no side borders or rounding, like the
+                proof wall's tables, to give them every pixel of width. */}
             <figure
-              className="intro mt-10 w-full rounded-3xl border border-line bg-surface p-2 shadow-[0_30px_90px_-30px_rgb(37_99_235/0.45)] sm:mt-12"
+              className="intro mt-10 w-screen space-y-2 rounded-3xl border border-line bg-surface p-2 shadow-[0_30px_90px_-30px_rgb(37_99_235/0.45)] max-sm:rounded-none max-sm:border-x-0 sm:mt-12 sm:w-[min(calc(100vw-4rem),87.5rem)] sm:space-y-3 sm:p-3"
               style={{ ["--delay" as string]: "0.2s" }}
             >
-              <div className="overflow-hidden rounded-2xl bg-white">
-                <Image
-                  src={heroAdsShot}
-                  alt="Meta Ads Manager showing ad sets averaging 6.13 purchase ROAS on Rs61,126 spent, and campaigns delivering 146 website purchases at ₹238.66 per purchase."
-                  quality={85}
-                  placeholder="blur"
-                  preload
-                  sizes="(min-width: 1152px) 1088px, 100vw"
-                  className="h-auto w-full"
-                />
-              </div>
+              {HERO_SHOTS.map((shot, i) => (
+                <div
+                  key={shot.alt}
+                  className="overflow-hidden rounded-lg bg-white sm:rounded-2xl"
+                >
+                  <Image
+                    src={shot.src}
+                    alt={shot.alt}
+                    quality={85}
+                    placeholder="blur"
+                    preload={i === 0}
+                    sizes="(min-width: 1464px) 1400px, 100vw"
+                    className="block h-auto w-full"
+                  />
+                </div>
+              ))}
             </figure>
 
             {/* Phones get the sticky CTA from the first screen, so the hero

@@ -72,7 +72,7 @@ export default function BookPage() {
           </ul>
 
           <div className="mx-auto mt-10 max-w-5xl">
-            <CalendlyEmbed />
+            <CalendlyEmbed eager />
           </div>
         </div>
       </main>
