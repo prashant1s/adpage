@@ -1,5 +1,6 @@
 import type { StaticImageData } from "next/image";
 
+import campaignResults from "../../public/img/hero-new1.png";
 import adsInr from "../../public/1.png";
 import adsUsd from "../../public/2.png";
 import ig1 from "../../public/Image (1).jpg";
@@ -44,6 +45,10 @@ export const AD_ACCOUNT_SHOTS: ProofShot[] = [
 /* Meta Ads Manager campaign tables — purchases and purchase ROAS. Same
    columns, so they're stacked in one card and read as one table. */
 export const SALES_TABLE_SHOTS: ProofShot[] = [
+  {
+    src: campaignResults,
+    alt: "Meta Ads Manager campaigns: 146 website purchases from ₹34,844 spent, at ₹238.66 per purchase.",
+  },
   {
     src: salesTable1,
     alt: "Meta Ads Manager sales campaigns: ₹4,178.57 spent for 8 website purchases at 2.76 ROAS, ₹12,124.09 for 17 at 2.67 ROAS, and ₹67,400.23 for 143 at 3.23 ROAS (₹217,702.74 in purchase value).",
@@ -121,9 +126,5 @@ export const INSIGHT_SHOTS: ProofShot[] = [
 
 /* Headline numbers for the stat row — all read straight off the shots above. */
 export const PROOF_STATS = [
-  { value: "₹1.48L+", label: "Ad spend managed" },
-  { value: "72.9L+", label: "Impressions" },
-  { value: "50.3L+", label: "Accounts reached" },
-  { value: "4.38Cr+", label: "Views in 90 days" },
-  { value: "74%", label: "Views from ads" },
+  { value: "₹5cr+", label: "Ad spend managed" },
 ];

@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import heroCampaigns from "../../public/img/hero-new1.png";
 import heroAdSets from "../../public/img/hero-new2.png";
 import CalendlyEmbed from "@/components/CalendlyEmbed";
 import ClientLogos from "@/components/ClientLogos";
@@ -55,10 +54,6 @@ const ONE_LINE =
    CONTENT
 ───────────────────────────────────────── */
 const HERO_SHOTS = [
-  {
-    src: heroCampaigns,
-    alt: "Meta Ads Manager campaigns: 146 website purchases from ₹34,844 spent, at ₹238.66 per purchase.",
-  },
   {
     src: heroAdSets,
     alt: "Meta Ads Manager ad sets: 133 website purchases worth Rs374,955 from Rs61,127 spent, a 6.13 average purchase ROAS.",
@@ -192,11 +187,10 @@ function SectionIntro({
       <p className={LABEL}>{kicker}</p>
       <h2
         id={id}
-        className={`mt-4 font-bold text-balance ${
-          wide
-            ? "text-[clamp(1.5rem,1.241rem+1.105vw,2.125rem)] leading-[1.2] tracking-[-0.02em]"
-            : "text-h2"
-        }`}
+        className={`mt-4 font-bold text-balance ${wide
+          ? "text-[clamp(1.5rem,1.241rem+1.105vw,2.125rem)] leading-[1.2] tracking-[-0.02em]"
+          : "text-h2"
+          }`}
       >
         {title}
       </h2>
@@ -231,9 +225,8 @@ function Tick({ tone = "accent" }: { tone?: "accent" | "loss" }) {
   return (
     <span
       aria-hidden
-      className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[0.7rem] font-bold ${
-        tone === "accent" ? "bg-accent/20 text-accent-soft" : "bg-loss/15 text-loss"
-      }`}
+      className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[0.7rem] font-bold ${tone === "accent" ? "bg-accent/20 text-accent-soft" : "bg-loss/15 text-loss"
+        }`}
     >
       {tone === "accent" ? "✓" : "✕"}
     </span>
@@ -289,9 +282,8 @@ export default function Home() {
               problem. The way your ads are being run is.
             </p>
 
-            {/* Framed like the reference site's hero video: two real Ads
-                Manager screenshots as the hero visual, each in its own white
-                box so they read as two shots. From sm up the frame fills the
+            {/* Framed like the reference site's hero video: a real Ads
+              Manager screenshot as the hero visual. From sm up the frame fills the
                 container (1088px at most). Phones: it runs edge to edge with
                 no side borders or rounding, like the proof wall's tables, to
                 give the dense tables every pixel of width. */}
@@ -488,25 +480,18 @@ export default function Home() {
               <ProofWall />
             </div>
 
-            {/* Stat row, read straight off the screenshots above. Same 12px
-                padding on every side, and on desktop the row is only as wide
-                as five boxes hugging their content, so the side padding
-                matches the top/bottom instead of stretching. Equal gaps both
-                ways, and the same 56px above as the CTA has below. */}
-            <ul className="mx-auto mt-14 grid grid-cols-2 gap-3 sm:gap-4 lg:max-w-3xl lg:grid-cols-5">
-              {PROOF_STATS.map((stat, index) => (
-                <li
-                  key={stat.label}
-                  className={`reveal ${CARD} p-3 text-center ${
-                    index === PROOF_STATS.length - 1 ? "col-span-2 lg:col-span-1" : ""
-                  }`}
-                >
-                  <p className="text-stat font-bold text-accent-soft tabular-nums">
-                    {stat.value}
-                  </p>
-                  <p className="mt-0.5 text-xs whitespace-nowrap text-muted">{stat.label}</p>
-                </li>
-              ))}
+            {/* Single headline stat, read straight off the screenshots above. */}
+            <ul className="mx-auto mt-16 flex w-fit flex-col gap-3 sm:gap-4">              
+              {PROOF_STATS.map((stat) => (
+              <li
+                key={stat.label}
+                className={`reveal ${CARD} px-3 py-4 text-center sm:px-6 sm:py-4`}                >
+                <p className="text-3xl font-bold text-accent-soft tabular-nums sm:text-3xl">
+                  {stat.value}
+                </p>
+                <p className="mt-1.5 text-sm font-medium whitespace-nowrap text-muted">{stat.label}</p>
+              </li>
+            ))}
             </ul>
 
             <Cta className="mt-14" />
